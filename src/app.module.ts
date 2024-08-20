@@ -7,23 +7,29 @@ import {
 import { UserModule } from './user/user.module';
 import { CommonModule } from './common/common.module';
 import { LogMiddleware } from './middlewares/log.middleware';
-import { AuthMiddleware } from './middlewares/auth.middleware';
 import { AuthModule } from './auth/auth.module';
+import {
+  AuthenticationMiddleware,
+  IsOwnerMiddleware,
+} from './middlewares/auth.middleware';
 
 @Module({
   imports: [CommonModule, UserModule, AuthModule],
   controllers: [],
-  providers: [LogMiddleware, AuthMiddleware],
+  providers: [LogMiddleware, AuthenticationMiddleware],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(LogMiddleware).forRoutes('/api/*');
     consumer
-      .apply(LogMiddleware, AuthMiddleware)
+      .apply(AuthenticationMiddleware)
       .exclude(
         { path: '/api/auth/login', method: RequestMethod.POST },
         { path: '/api/auth/register', method: RequestMethod.POST },
       )
       .forRoutes('/api/*');
+    // consumer
+    //   .apply(IsOwnerMiddleware)
+    //   .forRoutes({ path: '/api/users', method: RequestMethod.GET });
   }
 }
