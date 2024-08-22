@@ -18,6 +18,10 @@ export class UserService {
       return {
         username: user.username,
         email: user.email,
+        full_name: user.full_name,
+        date_of_birth: user.date_of_birth,
+        gender: user.gender,
+        role: user.role,
       };
     });
   }
