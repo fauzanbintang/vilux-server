@@ -13,14 +13,29 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  admin
+  client
+  vip_client
+}
+
+enum Gender {
+  male
+  female
+  others
+}
+
 model User {
-  id        Int      @id @default(autoincrement())
-  username  String   @unique @db.VarChar(100)
-  email     String   @unique @db.VarChar(100)
-  password  String   @db.VarChar(100)
-  role      String   @db.VarChar(100)
-  updatedAt DateTime @default(now()) @updatedAt
-  createdAt DateTime @default(now())
+  id            Int      @id @default(autoincrement())
+  username      String   @unique @db.VarChar(100)
+  email         String   @unique @db.VarChar(100)
+  password      String   @db.VarChar(100)
+  role          Role     @default(client)
+  full_name     String   @db.VarChar(100)
+  date_of_birth DateTime
+  gender        Gender
+  updatedAt     DateTime @default(now()) @updatedAt
+  createdAt     DateTime @default(now())
 
   @@map("users")
 }
