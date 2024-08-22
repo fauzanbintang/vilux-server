@@ -39,3 +39,14 @@ model User {
 
   @@map("users")
 }
+
+model File {
+  id         Int      @id @default(autoincrement())
+  path       String
+  fileName   String
+  local_path String
+  updatedAt  DateTime @default(now()) @updatedAt
+  createdAt  DateTime @default(now())
+
+  @@map("files")
+}
