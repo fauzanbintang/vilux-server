@@ -12,9 +12,10 @@ import {
   AuthenticationMiddleware,
   IsOwnerMiddleware,
 } from './middlewares/auth.middleware';
+import { FileModule } from './file/file.module';
 
 @Module({
-  imports: [CommonModule, UserModule, AuthModule],
+  imports: [CommonModule, UserModule, AuthModule, FileModule],
   controllers: [],
   providers: [LogMiddleware, AuthenticationMiddleware],
 })
