@@ -1,6 +1,6 @@
 export class FileDto {
-  id: number;
+  id: string;
   path: string;
-  fileName: string;
+  file_name: string;
   local_path: string;
 }
