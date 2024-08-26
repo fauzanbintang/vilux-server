@@ -48,7 +48,7 @@ export class FileService {
 
     const newFile = await this.prismaService.file.create({
       data: {
-        fileName: fileName,
+        file_name: fileName,
         path: path,
         local_path: publicUrlPath,
       },
@@ -88,7 +88,7 @@ export class FileService {
         await fs.writeFile(filePath, file.buffer);
 
         return {
-          fileName: fileName,
+          file_name: fileName,
           path: path,
           local_path: publicUrlPath,
         };
@@ -109,7 +109,7 @@ export class FileService {
     return insertedFiles;
   }
 
-  async findById(id: number) {
+  async findById(id: string) {
     const file = await this.prismaService.file.findFirst({
       where: { id },
     });
@@ -123,7 +123,7 @@ export class FileService {
 
   async openFile(fileName: string, res) {
     const file = await this.prismaService.file.findFirst({
-      where: { fileName },
+      where: { file_name: fileName },
     });
 
     const filePath = file.local_path;

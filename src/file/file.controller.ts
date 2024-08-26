@@ -51,7 +51,7 @@ export class FileController {
   @Get(':id')
   @HttpCode(200)
   async getFile(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
   ): Promise<ResponseDto<FileDto>> {
     const file = await this.fileService.findById(id);
     return { data: file };
