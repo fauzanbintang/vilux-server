@@ -65,7 +65,7 @@ export class IsOwnerMiddleware implements NestMiddleware<Request, Response> {
 
     const user = await this.prismaService.user.findUnique({
       where: {
-        id: Number(identifier),
+        id: identifier,
       },
     });
 
