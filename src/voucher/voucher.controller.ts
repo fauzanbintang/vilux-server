@@ -13,14 +13,14 @@ import {
   CreateVoucherDto,
   UpdateVoucherDto,
 } from 'src/dto/request/voucher.dto';
-import { DeleteDto, ResponseDto } from 'src/dto/response/response.dto';
+import { ResponseDto } from 'src/dto/response/response.dto';
 import { VoucherDto } from 'src/dto/response/voucher.dto';
 
 @Controller('/api/vouchers')
 export class VoucherController {
   constructor(private readonly voucherService: VoucherService) {}
 
-  @Post('/')
+  @Post()
   @HttpCode(201)
   async create(
     @Body() createVoucherDto: CreateVoucherDto,
@@ -28,7 +28,7 @@ export class VoucherController {
     return await this.voucherService.create(createVoucherDto);
   }
 
-  @Get('/')
+  @Get()
   @HttpCode(200)
   async findAll(): Promise<ResponseDto<VoucherDto[]>> {
     return await this.voucherService.findAll();
@@ -51,7 +51,8 @@ export class VoucherController {
 
   @Delete(':id')
   @HttpCode(200)
-  async remove(@Param('id') id: string): Promise<ResponseDto<DeleteDto>> {
-    return await this.voucherService.remove(id);
+  async remove(@Param('id') id: string): Promise<ResponseDto<string>> {
+    await this.voucherService.remove(id);
+    return { message: 'successfully delete a voucher' }
   }
 }

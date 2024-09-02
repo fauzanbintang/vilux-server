@@ -21,6 +21,7 @@ async function bootstrap() {
     .setDescription('Legit Check')
     .setVersion('1.0.0')
     .addTag('auth')
+    .addTag('brand')
     .build();
   const options: SwaggerDocumentOptions = {
     operationIdFactory: (controllerKey: string, methodKey: string) => methodKey,

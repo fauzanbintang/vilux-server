@@ -16,7 +16,7 @@ import { ResponseDto } from 'src/dto/response/response.dto';
 export class UserController {
   constructor(private userService: UserService) {}
 
-  @Get('/')
+  @Get()
   @HttpCode(200)
   @UseGuards(RoleGuard)
   @Roles(['admin'])

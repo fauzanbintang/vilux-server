@@ -14,13 +14,13 @@ import {
   UpdatePaymentDto,
 } from 'src/dto/request/payment.dto';
 import { PaymentDto } from 'src/dto/response/payment.dto';
-import { DeleteDto, ResponseDto } from 'src/dto/response/response.dto';
+import { ResponseDto } from 'src/dto/response/response.dto';
 
 @Controller('/api/payments')
 export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
 
-  @Post('/')
+  @Post()
   @HttpCode(201)
   async create(
     @Body() createPaymentDto: CreatePaymentDto,
@@ -28,7 +28,7 @@ export class PaymentController {
     return await this.paymentService.create(createPaymentDto);
   }
 
-  @Get('/')
+  @Get()
   @HttpCode(200)
   async findAll(): Promise<ResponseDto<PaymentDto[]>> {
     return await this.paymentService.findAll();
@@ -51,7 +51,8 @@ export class PaymentController {
 
   @Delete(':id')
   @HttpCode(200)
-  async remove(@Param('id') id: string): Promise<ResponseDto<DeleteDto>> {
-    return await this.paymentService.remove(id);
+  async remove(@Param('id') id: string): Promise<ResponseDto<string>> {
+    await this.paymentService.remove(id);
+    return {message: "successfully delete a payment"}
   }
 }

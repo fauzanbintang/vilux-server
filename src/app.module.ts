@@ -13,6 +13,7 @@ import {
   IsOwnerMiddleware,
 } from './middlewares/auth.middleware';
 import { FileModule } from './file/file.module';
+import { BrandModule } from './brand/brand.module';
 import { PaymentModule } from './payment/payment.module';
 import { VoucherModule } from './voucher/voucher.module';
 
@@ -24,6 +25,7 @@ import { VoucherModule } from './voucher/voucher.module';
     FileModule,
     PaymentModule,
     VoucherModule,
+    BrandModule,
   ],
   controllers: [],
   providers: [LogMiddleware, AuthenticationMiddleware],
