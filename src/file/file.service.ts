@@ -1,7 +1,6 @@
 import { HttpException, Inject, Injectable, Logger } from '@nestjs/common';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { PrismaService } from 'src/common/prisma.service';
-import { FileDto } from 'src/dto/file.dto';
 import { extname, join } from 'path';
 import { createReadStream, promises as fs } from 'fs';
 import { ConfigService } from '@nestjs/config';
@@ -18,7 +17,7 @@ export class FileService {
   private readonly allowedExtensions = ['.jpg', '.png', '.jpeg']; // Add allowed extensions
   private readonly maxFileSize = 100 * 1024 * 1024; // 100MB (adjust as needed)
 
-  async upload(file: Express.Multer.File): Promise<FileDto> {
+  async upload(file: Express.Multer.File) {
     this.logger.debug(`Upload file ${JSON.stringify(file)}`);
 
     const fileExt = extname(file.originalname).toLowerCase();

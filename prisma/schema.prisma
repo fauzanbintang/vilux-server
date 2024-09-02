@@ -27,6 +27,17 @@ enum Gender {
   others
 }
 
+enum PaymentStatus {
+  success
+  failed
+  pending
+}
+
+enum VoucherType {
+  promotion
+  referral
+}
+
 model User {
   id            String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   username      String   @unique @db.VarChar(100)
@@ -57,10 +68,41 @@ model File {
 model Brand {
   id         String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   name       String
-  fileId     String   @db.Uuid
-  file       File     @relation(fields: [fileId], references: [id])
+  file_id    String   @db.Uuid
+  file       File     @relation(fields: [file_id], references: [id])
   updated_at DateTime @default(now()) @updatedAt
   created_at DateTime @default(now())
 
   @@map("brands")
+}
+
+model Payment {
+  id            String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  updated_at    DateTime      @default(now()) @updatedAt
+  created_at    DateTime      @default(now())
+  method        Json
+  amount        String
+  status        PaymentStatus
+  status_log    Json
+  external_id   String
+  service_fee   String
+  client_amount String
+
+  @@map("payments")
+}
+
+model Voucher {
+  id            String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  updated_at    DateTime    @default(now()) @updatedAt
+  created_at    DateTime    @default(now())
+  name          String
+  code          String
+  voucher_type  VoucherType
+  discount      String
+  quota_usage   Int
+  started_at    DateTime
+  expired_at    DateTime
+  active_status Boolean     @default(false)
+
+  @@map("vouchers")
 }

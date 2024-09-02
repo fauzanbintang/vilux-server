@@ -10,12 +10,12 @@ import {
 } from '@nestjs/common';
 import { BrandService } from './brand.service';
 import { ApiTags } from '@nestjs/swagger';
-import { ResponseDto } from 'src/dto/response.dto';
+import { ResponseDto } from 'src/dto/response/response.dto';
 import { CreateBrandDto, UpdateBrandDto } from 'src/dto/request/brand.dto';
 import { BrandDto } from 'src/dto/response/brand.dto';
 
 @ApiTags('brand')
-@Controller('brand')
+@Controller('api/brand')
 export class BrandController {
   constructor(private readonly brandService: BrandService) {}
 
@@ -57,6 +57,6 @@ export class BrandController {
   async remove(@Param('id') id: string): Promise<ResponseDto<string>> {
     await this.brandService.remove(id);
 
-    return { message: 'successfully remove a brand' };
+    return { message: 'successfully delete a brand' };
   }
 }

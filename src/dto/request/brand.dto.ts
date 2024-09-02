@@ -11,7 +11,7 @@ export class CreateBrandDto {
     type: String,
     default: '00000000-0000-0000-0000-000000000000',
   })
-  fileId: string;
+  file_id: string;
 }
 
 export class UpdateBrandDto extends PartialType(CreateBrandDto) {}

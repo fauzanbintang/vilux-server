@@ -17,13 +17,13 @@ export class BrandService {
     const brand = await this.prismaService.brand.create({
       data: {
         name: createBrandDto.name,
-        fileId: createBrandDto.fileId,
+        file_id: createBrandDto.file_id,
       },
     });
 
     return {
       name: brand.name,
-      fileId: brand.fileId,
+      file_id: brand.file_id,
     };
   }
 
@@ -32,7 +32,7 @@ export class BrandService {
 
     const brands = await this.prismaService.brand.findMany();
     return brands.map((brand) => {
-      return { name: brand.name, fileId: brand.fileId };
+      return { name: brand.name, file_id: brand.file_id };
     });
   }
 
@@ -43,7 +43,7 @@ export class BrandService {
 
     return {
       name: brand.name,
-      fileId: brand.fileId,
+      file_id: brand.file_id,
     };
   }
 
@@ -63,7 +63,7 @@ export class BrandService {
 
     return {
       name: updatedBrand.name,
-      fileId: updateBrandDto.fileId,
+      file_id: updateBrandDto.file_id,
     };
   }
 
