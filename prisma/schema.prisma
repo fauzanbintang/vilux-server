@@ -49,6 +49,18 @@ model File {
   local_path String
   updated_at DateTime @default(now()) @updatedAt
   created_at DateTime @default(now())
+  Brand      Brand[]
 
   @@map("files")
+}
+
+model Brand {
+  id         String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name       String
+  fileId     String   @db.Uuid
+  file       File     @relation(fields: [fileId], references: [id])
+  updated_at DateTime @default(now()) @updatedAt
+  created_at DateTime @default(now())
+
+  @@map("brands")
 }
