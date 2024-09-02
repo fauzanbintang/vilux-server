@@ -17,6 +17,9 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
-    "typeRoots": ["./node_modules/@types", "./src/dto"]
+    "typeRoots": [
+      "./node_modules/@types",
+      "./src/dto/request"
+    ]
   }
 }

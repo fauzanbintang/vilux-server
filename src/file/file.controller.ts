@@ -8,12 +8,11 @@ import {
   Get,
   Param,
   Res,
-  ParseIntPipe,
 } from '@nestjs/common';
 import { FileService } from './file.service';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
-import { ResponseDto } from 'src/dto/response.dto';
-import { FileDto } from 'src/dto/file.dto';
+import { FileDto } from 'src/dto/response/file.dto';
+import { ResponseDto } from 'src/dto/response/response.dto';
 
 @Controller('/api/files')
 export class FileController {
@@ -50,9 +49,7 @@ export class FileController {
 
   @Get(':id')
   @HttpCode(200)
-  async getFile(
-    @Param('id') id: string,
-  ): Promise<ResponseDto<FileDto>> {
+  async getFile(@Param('id') id: string): Promise<ResponseDto<FileDto>> {
     const file = await this.fileService.findById(id);
     return { data: file };
   }
