@@ -34,7 +34,18 @@ export class PaymentService {
   async findAll() {
     this.logger.debug('Get all payments');
 
-    const payments = await this.prismaService.payment.findMany();
+    const payments = await this.prismaService.payment.findMany({
+      select: {
+        id: true,
+        method: true,
+        amount: true,
+        status: true,
+        status_log: true,
+        external_id: true,
+        service_fee: true,
+        client_amount: true,
+      },
+    });
     return { data: payments };
   }
 
@@ -65,15 +76,7 @@ export class PaymentService {
 
     const updatedPayment = await this.prismaService.payment.update({
       where: { id },
-      data: {
-        method: updatePaymentDto.method,
-        amount: updatePaymentDto.amount,
-        status: PaymentStatus[updatePaymentDto.status],
-        status_log: updatePaymentDto.status_log,
-        external_id: updatePaymentDto.external_id,
-        service_fee: updatePaymentDto.service_fee,
-        client_amount: updatePaymentDto.client_amount,
-      },
+      data: updatePaymentDto,
     });
     return { data: updatedPayment };
   }
@@ -92,7 +95,5 @@ export class PaymentService {
     await this.prismaService.payment.delete({
       where: { id },
     });
-
-    return { data: { message: `Payment ${id} deleted` } };
   }
 }

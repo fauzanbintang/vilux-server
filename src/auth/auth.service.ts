@@ -5,8 +5,8 @@ import { PrismaService } from 'src/common/prisma.service';
 import { ValidationService } from 'src/common/validation.service';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { ConfigService } from '@nestjs/config';
-import { UserDto } from 'src/dto/user.dto';
-import { LoginUserDto, RegisterUserDto } from 'src/dto/auth.dto';
+import { UserDto } from 'src/dto/response/user.dto';
+import { LoginUserDto, RegisterUserDto } from 'src/dto/request/auth.dto';
 import { AuthValidate } from './auth.validation';
 import { Gender, Role } from '@prisma/client';
 

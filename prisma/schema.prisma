@@ -96,6 +96,7 @@ model Payment {
   external_id   String
   service_fee   String
   client_amount String
+  Order         Order[]
 
   @@map("payments")
 }
@@ -112,6 +113,7 @@ model Voucher {
   started_at    DateTime
   expired_at    DateTime
   active_status Boolean     @default(false)
+  Order         Order[]
 
   @@map("vouchers")
 }
@@ -139,4 +141,20 @@ model CategoryInstruction {
   file        File     @relation(fields: [file_id], references: [id])
 
   @@map("category_instructions")
+}
+
+model Order {
+  id              String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  updated_at      DateTime @default(now()) @updatedAt
+  created_at      DateTime @default(now())
+  code            String
+  client_info     Json
+  payment_id      String   @db.Uuid
+  payment         Payment  @relation(fields: [payment_id], references: [id])
+  legit_check_id  String   @db.Uuid
+  voucher_id      String   @db.Uuid
+  voucher         Voucher  @relation(fields: [voucher_id], references: [id])
+  original_amount String
+
+  @@map("orders")
 }

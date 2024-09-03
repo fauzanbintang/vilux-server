@@ -18,6 +18,7 @@ import { PaymentModule } from './payment/payment.module';
 import { VoucherModule } from './voucher/voucher.module';
 import { CategoryModule } from './category/category.module';
 import { CategoryInstructionModule } from './category_instruction/category_instruction.module';
+import { OrderModule } from './order/order.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { CategoryInstructionModule } from './category_instruction/category_instr
     BrandModule,
     CategoryModule,
     CategoryInstructionModule,
+    OrderModule,
   ],
   controllers: [],
   providers: [LogMiddleware, AuthenticationMiddleware],
@@ -38,12 +40,12 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(LogMiddleware).forRoutes('/api/*');
     // consumer
-      // .apply(AuthenticationMiddleware)
-      // .exclude(
-      //   { path: '/api/auth/login', method: RequestMethod.POST },
-      //   { path: '/api/auth/register', method: RequestMethod.POST },
-      // )
-      // .forRoutes('/api/*');
+    // .apply(AuthenticationMiddleware)
+    // .exclude(
+    //   { path: '/api/auth/login', method: RequestMethod.POST },
+    //   { path: '/api/auth/register', method: RequestMethod.POST },
+    // )
+    // .forRoutes('/api/*');
     // consumer
     //   .apply(IsOwnerMiddleware)
     //   .forRoutes({ path: '/api/users', method: RequestMethod.GET });
