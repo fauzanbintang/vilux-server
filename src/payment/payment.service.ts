@@ -76,15 +76,7 @@ export class PaymentService {
 
     const updatedPayment = await this.prismaService.payment.update({
       where: { id },
-      data: {
-        method: updatePaymentDto.method,
-        amount: updatePaymentDto.amount,
-        status: PaymentStatus[updatePaymentDto.status],
-        status_log: updatePaymentDto.status_log,
-        external_id: updatePaymentDto.external_id,
-        service_fee: updatePaymentDto.service_fee,
-        client_amount: updatePaymentDto.client_amount,
-      },
+      data: updatePaymentDto,
     });
     return { data: updatedPayment };
   }
@@ -103,7 +95,5 @@ export class PaymentService {
     await this.prismaService.payment.delete({
       where: { id },
     });
-
-    return { data: { message: `Payment ${id} deleted` } };
   }
 }

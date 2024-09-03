@@ -16,6 +16,7 @@ import { FileModule } from './file/file.module';
 import { BrandModule } from './brand/brand.module';
 import { PaymentModule } from './payment/payment.module';
 import { VoucherModule } from './voucher/voucher.module';
+import { OrderModule } from './order/order.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { VoucherModule } from './voucher/voucher.module';
     PaymentModule,
     VoucherModule,
     BrandModule,
+    OrderModule,
   ],
   controllers: [],
   providers: [LogMiddleware, AuthenticationMiddleware],

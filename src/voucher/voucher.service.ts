@@ -38,9 +38,6 @@ export class VoucherService {
       throw new HttpException('Invalid expiration date', 400);
     }
 
-    const activeStatus =
-      createVoucherDto.active_status === 'false' ? false : true;
-
     const voucher = await this.prismaService.voucher.create({
       data: {
         name: createVoucherDto.name,
@@ -50,7 +47,7 @@ export class VoucherService {
         quota_usage: quotaUsage,
         started_at: startedAt,
         expired_at: expiredAt,
-        active_status: activeStatus,
+        active_status: createVoucherDto.active_status,
       },
     });
 
@@ -101,42 +98,56 @@ export class VoucherService {
       throw new HttpException('Voucher not found', 404);
     }
 
-    const voucherType = VoucherType[updateVoucherDto.voucher_type];
-    if (!voucherType) {
-      throw new HttpException('Invalid voucher type', 400);
+    const { voucher_type, quota_usage, started_at, expired_at, active_status } =
+      updateVoucherDto;
+
+    if (voucher_type) {
+      const validVoucherType = VoucherType[voucher_type];
+      if (!validVoucherType) {
+        throw new HttpException('Invalid voucher type', 400);
+      }
+      updateVoucherDto.voucher_type = validVoucherType;
     }
 
-    const quotaUsage = Number(updateVoucherDto.quota_usage);
-    if (isNaN(quotaUsage)) {
-      throw new HttpException('Invalid quota usage', 400);
+    if (quota_usage) {
+      const parsedQuotaUsage = Number(quota_usage);
+      if (isNaN(parsedQuotaUsage)) {
+        throw new HttpException('Invalid quota usage', 400);
+      }
+      updateVoucherDto.quota_usage = parsedQuotaUsage;
     }
 
-    const startedAt = new Date(updateVoucherDto.started_at);
-    const expiredAt = new Date(updateVoucherDto.expired_at);
+    if (started_at || expired_at) {
+      const startDate = started_at ? new Date(started_at) : voucher.started_at;
+      const expireDate = expired_at ? new Date(expired_at) : voucher.expired_at;
 
-    if (isNaN(startedAt.getTime()) || isNaN(expiredAt.getTime())) {
-      throw new HttpException('Invalid date format', 400);
+      if (startDate && isNaN(startDate.getTime())) {
+        throw new HttpException('Invalid start date format', 400);
+      }
+
+      if (expireDate && isNaN(expireDate.getTime())) {
+        throw new HttpException('Invalid expiration date format', 400);
+      }
+
+      if (
+        startDate &&
+        expireDate &&
+        (startDate < new Date() || expireDate <= startDate)
+      ) {
+        throw new HttpException('Invalid expiration date', 400);
+      }
+
+      updateVoucherDto.started_at = startDate;
+      updateVoucherDto.expired_at = expireDate;
     }
 
-    if (startedAt < new Date() || expiredAt < startedAt) {
-      throw new HttpException('Invalid expiration date', 400);
-    }
-
-    const activeStatus =
-      updateVoucherDto.active_status === 'false' ? false : true;
+    // if (active_status) {
+    //   updateVoucherDto.active_status = JSON.parse(active_status);
+    // }
 
     const updatedVoucher = await this.prismaService.voucher.update({
       where: { id },
-      data: {
-        name: updateVoucherDto.name,
-        code: updateVoucherDto.code,
-        voucher_type: voucherType,
-        discount: updateVoucherDto.discount,
-        quota_usage: quotaUsage,
-        started_at: startedAt,
-        expired_at: expiredAt,
-        active_status: activeStatus,
-      },
+      data: updateVoucherDto,
     });
 
     return { data: updatedVoucher };
@@ -156,6 +167,5 @@ export class VoucherService {
     await this.prismaService.voucher.delete({
       where: { id },
     });
-    return { data: { message: `Voucher ${id} deleted` } };
   }
 }

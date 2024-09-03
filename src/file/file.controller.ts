@@ -13,7 +13,9 @@ import { FileService } from './file.service';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { FileDto } from 'src/dto/response/file.dto';
 import { ResponseDto } from 'src/dto/response/response.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('file')
 @Controller('/api/files')
 export class FileController {
   constructor(private readonly fileService: FileService) {}
