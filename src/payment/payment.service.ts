@@ -34,7 +34,18 @@ export class PaymentService {
   async findAll() {
     this.logger.debug('Get all payments');
 
-    const payments = await this.prismaService.payment.findMany();
+    const payments = await this.prismaService.payment.findMany({
+      select: {
+        id: true,
+        method: true,
+        amount: true,
+        status: true,
+        status_log: true,
+        external_id: true,
+        service_fee: true,
+        client_amount: true,
+      },
+    });
     return { data: payments };
   }
 

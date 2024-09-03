@@ -60,7 +60,19 @@ export class VoucherService {
   async findAll() {
     this.logger.debug('Get all vouchers');
 
-    const vouchers = await this.prismaService.voucher.findMany();
+    const vouchers = await this.prismaService.voucher.findMany({
+      select: {
+        id: true,
+        name: true,
+        code: true,
+        voucher_type: true,
+        discount: true,
+        quota_usage: true,
+        started_at: true,
+        expired_at: true,
+        active_status: true,
+      },
+    });
     return { data: vouchers };
   }
 
