@@ -29,7 +29,7 @@ export class UserDto {
   gender?: Gender;
   @ApiProperty({
     enum: Role,
-    default: 'client',
+    default: Role.client,
   })
   role?: Role;
   @ApiProperty({

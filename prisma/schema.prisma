@@ -38,6 +38,13 @@ enum VoucherType {
   referral
 }
 
+enum CategoryName {
+  sneakers
+  bag
+  apparel
+  accessories
+}
+
 model User {
   id            String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   username      String   @unique @db.VarChar(100)
@@ -54,13 +61,15 @@ model User {
 }
 
 model File {
-  id         String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  path       String
-  file_name  String
-  local_path String
-  updated_at DateTime @default(now()) @updatedAt
-  created_at DateTime @default(now())
-  Brand      Brand[]
+  id                  String                @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  path                String
+  file_name           String
+  local_path          String
+  updated_at          DateTime              @default(now()) @updatedAt
+  created_at          DateTime              @default(now())
+  Brand               Brand[]
+  Category            Category[]
+  CategoryInstruction CategoryInstruction[]
 
   @@map("files")
 }
@@ -107,6 +116,31 @@ model Voucher {
   Order         Order[]
 
   @@map("vouchers")
+}
+
+model Category {
+  id                  String                @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  updated_at          DateTime              @default(now()) @updatedAt
+  created_at          DateTime              @default(now())
+  name                CategoryName
+  file_id             String                @db.Uuid
+  file                File                  @relation(fields: [file_id], references: [id])
+  CategoryInstruction CategoryInstruction[]
+
+  @@map("categories")
+}
+
+model CategoryInstruction {
+  id          String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  updated_at  DateTime @default(now()) @updatedAt
+  created_at  DateTime @default(now())
+  name        String
+  category_id String   @db.Uuid
+  file_id     String   @db.Uuid
+  category    Category @relation(fields: [category_id], references: [id])
+  file        File     @relation(fields: [file_id], references: [id])
+
+  @@map("category_instructions")
 }
 
 model Order {
