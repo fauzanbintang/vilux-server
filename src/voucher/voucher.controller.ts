@@ -15,8 +15,10 @@ import {
 } from 'src/dto/request/voucher.dto';
 import { ResponseDto } from 'src/dto/response/response.dto';
 import { VoucherDto } from 'src/dto/response/voucher.dto';
+import { ApiTags } from '@nestjs/swagger';
 
-@Controller('/api/vouchers')
+@ApiTags('voucher')
+@Controller('api/vouchers')
 export class VoucherController {
   constructor(private readonly voucherService: VoucherService) {}
 
@@ -53,6 +55,6 @@ export class VoucherController {
   @HttpCode(200)
   async remove(@Param('id') id: string): Promise<ResponseDto<string>> {
     await this.voucherService.remove(id);
-    return { message: 'successfully delete a voucher' }
+    return { message: 'successfully delete a voucher' };
   }
 }

@@ -15,8 +15,10 @@ import {
 } from 'src/dto/request/payment.dto';
 import { PaymentDto } from 'src/dto/response/payment.dto';
 import { ResponseDto } from 'src/dto/response/response.dto';
+import { ApiTags } from '@nestjs/swagger';
 
-@Controller('/api/payments')
+@ApiTags('payment')
+@Controller('api/payments')
 export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
 
@@ -53,6 +55,6 @@ export class PaymentController {
   @HttpCode(200)
   async remove(@Param('id') id: string): Promise<ResponseDto<string>> {
     await this.paymentService.remove(id);
-    return {message: "successfully delete a payment"}
+    return { message: 'successfully delete a payment' };
   }
 }

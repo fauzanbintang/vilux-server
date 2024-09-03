@@ -1,8 +1,7 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { PaymentStatus } from '@prisma/client';
 import { JsonValue } from '@prisma/client/runtime/library';
+import { ApiProperty } from '@nestjs/swagger';
 
-export class PaymentDto {
+export class OrderDto {
   @ApiProperty({
     type: String,
     default: '00000000-0000-0000-0000-000000000000',
@@ -10,24 +9,10 @@ export class PaymentDto {
   id: string;
 
   @ApiProperty({
-    type: 'object',
-    default: {
-      data: 'test',
-    },
-  })
-  method: JsonValue;
-
-  @ApiProperty({
     type: String,
-    default: '10000',
+    default: 'test',
   })
-  amount: string;
-
-  @ApiProperty({
-    enum: PaymentStatus,
-    default: 'pending',
-  })
-  status: PaymentStatus;
+  code: string;
 
   @ApiProperty({
     type: 'object',
@@ -35,23 +20,29 @@ export class PaymentDto {
       data: 'test',
     },
   })
-  status_log: JsonValue;
+  client_info: JsonValue;
 
   @ApiProperty({
     type: String,
     default: '00000000-0000-0000-0000-000000000000',
   })
-  external_id: string;
+  payment_id: string;
+
+  @ApiProperty({
+    type: String,
+    default: '00000000-0000-0000-0000-000000000000',
+  })
+  legit_check_id: string;
+
+  @ApiProperty({
+    type: String,
+    default: '00000000-0000-0000-0000-000000000000',
+  })
+  voucher_id: string;
 
   @ApiProperty({
     type: String,
     default: '10000',
   })
-  service_fee: string;
-
-  @ApiProperty({
-    type: String,
-    default: '10000',
-  })
-  client_amount: string;
+  original_amount: string;
 }
