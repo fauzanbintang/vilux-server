@@ -19,7 +19,7 @@ export class RegisterUserDto {
   password: string;
   @ApiProperty({
     enum: Role,
-    default: 'client',
+    default: Role.client,
   })
   role: Role;
   @ApiProperty({

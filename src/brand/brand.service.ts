@@ -63,7 +63,7 @@ export class BrandService {
 
     return {
       name: updatedBrand.name,
-      file_id: updateBrandDto.file_id,
+      file_id: updatedBrand.file_id,
     };
   }
 

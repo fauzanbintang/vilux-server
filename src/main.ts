@@ -22,6 +22,8 @@ async function bootstrap() {
     .setVersion('1.0.0')
     .addTag('auth')
     .addTag('brand')
+    .addTag('category')
+    .addTag('category instruction')
     .build();
   const options: SwaggerDocumentOptions = {
     operationIdFactory: (controllerKey: string, methodKey: string) => methodKey,
