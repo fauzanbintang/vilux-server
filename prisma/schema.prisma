@@ -5,22 +5,156 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [uuidOssp(map: "uuid-ossp")]
+}
+
+enum Role {
+  admin
+  client
+  vip_client
+}
+
+enum Gender {
+  male
+  female
+  others
+}
+
+enum PaymentStatus {
+  success
+  failed
+  pending
+}
+
+enum VoucherType {
+  promotion
+  referral
+}
+
+enum CategoryName {
+  sneakers
+  bag
+  apparel
+  accessories
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  username  String   @unique @db.VarChar(100)
-  email     String   @unique @db.VarChar(100)
-  password  String   @db.VarChar(100)
-  role      String   @db.VarChar(100)
-  updatedAt DateTime @default(now()) @updatedAt
-  createdAt DateTime @default(now())
+  id            String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  username      String   @unique @db.VarChar(100)
+  email         String   @unique @db.VarChar(100)
+  password      String   @db.VarChar(100)
+  role          Role     @default(client)
+  full_name     String   @db.VarChar(100)
+  date_of_birth DateTime
+  gender        Gender
+  updated_at    DateTime @default(now()) @updatedAt
+  created_at    DateTime @default(now())
 
   @@map("users")
+}
+
+model File {
+  id                  String                @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  path                String
+  file_name           String
+  local_path          String
+  updated_at          DateTime              @default(now()) @updatedAt
+  created_at          DateTime              @default(now())
+  Brand               Brand[]
+  Category            Category[]
+  CategoryInstruction CategoryInstruction[]
+
+  @@map("files")
+}
+
+model Brand {
+  id         String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name       String
+  file_id    String   @db.Uuid
+  file       File     @relation(fields: [file_id], references: [id])
+  updated_at DateTime @default(now()) @updatedAt
+  created_at DateTime @default(now())
+
+  @@map("brands")
+}
+
+model Payment {
+  id            String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  updated_at    DateTime      @default(now()) @updatedAt
+  created_at    DateTime      @default(now())
+  method        Json
+  amount        String
+  status        PaymentStatus
+  status_log    Json
+  external_id   String
+  service_fee   String
+  client_amount String
+  Order         Order[]
+
+  @@map("payments")
+}
+
+model Voucher {
+  id            String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  updated_at    DateTime    @default(now()) @updatedAt
+  created_at    DateTime    @default(now())
+  name          String
+  code          String
+  voucher_type  VoucherType
+  discount      String
+  quota_usage   Int
+  started_at    DateTime
+  expired_at    DateTime
+  active_status Boolean     @default(false)
+  Order         Order[]
+
+  @@map("vouchers")
+}
+
+model Category {
+  id                  String                @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  updated_at          DateTime              @default(now()) @updatedAt
+  created_at          DateTime              @default(now())
+  name                CategoryName
+  file_id             String                @db.Uuid
+  file                File                  @relation(fields: [file_id], references: [id])
+  CategoryInstruction CategoryInstruction[]
+
+  @@map("categories")
+}
+
+model CategoryInstruction {
+  id          String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  updated_at  DateTime @default(now()) @updatedAt
+  created_at  DateTime @default(now())
+  name        String
+  category_id String   @db.Uuid
+  file_id     String   @db.Uuid
+  category    Category @relation(fields: [category_id], references: [id])
+  file        File     @relation(fields: [file_id], references: [id])
+
+  @@map("category_instructions")
+}
+
+model Order {
+  id              String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  updated_at      DateTime @default(now()) @updatedAt
+  created_at      DateTime @default(now())
+  code            String
+  client_info     Json
+  payment_id      String   @db.Uuid
+  payment         Payment  @relation(fields: [payment_id], references: [id])
+  legit_check_id  String   @db.Uuid
+  voucher_id      String   @db.Uuid
+  voucher         Voucher  @relation(fields: [voucher_id], references: [id])
+  original_amount String
+
+  @@map("orders")
 }

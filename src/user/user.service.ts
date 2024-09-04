@@ -1,7 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { PrismaService } from 'src/common/prisma.service';
-import { UserDto } from 'src/dto/user.dto';
+import { UserDto } from 'src/dto/response/user.dto';
 
 @Injectable()
 export class UserService {
@@ -18,6 +18,10 @@ export class UserService {
       return {
         username: user.username,
         email: user.email,
+        full_name: user.full_name,
+        date_of_birth: user.date_of_birth,
+        gender: user.gender,
+        role: user.role,
       };
     });
   }

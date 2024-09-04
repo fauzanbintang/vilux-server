@@ -5,9 +5,10 @@ import { PrismaService } from 'src/common/prisma.service';
 import { ValidationService } from 'src/common/validation.service';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { ConfigService } from '@nestjs/config';
-import { UserDto } from 'src/dto/user.dto';
-import { LoginUserDto, RegisterUserDto } from 'src/dto/auth.dto';
+import { UserDto } from 'src/dto/response/user.dto';
+import { LoginUserDto, RegisterUserDto } from 'src/dto/request/auth.dto';
 import { AuthValidate } from './auth.validation';
+import { Gender, Role } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -44,13 +45,20 @@ export class AuthService {
         username: validatedRegisterUser.username,
         email: validatedRegisterUser.email,
         password: await hashPassword(validatedRegisterUser.password),
-        role: registerUserDto.role,
+        role: Role[registerUserDto.role],
+        full_name: registerUserDto.full_name,
+        date_of_birth: new Date(registerUserDto.date_of_birth),
+        gender: Gender[registerUserDto.gender],
       },
     });
 
     return {
       username: createdUser.username,
       email: createdUser.email,
+      full_name: createdUser.full_name,
+      date_of_birth: createdUser.date_of_birth,
+      gender: createdUser.gender,
+      role: createdUser.role,
     };
   }
 
@@ -82,6 +90,10 @@ export class AuthService {
     return {
       username: user.username,
       email: user.email,
+      full_name: user.full_name,
+      date_of_birth: user.date_of_birth,
+      gender: user.gender,
+      role: user.role,
       token,
     };
   }

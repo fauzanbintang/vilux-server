@@ -65,7 +65,7 @@ export class IsOwnerMiddleware implements NestMiddleware<Request, Response> {
 
     const user = await this.prismaService.user.findUnique({
       where: {
-        id: Number(identifier),
+        id: identifier,
       },
     });
 
@@ -73,7 +73,7 @@ export class IsOwnerMiddleware implements NestMiddleware<Request, Response> {
       throw new HttpException('Not Found: User not found', 404);
     }
 
-    if (user.id !== loggedInUser.id && loggedInUser.role !== 'Admin') {
+    if (user.id !== loggedInUser.id && loggedInUser.role !== 'admin') {
       throw new HttpException('Forbidden: Not authorized', 403);
     }
 
