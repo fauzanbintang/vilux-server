@@ -14,6 +14,13 @@ export class PaymentService {
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
   ) {}
 
+  // async payment(createPaymentDto: CreatePaymentDto) {
+  //   this.logger.debug(`Create payment ${JSON.stringify(createPaymentDto)}`);
+
+
+
+  // }
+
   async create(createPaymentDto: CreatePaymentDto) {
     this.logger.debug(`Create payment ${JSON.stringify(createPaymentDto)}`);
 
