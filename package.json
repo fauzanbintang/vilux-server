@@ -20,7 +20,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "ssh-dev": "ssh -i "vilux.pem" ubuntu@ec2-47-129-4-142.ap-southeast-1.compute.amazonaws.com"
+    "ssh-dev": "ssh -i 'vilux.pem' ubuntu@ec2-47-129-4-142.ap-southeast-1.compute.amazonaws.com"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
