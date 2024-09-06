@@ -19,6 +19,7 @@ import { VoucherModule } from './voucher/voucher.module';
 import { CategoryModule } from './category/category.module';
 import { CategoryInstructionModule } from './category_instruction/category_instruction.module';
 import { OrderModule } from './order/order.module';
+import { LegitCheckModule } from './legit_check/legit_check.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { OrderModule } from './order/order.module';
     CategoryModule,
     CategoryInstructionModule,
     OrderModule,
+    LegitCheckModule,
   ],
   controllers: [],
   providers: [LogMiddleware, AuthenticationMiddleware],
