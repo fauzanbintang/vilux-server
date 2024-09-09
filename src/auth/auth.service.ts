@@ -62,7 +62,7 @@ export class AuthService {
     };
   }
 
-  async login(loginUserDto: LoginUserDto): Promise<UserDto> {
+  async login(loginUserDto: LoginUserDto): Promise<string> {
     this.logger.debug(`Login user ${JSON.stringify(loginUserDto)}`);
 
     const validatedLogin = this.validationService.validate(
@@ -87,14 +87,6 @@ export class AuthService {
 
     const token = generateToken(user, this.configService);
 
-    return {
-      username: user.username,
-      email: user.email,
-      full_name: user.full_name,
-      date_of_birth: user.date_of_birth,
-      gender: user.gender,
-      role: user.role,
-      token,
-    };
+    return token;
   }
 }

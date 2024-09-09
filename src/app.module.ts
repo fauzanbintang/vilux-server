@@ -41,13 +41,13 @@ import { LegitCheckModule } from './legit_check/legit_check.module';
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(LogMiddleware).forRoutes('/api/*');
-    // consumer
-    // .apply(AuthenticationMiddleware)
-    // .exclude(
-    //   { path: '/api/auth/login', method: RequestMethod.POST },
-    //   { path: '/api/auth/register', method: RequestMethod.POST },
-    // )
-    // .forRoutes('/api/*');
+    consumer
+      .apply(AuthenticationMiddleware)
+      .exclude(
+        { path: '/api/auth/login', method: RequestMethod.POST },
+        { path: '/api/auth/register', method: RequestMethod.POST },
+      )
+      .forRoutes('/api/*');
     // consumer
     //   .apply(IsOwnerMiddleware)
     //   .forRoutes({ path: '/api/users', method: RequestMethod.GET });
