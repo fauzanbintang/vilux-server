@@ -1,18 +1,16 @@
 import {
   Controller,
-  Get,
   Post,
   Body,
-  Patch,
-  Param,
-  Delete,
   HttpCode,
+  Res,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UserDto } from 'src/dto/response/user.dto';
 import { RegisterUserDto, LoginUserDto } from 'src/dto/request/auth.dto';
-import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import { ResponseDto } from 'src/dto/response/response.dto';
+import { Response } from 'express';
 
 @ApiTags('auth')
 @Controller('/api/auth')
@@ -27,13 +25,17 @@ export class AuthController {
     const user = await this.authService.register(registerUserDto);
     return { data: user };
   }
-
+r
   @Post('/login')
   @HttpCode(200)
   async login(
+    @Res({ passthrough: true }) res: Response,
     @Body() loginUserDto: LoginUserDto,
-  ): Promise<ResponseDto<UserDto>> {
-    const user = await this.authService.login(loginUserDto);
-    return { data: user };
+  ): Promise<ResponseDto<string>> {
+    const token = await this.authService.login(loginUserDto);
+
+    res.cookie('JWT', token);
+
+    return { message: 'successfully login' };
   }
 }
