@@ -2,6 +2,7 @@ import { HttpException, Inject, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PaymentStatus } from '@prisma/client';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { v4 as uuidv4 } from 'uuid';
 import { PrismaService } from 'src/common/prisma.service';
 import {
   CreatePaymentDto,
@@ -16,89 +17,47 @@ export class PaymentService {
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
   ) {}
 
-  async payment() {
-    // this.logger.debug(`Create payment ${JSON.stringify(createPaymentDto)}`);
+  async create(createPaymentDto: CreatePaymentDto) {
+    this.logger.debug(`Create payment ${JSON.stringify(createPaymentDto)}`);
 
     const secret = this.configService.get('MIDTRANS_SERVER_KEY');
     const encoded = Buffer.from(secret).toString('base64');
 
-    /**
-     * bank_transfer: bca, bni, bri, cimb
-     * echannel: mandiri
-     * permata: permata
-     * gopay: gopay
-     *
-     */
-    // Data transaksi dengan bank transfer BCA
     let data = {
-      // payment_type: 'qris', // Menentukan metode pembayaran
-      // echannel: {
-      //   bill_info1: 'Payment:',
-      //   bill_info2: 'Online purchase',
-      // },
-      // bank_transfer: {
-      //   bank: 'bni', // Menentukan bank BCA untuk virtual account
-      // },
-      item_details: [
-        {
-          id: 'pil-001',
-          name: 'Pillow',
-          price: 10000,
-          quantity: 1,
-          brand: 'Midtrans',
-          category: 'Furniture',
-          merchant_name: 'PT. Midtrans',
-        },
-      ],
       transaction_details: {
-        order_id: Date.now(), // Menggunakan timestamp untuk order_id unik
-        gross_amount: 10000, // Jumlah total transaksi
+        order_id: uuidv4(),
+        gross_amount: createPaymentDto.client_amount,
       },
       usage_limit: 1,
-      expiry: {
-        start_time: '2024-09-04 10:00 +0700',
-        duration: 20,
-        unit: 'days',
-      },
     };
 
-    try {
-      const response = await fetch(
-        `${this.configService.get('MIDTRANS_SANDBOX')}/v1/payment-links`, // Menggunakan endpoint 'charge' Midtrans
-        {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            Authorization: `Basic ${encoded}`,
-          },
-          body: JSON.stringify(data),
+    const midtrans = await fetch(
+      `${this.configService.get('MIDTRANS_SANDBOX')}/v1/payment-links`,
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: `Basic ${encoded}`,
         },
-      );
+        body: JSON.stringify(data),
+      },
+    );
 
-      if (!response.ok) {
-        const errorMessage = await response.text(); // Ini akan membantu kita melihat pesan error dari Midtrans
-        throw new Error(`Error ${response.status}: ${errorMessage}`);
-      }
-
-      const paymentResponse = await response.json();
-      return paymentResponse; // Mengembalikan respons dari Midtrans
-    } catch (error) {
-      console.error('Payment request failed:', error);
-      throw error;
+    if (!midtrans.ok) {
+      const errorMessage = await midtrans.text();
+      throw new Error(`Error ${midtrans.status}: ${errorMessage}`);
     }
-  }
 
-  async create(createPaymentDto: CreatePaymentDto) {
-    this.logger.debug(`Create payment ${JSON.stringify(createPaymentDto)}`);
+    const response = await midtrans.json();
 
     const payment = await this.prismaService.payment.create({
       data: {
-        method: createPaymentDto.method,
+        method: response,
         amount: createPaymentDto.amount,
-        status: PaymentStatus[createPaymentDto.status],
-        status_log: createPaymentDto.status_log,
-        external_id: createPaymentDto.external_id,
+        status: PaymentStatus.pending,
+        status_log: { success: null, failed: null, pending: Date.now() },
+        external_id: response.order_id,
         service_fee: createPaymentDto.service_fee,
         client_amount: createPaymentDto.client_amount,
       },
