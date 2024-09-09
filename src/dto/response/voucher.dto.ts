@@ -20,10 +20,10 @@ export class VoucherDto {
   })
   code: string;
 
-  // @ApiProperty({
-  //   type: VoucherType,
-  //   default: 'promotion',
-  // })
+  @ApiProperty({
+    enum: VoucherType,
+    default: VoucherType.promotion,
+  })
   voucher_type: VoucherType;
 
   @ApiProperty({
