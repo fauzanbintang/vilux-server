@@ -21,7 +21,7 @@ export class FileController {
 
   @Post('sertificates')
   @HttpCode(201)
-  @UseInterceptors(FilesInterceptor('files'))
+  @UseInterceptors(FilesInterceptor('files', 2))
   async mergeImages(
     @UploadedFiles() files: Express.Multer.File[],
   ): Promise<ResponseDto<FileDto>> {
