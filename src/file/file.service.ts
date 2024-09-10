@@ -5,6 +5,7 @@ import { extname, join } from 'path';
 import { createReadStream, promises as fs } from 'fs';
 import { ConfigService } from '@nestjs/config';
 import { v4 as uuidv4 } from 'uuid';
+import ImageKit from 'imagekit';
 
 @Injectable()
 export class FileService {
@@ -12,6 +13,7 @@ export class FileService {
     private prismaService: PrismaService,
     private configService: ConfigService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
+    @Inject('IMAGEKIT') private readonly imagekit: ImageKit,
   ) {}
 
   private readonly allowedExtensions = ['.jpg', '.png', '.jpeg']; // Add allowed extensions
@@ -30,26 +32,18 @@ export class FileService {
       throw new HttpException('File size exceeds the limit', 400);
     }
 
-    const uniqueFileName = `${uuidv4()}${fileExt}`;
-    const uploadDir = join(process.cwd(), 'src', 'file', 'uploads');
-    const publicUrlPath = join(
-      process.cwd(),
-      'src',
-      'file',
-      `/uploads/${uniqueFileName}`,
-    );
     const fileName = file.originalname.replace(/\s+/g, '_');
-    const path = `${this.configService.get('BACKEND_DOMAIN')}/api/files/open/${fileName}`;
 
-    await fs.mkdir(uploadDir, { recursive: true });
-    const filePath = join(uploadDir, uniqueFileName);
-    await fs.writeFile(filePath, file.buffer);
+    const imagekit = await this.imagekit.upload({
+      file: file.buffer.toString('base64'),
+      fileName: fileName,
+    });
 
     const newFile = await this.prismaService.file.create({
       data: {
-        file_name: fileName,
-        path: path,
-        local_path: publicUrlPath,
+        file_name: imagekit.name,
+        path: imagekit.filePath,
+        url: imagekit.url,
       },
     });
 
@@ -71,25 +65,17 @@ export class FileService {
           throw new HttpException('File size exceeds the limit', 400);
         }
 
-        const uniqueFileName = `${uuidv4()}${fileExt}`;
-        const uploadDir = join(process.cwd(), 'src', 'file', 'uploads');
-        const publicUrlPath = join(
-          process.cwd(),
-          'src',
-          'file',
-          `/uploads/${uniqueFileName}`,
-        );
         const fileName = file.originalname.replace(/\s+/g, '_');
-        const path = `${this.configService.get('BACKEND_DOMAIN')}/api/files/open/${fileName}`;
 
-        await fs.mkdir(uploadDir, { recursive: true });
-        const filePath = join(uploadDir, uniqueFileName);
-        await fs.writeFile(filePath, file.buffer);
+        const imagekit = await this.imagekit.upload({
+          file: file.buffer.toString('base64'),
+          fileName: fileName,
+        });
 
         return {
-          file_name: fileName,
-          path: path,
-          local_path: publicUrlPath,
+          file_name: imagekit.name,
+          path: imagekit.filePath,
+          url: imagekit.url,
         };
       }),
     );
@@ -125,17 +111,17 @@ export class FileService {
       where: { file_name: fileName },
     });
 
-    const filePath = file.local_path;
+    const fileUrl = file.url;
 
-    if (!filePath) {
+    if (!fileUrl) {
       throw new HttpException('File not found', 404);
     }
 
-    const fileStream = createReadStream(filePath);
+    const fileStream = createReadStream(fileUrl);
     const contentType = 'application/octet-stream';
 
     res.setHeader('Content-Type', contentType);
-    res.setHeader('Content-Disposition', `attachment; filename="${filePath}"`);
+    res.setHeader('Content-Disposition', `attachment; filename="${fileUrl}"`);
 
     return fileStream.pipe(res);
   }

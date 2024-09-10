@@ -23,5 +23,5 @@ export class FileDto {
     type: String,
     default: 'test',
   })
-  local_path: string;
+  url: string;
 }
