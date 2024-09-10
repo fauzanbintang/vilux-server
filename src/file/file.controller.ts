@@ -7,7 +7,6 @@ import {
   UploadedFiles,
   Get,
   Param,
-  Res,
 } from '@nestjs/common';
 import { FileService } from './file.service';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
@@ -19,6 +18,21 @@ import { ApiTags } from '@nestjs/swagger';
 @Controller('/api/files')
 export class FileController {
   constructor(private readonly fileService: FileService) {}
+
+  @Post('sertificates')
+  @HttpCode(201)
+  @UseInterceptors(FilesInterceptor('files'))
+  async mergeImages(
+    @UploadedFiles() files: Express.Multer.File[],
+  ): Promise<ResponseDto<FileDto>> {
+    const frame = files[0];
+    const content = files[1];
+    const sertificate = await this.fileService.mergeImages(
+      frame.buffer,
+      content.buffer,
+    );
+    return { data: sertificate };
+  }
 
   @Post('uploads')
   @HttpCode(201)
@@ -41,12 +55,6 @@ export class FileController {
   ): Promise<ResponseDto<FileDto[]>> {
     const savedFiles = await this.fileService.uploadFiles(files);
     return savedFiles;
-  }
-
-  @Get('/open/:fileName')
-  @HttpCode(200)
-  async openFile(@Param('fileName') fileName: string, @Res() res) {
-    return await this.fileService.openFile(fileName, res);
   }
 
   @Get(':id')
