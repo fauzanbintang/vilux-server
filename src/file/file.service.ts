@@ -1,11 +1,10 @@
 import { HttpException, Inject, Injectable, Logger } from '@nestjs/common';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { PrismaService } from 'src/common/prisma.service';
-import { extname, join } from 'path';
-import { createReadStream, promises as fs } from 'fs';
+import { extname } from 'path';
 import { ConfigService } from '@nestjs/config';
-import { v4 as uuidv4 } from 'uuid';
 import ImageKit from 'imagekit';
+import sharp from 'sharp';
 
 @Injectable()
 export class FileService {
@@ -18,6 +17,27 @@ export class FileService {
 
   private readonly allowedExtensions = ['.jpg', '.png', '.jpeg']; // Add allowed extensions
   private readonly maxFileSize = 100 * 1024 * 1024; // 100MB (adjust as needed)
+
+  async mergeImages(frameBuffer: Buffer, contentBuffer: Buffer) {
+    const mergedImage = await sharp(frameBuffer)
+      .composite([{ input: contentBuffer, gravity: 'center' }])
+      .toBuffer();
+
+    const imagekit = await this.imagekit.upload({
+      file: mergedImage.toString('base64'),
+      fileName: `sertifikat-${Date.now()}`,
+    });
+
+    const newFile = await this.prismaService.file.create({
+      data: {
+        file_name: imagekit.name,
+        path: imagekit.filePath,
+        url: imagekit.url,
+      },
+    });
+
+    return newFile;
+  }
 
   async upload(file: Express.Multer.File) {
     this.logger.debug(`Upload file ${JSON.stringify(file)}`);
@@ -104,25 +124,5 @@ export class FileService {
     }
 
     return file;
-  }
-
-  async openFile(fileName: string, res) {
-    const file = await this.prismaService.file.findFirst({
-      where: { file_name: fileName },
-    });
-
-    const fileUrl = file.url;
-
-    if (!fileUrl) {
-      throw new HttpException('File not found', 404);
-    }
-
-    const fileStream = createReadStream(fileUrl);
-    const contentType = 'application/octet-stream';
-
-    res.setHeader('Content-Type', contentType);
-    res.setHeader('Content-Disposition', `attachment; filename="${fileUrl}"`);
-
-    return fileStream.pipe(res);
   }
 }
