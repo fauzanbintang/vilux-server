@@ -80,7 +80,7 @@ model File {
   id                      String                @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   path                    String
   file_name               String
-  local_path              String
+  url                     String
   updated_at              DateTime              @default(now()) @updatedAt
   created_at              DateTime              @default(now())
   Brand                   Brand[]
