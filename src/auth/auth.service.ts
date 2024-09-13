@@ -5,7 +5,7 @@ import { PrismaService } from 'src/common/prisma.service';
 import { ValidationService } from 'src/common/validation.service';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { ConfigService } from '@nestjs/config';
-import { UserDto } from 'src/dto/response/user.dto';
+import { LoginRes, UserDto } from 'src/dto/response/user.dto';
 import { LoginUserDto, RegisterUserDto } from 'src/dto/request/auth.dto';
 import { AuthValidate } from './auth.validation';
 import { Gender, Role } from '@prisma/client';
@@ -53,6 +53,7 @@ export class AuthService {
     });
 
     return {
+      id: createdUser.id,
       username: createdUser.username,
       email: createdUser.email,
       full_name: createdUser.full_name,
@@ -62,7 +63,7 @@ export class AuthService {
     };
   }
 
-  async login(loginUserDto: LoginUserDto): Promise<string> {
+  async login(loginUserDto: LoginUserDto): Promise<LoginRes> {
     this.logger.debug(`Login user ${JSON.stringify(loginUserDto)}`);
 
     const validatedLogin = this.validationService.validate(
@@ -87,6 +88,9 @@ export class AuthService {
 
     const token = generateToken(user, this.configService);
 
-    return token;
+    return {
+      user_id: user.id,
+      token
+    };
   }
 }

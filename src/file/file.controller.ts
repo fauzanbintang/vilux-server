@@ -115,6 +115,7 @@ export class FileController {
       },
     },
   })
+
   async uploadFiles(
     @UploadedFiles() files: Array<Express.Multer.File>,
   ): Promise<ResponseDto<FileDto[]>> {
