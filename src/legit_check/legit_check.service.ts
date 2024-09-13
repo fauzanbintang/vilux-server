@@ -23,8 +23,8 @@ export class LegitCheckService {
     );
 
     var legitCheck: LegitCheckDto;
-
-    if (brandCategoryDto.id.length !== 0) {
+    if (brandCategoryDto.id && brandCategoryDto.id.length !== 0) {
+      // should check if it still exist or not
       legitCheck = await this.prismaService.legitChecks.update({
         where: { id: brandCategoryDto.id },
         data: brandCategoryDto,
@@ -51,19 +51,25 @@ export class LegitCheckService {
     );
 
     legitCheckImagesDto.legit_check_images.forEach(async (v) => {
-      await this.prismaService.legitCheckImages.upsert({
-        where: { id: v.legit_check_image_id },
-        update: {
-          name: v.name,
-          legit_check_id: id,
-          file_id: v.file_id,
-        },
-        create: {
-          name: v.name,
-          legit_check_id: id,
-          file_id: v.file_id,
-        },
-      });
+      if (v.legit_check_image_id && v.legit_check_image_id.length !== 0) {
+        // should check if it still exist or not
+        await this.prismaService.legitCheckImages.update({
+          where: { id: v.legit_check_image_id },
+          data: {
+            name: v.name,
+            legit_check_id: id,
+            file_id: v.file_id,
+          },
+        });
+      } else {
+        await this.prismaService.legitCheckImages.create({
+          data: {
+            name: v.name,
+            legit_check_id: id,
+            file_id: v.file_id,
+          },
+        });
+      }
     });
 
     let legitCheck: LegitCheckDto = await this.prismaService.legitChecks.update(
@@ -72,6 +78,7 @@ export class LegitCheckService {
         data: {
           product_name: legitCheckImagesDto.product_name,
           client_note: legitCheckImagesDto.client_note,
+          check_status: LegitCheckStatus.upload_data,
         },
       },
     );

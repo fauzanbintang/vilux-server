@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class LegitCheckBrandCategoryDto {
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: String,
     default: '00000000-0000-0000-0000-000000000000',
   })

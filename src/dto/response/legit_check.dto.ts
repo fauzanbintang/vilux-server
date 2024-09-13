@@ -21,30 +21,30 @@ export class LegitCheckDto {
     enum: LegitCheckStatus,
     default: LegitCheckStatus.completed,
   })
-  check_status: string;
+  check_status?: string;
   @ApiProperty({
-    type: LegitStatus,
+    enum: LegitStatus,
     default: LegitStatus.authentic,
   })
-  legit_status: string;
+  legit_status?: string;
   @ApiProperty({
     type: String,
     default: 'This is note',
   })
-  client_note: string;
+  client_note?: string;
   @ApiProperty({
     type: String,
     default: 'This is note',
   })
-  admin_note: string;
+  admin_note?: string;
   @ApiProperty({
     type: String,
     default: '00000000-0000-0000-0000-000000000000',
   })
-  cover_id: string;
+  cover_id?: string;
   @ApiProperty({
     type: String,
     default: '00000000-0000-0000-0000-000000000000',
   })
-  certificate_id: string;
+  certificate_id?: string;
 }

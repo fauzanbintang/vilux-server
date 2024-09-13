@@ -198,6 +198,8 @@ model LegitChecks {
   certificate_id   String?            @db.Uuid
   certificate      File?              @relation(name: "certificate_file", fields: [certificate_id], references: [id])
   LegitCheckImages LegitCheckImages[]
+
+  @@map("legit_checks")
 }
 
 model LegitCheckImages {
@@ -210,4 +212,6 @@ model LegitCheckImages {
   legit_check    LegitChecks @relation(fields: [legit_check_id], references: [id])
   file_id        String      @db.Uuid
   file           File        @relation(fields: [file_id], references: [id])
+
+  @@map("legit_check_images")
 }

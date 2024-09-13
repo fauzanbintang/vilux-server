@@ -25,6 +25,8 @@ async function bootstrap() {
     .setDescription('Legit Check')
     .setVersion('1.0.0')
     .addTag('auth')
+    .addTag('legit-check')
+    .addTag('file')
     .addTag('brand')
     .addTag('category')
     .addTag('category instruction')
