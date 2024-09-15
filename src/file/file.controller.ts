@@ -26,29 +26,12 @@ import { FileUploadDto, FilesUploadDto } from 'src/dto/request/file.dto';
 export class FileController {
   constructor(private readonly fileService: FileService) {}
 
-  @Post('sertificates')
-  @HttpCode(201)
-  @UseInterceptors(FilesInterceptor('files'))
-  async mergeImages(
-    @UploadedFiles() files: Express.Multer.File[],
-  ): Promise<ResponseDto<FileDto>> {
-    const frame = files[0];
-    const content = files[1];
-    const sertificate = await this.fileService.mergeImages(
-      frame.buffer,
-      content.buffer,
-    );
-    return { data: sertificate };
-  }
-
   @Post('uploads')
   @HttpCode(201)
   @UseInterceptors(FileInterceptor('file'))
   @ApiOperation({ summary: 'Upload a file' })
   @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    type: FileUploadDto,
-  })
+  @ApiBody({ type: FileUploadDto })
   @ApiResponse({
     status: 201,
     description: 'The file has been uploaded successfully.',
@@ -84,9 +67,7 @@ export class FileController {
   @UseInterceptors(FilesInterceptor('files'))
   @ApiOperation({ summary: 'Upload multiple files' })
   @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    type: FilesUploadDto,
-  })
+  @ApiBody({ type: FilesUploadDto })
   @ApiResponse({
     status: 201,
     description: 'The files have been uploaded successfully.',
@@ -115,7 +96,6 @@ export class FileController {
       },
     },
   })
-
   async uploadFiles(
     @UploadedFiles() files: Array<Express.Multer.File>,
   ): Promise<ResponseDto<FileDto[]>> {
@@ -126,6 +106,21 @@ export class FileController {
       data: savedFiles,
       errors: null,
     };
+  }
+
+  @Post('sertificates')
+  @HttpCode(201)
+  @UseInterceptors(FilesInterceptor('files'))
+  async mergeImages(
+    @UploadedFiles() files: Express.Multer.File[],
+  ): Promise<ResponseDto<FileDto>> {
+    const frame = files[0];
+    const content = files[1];
+    const sertificate = await this.fileService.mergeImages(
+      frame.buffer,
+      content.buffer,
+    );
+    return { data: sertificate };
   }
 
   @Get(':id')
