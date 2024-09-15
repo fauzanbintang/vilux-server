@@ -42,6 +42,8 @@ export class AuthenticationMiddleware
       throw new HttpException('Unauthorized', 401);
     }
 
+    delete user.password;
+
     req.user = user;
     next();
   }

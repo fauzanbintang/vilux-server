@@ -2,6 +2,8 @@ import { HttpException, Inject, Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from 'src/common/prisma.service';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { CreateOrderDto, UpdateOrderDto } from 'src/dto/request/order.dto';
+import { generateCode } from 'src/helpers/order_code_generator';
+import { UserDto } from 'src/dto/response/user.dto';
 
 @Injectable()
 export class OrderService {
@@ -9,20 +11,24 @@ export class OrderService {
     private prismaService: PrismaService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
   ) {}
-  async create(createOrderDto: CreateOrderDto) {
+  async create(clientInfo: UserDto, createOrderDto: CreateOrderDto) {
     this.logger.debug(`Create order ${JSON.stringify(createOrderDto)}`);
+
+    const service = await this.prismaService.services.findUnique({
+      where: { id: createOrderDto.service_id },
+    });
 
     const order = await this.prismaService.order.create({
       data: {
-        code: createOrderDto.code,
-        client_info: createOrderDto.client_info,
-        payment_id: createOrderDto.payment_id,
+        code: generateCode('OD'),
+        client_info: JSON.stringify(clientInfo),
         legit_check_id: createOrderDto.legit_check_id,
+        original_amount: service.price,
         voucher_id: createOrderDto.voucher_id,
-        original_amount: createOrderDto.original_amount,
       },
     });
-    return { data: order };
+
+    return order;
   }
 
   async findAll() {
