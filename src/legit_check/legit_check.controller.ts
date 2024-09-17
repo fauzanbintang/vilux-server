@@ -1,4 +1,12 @@
-import { Body, Controller, HttpCode, Param, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  Param,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { LegitCheckService } from './legit_check.service';
 import {
   ApiBody,
@@ -10,6 +18,7 @@ import {
 import {
   LegitCheckBrandCategoryDto,
   LegitCheckImagesDto,
+  LegitCheckPaginationQuery,
 } from 'src/dto/request/legit_check.dto';
 import { LegitCheckDto } from 'src/dto/response/legit_check.dto';
 import { ResponseDto } from 'src/dto/response/response.dto';
@@ -111,6 +120,18 @@ export class LegitCheckController {
     return {
       message: 'Successfully upsert legit check images',
       data: legitCheck,
+      errors: null,
+    };
+  }
+
+  async getLegitChecks(
+    @Query() query: LegitCheckPaginationQuery,
+  ): Promise<ResponseDto<any>> {
+    console.log(query);
+
+    return {
+      message: 'SUccessfully get paginated legit checks',
+      data: query,
       errors: null,
     };
   }
