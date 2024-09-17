@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { LegitCheckStatus } from '@prisma/client';
 
 export class LegitCheckBrandCategoryDto {
   @ApiPropertyOptional({
@@ -66,4 +67,24 @@ export class LegitCheckImagesDto {
     default: 'This is client note',
   })
   client_note: string;
+}
+
+export class LegitCheckPaginationQuery {
+  @ApiProperty({
+    type: String,
+    default: '1',
+  })
+  page?: string;
+
+  @ApiProperty({
+    type: String,
+    default: '10',
+  })
+  limit?: string;
+
+  @ApiProperty({
+    enum: LegitCheckStatus,
+    default: LegitCheckStatus.payment,
+  })
+  check_status?: LegitCheckStatus;
 }

@@ -1,5 +1,5 @@
 import { CategoryName, Gender, PrismaClient, Role } from '@prisma/client';
-import { hashPassword } from '../src/helpers/bcrypt';
+import { hashPassword } from './helpers/bcrypt';
 
 const prisma = new PrismaClient();
 async function main() {
@@ -53,7 +53,12 @@ async function main() {
     });
   });
   // seed categories
-  const categories = ['Sneakers', 'Bag', 'Apparel', 'Accessories'];
+  const categories = [
+    CategoryName.sneakers,
+    CategoryName.bag,
+    CategoryName.apparel,
+    CategoryName.accessories,
+  ];
   categories.forEach(async (e) => {
     await prisma.category.create({
       data: {

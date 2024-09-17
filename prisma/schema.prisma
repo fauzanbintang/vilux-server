@@ -101,7 +101,7 @@ model File {
 model Brand {
   id          String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   name        String
-  file_id     String        @db.Uuid
+  file_id     String?       @db.Uuid
   file        File?         @relation(fields: [file_id], references: [id])
   updated_at  DateTime      @default(now()) @updatedAt
   created_at  DateTime      @default(now())
