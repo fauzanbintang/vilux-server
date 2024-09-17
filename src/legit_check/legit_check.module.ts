@@ -6,4 +6,5 @@ import { LegitCheckController } from './legit_check.controller';
   controllers: [LegitCheckController],
   providers: [LegitCheckService],
 })
+
 export class LegitCheckModule {}

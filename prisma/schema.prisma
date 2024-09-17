@@ -102,7 +102,7 @@ model Brand {
   id          String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   name        String
   file_id     String        @db.Uuid
-  file        File          @relation(fields: [file_id], references: [id])
+  file        File?         @relation(fields: [file_id], references: [id])
   updated_at  DateTime      @default(now()) @updatedAt
   created_at  DateTime      @default(now())
   LegitChecks LegitChecks[]
@@ -148,8 +148,8 @@ model Category {
   updated_at          DateTime              @default(now()) @updatedAt
   created_at          DateTime              @default(now())
   name                CategoryName
-  file_id             String                @db.Uuid
-  file                File                  @relation(fields: [file_id], references: [id])
+  file_id             String?               @db.Uuid
+  file                File?                 @relation(fields: [file_id], references: [id])
   CategoryInstruction CategoryInstruction[]
   LegitChecks         LegitChecks[]
 
@@ -162,9 +162,9 @@ model CategoryInstruction {
   created_at  DateTime @default(now())
   name        String
   category_id String   @db.Uuid
-  file_id     String   @db.Uuid
+  file_id     String?  @db.Uuid
   category    Category @relation(fields: [category_id], references: [id])
-  file        File     @relation(fields: [file_id], references: [id])
+  file        File?    @relation(fields: [file_id], references: [id])
 
   @@map("category_instructions")
 }
