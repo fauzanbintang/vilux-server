@@ -16,6 +16,7 @@ export class UserService {
     const users = await this.prismaService.user.findMany();
     return users.map((user) => {
       return {
+        id: user.id,
         username: user.username,
         email: user.email,
         full_name: user.full_name,

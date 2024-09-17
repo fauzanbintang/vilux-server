@@ -9,19 +9,33 @@ export class FileDto {
 
   @ApiProperty({
     type: String,
-    default: 'test',
+    default: '/test.png',
   })
   path: string;
 
   @ApiProperty({
     type: String,
-    default: 'test',
+    default: 'testfile.png',
   })
   file_name: string;
 
   @ApiProperty({
     type: String,
-    default: 'test',
+    default: 'https://ik.imagekit.io/users/testfile.png',
   })
-  local_path: string;
+  url: string;
+
+  @ApiProperty({
+    type: String,
+    format: 'date-time',
+    default: '2024-01-01T01::41.495Z',
+  })
+  created_at: Date;
+
+  @ApiProperty({
+    type: String,
+    format: 'date-time',
+    default: '2024-01-01T01::41.495Z',
+  })
+  updated_at: Date;
 }

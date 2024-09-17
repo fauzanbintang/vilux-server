@@ -14,7 +14,8 @@ export class AuthenticationMiddleware
   ) {}
 
   async use(req: Request, res: Response, next: NextFunction) {
-    const token = req.headers['authorization'] as string;
+    const cookies = req.cookies;
+    const token = cookies['JWT'] as string;
 
     if (!token) {
       throw new HttpException('Unauthorized', 401);
@@ -40,6 +41,8 @@ export class AuthenticationMiddleware
     if (!user) {
       throw new HttpException('Unauthorized', 401);
     }
+
+    delete user.password;
 
     req.user = user;
     next();

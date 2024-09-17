@@ -1,6 +1,8 @@
 import { HttpException, Inject, Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { PaymentStatus } from '@prisma/client';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { v4 as uuidv4 } from 'uuid';
 import { PrismaService } from 'src/common/prisma.service';
 import {
   CreatePaymentDto,
@@ -11,19 +13,51 @@ import {
 export class PaymentService {
   constructor(
     private prismaService: PrismaService,
+    private configService: ConfigService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
   ) {}
 
   async create(createPaymentDto: CreatePaymentDto) {
     this.logger.debug(`Create payment ${JSON.stringify(createPaymentDto)}`);
 
+    const secret = this.configService.get('MIDTRANS_SERVER_KEY');
+    const encoded = Buffer.from(secret).toString('base64');
+
+    let data = {
+      transaction_details: {
+        order_id: uuidv4(),
+        gross_amount: createPaymentDto.client_amount,
+      },
+      usage_limit: 1,
+    };
+
+    const midtrans = await fetch(
+      `${this.configService.get('MIDTRANS_SANDBOX')}/v1/payment-links`,
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: `Basic ${encoded}`,
+        },
+        body: JSON.stringify(data),
+      },
+    );
+
+    if (!midtrans.ok) {
+      const errorMessage = await midtrans.text();
+      throw new Error(`Error ${midtrans.status}: ${errorMessage}`);
+    }
+
+    const response = await midtrans.json();
+
     const payment = await this.prismaService.payment.create({
       data: {
-        method: createPaymentDto.method,
+        method: response,
         amount: createPaymentDto.amount,
-        status: PaymentStatus[createPaymentDto.status],
-        status_log: createPaymentDto.status_log,
-        external_id: createPaymentDto.external_id,
+        status: PaymentStatus.pending,
+        status_log: { success: null, failed: null, pending: Date.now() },
+        external_id: response.order_id,
         service_fee: createPaymentDto.service_fee,
         client_amount: createPaymentDto.client_amount,
       },
