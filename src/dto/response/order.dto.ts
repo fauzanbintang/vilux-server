@@ -15,14 +15,6 @@ export class OrderDto {
   code: string;
 
   @ApiProperty({
-    type: 'object',
-    default: {
-      data: 'test',
-    },
-  })
-  client_info: JsonValue;
-
-  @ApiProperty({
     type: String,
     default: '00000000-0000-0000-0000-000000000000',
   })

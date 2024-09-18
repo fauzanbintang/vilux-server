@@ -21,7 +21,6 @@ export class OrderService {
     const order = await this.prismaService.order.create({
       data: {
         code: generateCode('OD'),
-        client_info: JSON.stringify(clientInfo),
         legit_check_id: createOrderDto.legit_check_id,
         original_amount: service.price,
         voucher_id: createOrderDto.voucher_id,
@@ -38,7 +37,6 @@ export class OrderService {
       select: {
         id: true,
         code: true,
-        client_info: true,
         payment_id: true,
         legit_check_id: true,
         voucher_id: true,
