@@ -84,7 +84,8 @@ export class LegitCheckPaginationQuery {
 
   @ApiProperty({
     enum: LegitCheckStatus,
-    default: LegitCheckStatus.payment,
+    isArray: true,
+    default: [LegitCheckStatus.brand_category],
   })
-  check_status?: LegitCheckStatus;
+  check_status?: LegitCheckStatus[];
 }

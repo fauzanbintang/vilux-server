@@ -38,7 +38,11 @@ export class CategoryService {
     const categories = await this.prismaService.category.findMany();
 
     return categories.map((category) => {
-      return { name: category.name, file_id: category.file_id };
+      return {
+        id: category.id,
+        name: category.name,
+        file_id: category.file_id,
+      };
     });
   }
 
@@ -57,7 +61,10 @@ export class CategoryService {
     };
   }
 
-  async update(id: string, updateCategoryDto: UpdateCategoryDto): Promise<CategoryDto> {
+  async update(
+    id: string,
+    updateCategoryDto: UpdateCategoryDto,
+  ): Promise<CategoryDto> {
     const category = await this.prismaService.category.findUnique({
       where: { id },
     });

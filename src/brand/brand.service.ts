@@ -32,7 +32,7 @@ export class BrandService {
 
     const brands = await this.prismaService.brand.findMany();
     return brands.map((brand) => {
-      return { name: brand.name, file_id: brand.file_id };
+      return { id: brand.id, name: brand.name, file_id: brand.file_id };
     });
   }
 
