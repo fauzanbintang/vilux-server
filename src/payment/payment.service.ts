@@ -8,14 +8,23 @@ import {
   CreatePaymentDto,
   UpdatePaymentDto,
 } from 'src/dto/request/payment.dto';
+const midtransClient = require('midtrans-client');
 
 @Injectable()
 export class PaymentService {
+  private readonly apiClient;
   constructor(
     private prismaService: PrismaService,
     private configService: ConfigService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
-  ) {}
+  ) {
+    // Inisialisasi Snap API Client di constructor
+    this.apiClient = new midtransClient.Snap({
+      isProduction: false, // Sesuaikan dengan environment
+      serverKey: this.configService.get('MIDTRANS_SERVER_KEY'),
+      clientKey: this.configService.get('MIDTRANS_CLIENT_KEY'),
+    });
+  }
 
   async create(createPaymentDto: CreatePaymentDto) {
     this.logger.debug(`Create payment ${JSON.stringify(createPaymentDto)}`);
@@ -29,6 +38,15 @@ export class PaymentService {
         gross_amount: createPaymentDto.client_amount,
       },
       usage_limit: 1,
+      enabled_payments: [
+        'bca_va',
+        'bri_va',
+        'bni_va',
+        'permata_va',
+        'gopay',
+        'dana',
+        'echannel',
+      ],
     };
 
     const midtrans = await fetch(
@@ -63,6 +81,100 @@ export class PaymentService {
       },
     });
     return { data: payment };
+  }
+
+  async handleNotification(notificationJson: any) {
+    const paymentGatewayFees = {
+      bca_va: '1000',
+      bri_va: '2000',
+      bni_va: '3000',
+      mandiri_va: '4000',
+      permata_va: '5000',
+      gopay: '6000',
+      dana: '7000',
+    };
+
+    try {
+      const statusResponse =
+        await this.apiClient.transaction.notification(notificationJson);
+
+      const orderId = statusResponse.order_id.split('-').slice(0, -1).join('-');
+      const transactionStatus = statusResponse.transaction_status;
+      const fraudStatus = statusResponse.fraud_status;
+
+      this.logger.debug(
+        `Transaction notification received. Order ID: ${orderId}. Transaction status: ${transactionStatus}. Fraud status: ${fraudStatus}`,
+      );
+
+      const payment = await this.prismaService.payment.findUnique({
+        where: { external_id: orderId },
+      });
+      console.log(payment, 'AFASFASF');
+
+      if (!payment) {
+        throw new HttpException('Payment not found', 404);
+      }
+
+      let newStatus: PaymentStatus;
+
+      if (transactionStatus === 'settlement') {
+        newStatus = PaymentStatus.success;
+      } else if (
+        transactionStatus === 'cancel' ||
+        transactionStatus === 'deny' ||
+        transactionStatus === 'expire'
+      ) {
+        newStatus = PaymentStatus.failed;
+      } else if (transactionStatus === 'pending') {
+        newStatus = PaymentStatus.pending;
+      } else {
+        throw new HttpException('Invalid transaction status', 400);
+      }
+
+      let serviceFee: string;
+      if (statusResponse.payment_type === 'echannel') {
+        serviceFee = paymentGatewayFees['mandiri_va'];
+      } else if (statusResponse.permata_va_number) {
+        serviceFee = paymentGatewayFees['permata_va'];
+      } else if (statusResponse.va_numbers[0].bank === 'bca') {
+        serviceFee = paymentGatewayFees['bca_va'];
+      } else if (statusResponse.va_numbers[0].bank === 'bni') {
+        serviceFee = paymentGatewayFees['bni_va'];
+      } else if (statusResponse.va_numbers[0].bank === 'bri') {
+        serviceFee = paymentGatewayFees['bri_va'];
+      } else if (statusResponse.acquirer) {
+        serviceFee = paymentGatewayFees['gopay'];
+      } else {
+        serviceFee = paymentGatewayFees['dana'];
+      }
+
+      await this.prismaService.payment.update({
+        where: { external_id: orderId },
+        data: {
+          status: newStatus,
+          status_log: {
+            success:
+              newStatus === PaymentStatus.success
+                ? Date.now()
+                : payment.status_log['success'],
+            failed:
+              newStatus === PaymentStatus.failed
+                ? Date.now()
+                : payment.status_log['failed'],
+            pending:
+              newStatus === PaymentStatus.pending
+                ? Date.now()
+                : payment.status_log['pending'],
+          },
+          service_fee: serviceFee,
+        },
+      });
+
+      return { status: 'success' };
+    } catch (error) {
+      this.logger.error(`Error processing notification: ${error.message}`);
+      throw new Error('Failed to process notification');
+    }
   }
 
   async findAll() {

@@ -38,47 +38,55 @@ export class PaymentController {
     return await this.paymentService.findAll();
   }
 
-  @Put('/success/:id')
+  @Post('/notification')
   @HttpCode(200)
-  async paymentSuccess(
-    @Param('id') id: string,
-  ): Promise<ResponseDto<PaymentDto>> {
-    const payment = await this.paymentService.findOne(id);
-
-    if (payment.data.status === PaymentStatus.failed) {
-      throw new HttpException('Payment already failed', 400);
-    }
-
-    const updatePaymentDto: UpdatePaymentDto = {
-      status: PaymentStatus.success,
-      status_log: {
-        success: Date.now(),
-        failed: null,
-        pending: payment.data.status_log['pending'],
-      },
-    };
-    return await this.paymentService.update(id, updatePaymentDto);
+  async handleNotification(
+    @Body() notification: any,
+  ): Promise<{ status: string }> {
+    return await this.paymentService.handleNotification(notification);
   }
 
-  @Put('/fail/:id')
-  @HttpCode(200)
-  async paymentFail(@Param('id') id: string): Promise<ResponseDto<PaymentDto>> {
-    const payment = await this.paymentService.findOne(id);
+  // @Put('/success/:id')
+  // @HttpCode(200)
+  // async paymentSuccess(
+  //   @Param('id') id: string,
+  // ): Promise<ResponseDto<PaymentDto>> {
+  //   const payment = await this.paymentService.findOne(id);
 
-    if (payment.data.status === PaymentStatus.success) {
-      throw new HttpException('Payment already success', 400);
-    }
+  //   if (payment.data.status === PaymentStatus.failed) {
+  //     throw new HttpException('Payment already failed', 400);
+  //   }
 
-    const updatePaymentDto: UpdatePaymentDto = {
-      status: PaymentStatus.failed,
-      status_log: {
-        success: null,
-        failed: Date.now(),
-        pending: payment.data.status_log['pending'],
-      },
-    };
-    return await this.paymentService.update(id, updatePaymentDto);
-  }
+  //   const updatePaymentDto: UpdatePaymentDto = {
+  //     status: PaymentStatus.success,
+  //     status_log: {
+  //       success: Date.now(),
+  //       failed: null,
+  //       pending: payment.data.status_log['pending'],
+  //     },
+  //   };
+  //   return await this.paymentService.update(id, updatePaymentDto);
+  // }
+
+  // @Put('/fail/:id')
+  // @HttpCode(200)
+  // async paymentFail(@Param('id') id: string): Promise<ResponseDto<PaymentDto>> {
+  //   const payment = await this.paymentService.findOne(id);
+
+  //   if (payment.data.status === PaymentStatus.success) {
+  //     throw new HttpException('Payment already success', 400);
+  //   }
+
+  //   const updatePaymentDto: UpdatePaymentDto = {
+  //     status: PaymentStatus.failed,
+  //     status_log: {
+  //       success: null,
+  //       failed: Date.now(),
+  //       pending: payment.data.status_log['pending'],
+  //     },
+  //   };
+  //   return await this.paymentService.update(id, updatePaymentDto);
+  // }
 
   @Get(':id')
   @HttpCode(200)

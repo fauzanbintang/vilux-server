@@ -118,7 +118,7 @@ model Payment {
   amount        String
   status        PaymentStatus
   status_log    Json
-  external_id   String
+  external_id   String        @unique
   service_fee   String
   client_amount String
   Order         Order[]
