@@ -1,15 +1,21 @@
-import { Body, Controller, HttpCode, Param, Post, Put } from '@nestjs/common';
-import { LegitCheckService } from './legit_check.service';
 import {
-  ApiBody,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-  getSchemaPath,
-} from '@nestjs/swagger';
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Param,
+  Post,
+  Put,
+  Query,
+  Req,
+} from '@nestjs/common';
+import { Request } from 'express';
+import { LegitCheckService } from './legit_check.service';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
   LegitCheckBrandCategoryDto,
   LegitCheckImagesDto,
+  LegitCheckPaginationQuery,
 } from 'src/dto/request/legit_check.dto';
 import { LegitCheckDto } from 'src/dto/response/legit_check.dto';
 import { ResponseDto } from 'src/dto/response/response.dto';
@@ -46,10 +52,12 @@ export class LegitCheckController {
     description: 'Internal Server Error',
   })
   async upsertLegitCheckBrandCategory(
+    @Req() req: Request,
     @Body() brandCategoryDto: LegitCheckBrandCategoryDto,
   ): Promise<ResponseDto<LegitCheckDto>> {
     const legitCheck =
       await this.legitCheckService.upsertLegitCheckBrandCategory(
+        req.user,
         brandCategoryDto,
       );
 
@@ -111,6 +119,70 @@ export class LegitCheckController {
     return {
       message: 'Successfully upsert legit check images',
       data: legitCheck,
+      errors: null,
+    };
+  }
+
+  @Get()
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Get paginated legit checks' })
+  @ApiResponse({
+    status: 200,
+    description: 'Get paginated legit checks',
+    schema: {
+      example: {
+        message: 'Successfully get paginated legit checks',
+        data: {
+          currentPage: 1,
+          totalPage: 1,
+          legitChecks: [
+            {
+              id: '4d44f0df-5721-4902-a584-53d52f338e71',
+              product_name: null,
+              check_status: 'brand_category',
+              legit_status: null,
+              code: 'NL01J82W951B',
+              client: {
+                id: '12554611-3fba-42d7-9db4-f79bf12ffb86',
+                username: 'test',
+                role: 'client',
+              },
+              category: {
+                id: '131d4edb-e004-4cd5-bf11-fde5de0acf39',
+                name: 'sneakers',
+              },
+              LegitCheckImages: [],
+              Order: [],
+            },
+          ],
+        },
+        errors: null,
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad Request',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+  })
+  async getPaginatedLegitChecks(
+    @Query() query: LegitCheckPaginationQuery,
+  ): Promise<ResponseDto<any>> {
+    query.check_status = Array.isArray(query.check_status)
+      ? query.check_status
+      : [query.check_status];
+    const data = await this.legitCheckService.getPaginatedLegitChecks(query);
+
+    return {
+      message: 'Successfully get paginated legit checks',
+      data: {
+        currentPage: +query.page,
+        totalPage: Math.ceil(data.count / +query.limit),
+        legitChecks: data.legitChecks,
+      },
       errors: null,
     };
   }

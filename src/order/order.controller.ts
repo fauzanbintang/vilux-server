@@ -34,7 +34,6 @@ export class OrderController {
         data: {
           id: '00000000-0000-0000-0000-000000000000',
           code: 'OD12345',
-          client_info: { email: 'test@mail.com', full_name: 'test test' },
           payment_id: null,
           legit_check_id: '00000000-0000-0000-0000-000000000000',
           voucher_id: '00000000-0000-0000-0000-000000000000',
