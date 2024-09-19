@@ -70,9 +70,18 @@ export class AuthController {
     description: 'The user has logged in successfully.',
     schema: {
       example: {
-        message: 'successfully login',
+        message: 'Successfully login',
         data: {
-          uid: '00000000-0000-0000-0000-000000000000',
+          id: '12554611-3fba-42d7-9db4-f79bf12ffb86',
+          username: 'test',
+          email: 'test@mail.com',
+          role: 'client',
+          full_name: 'Test Test',
+          date_of_birth: '1998-12-31T17:00:00.000Z',
+          gender: 'male',
+          updated_at: '2024-09-18T15:30:07.078Z',
+          created_at: '2024-09-18T15:30:07.078Z',
+          token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.ey...',
         },
         errors: null,
       },
@@ -99,7 +108,7 @@ export class AuthController {
 
     return {
       message: 'successfully login',
-      data: { user_id: loginRes.user_id },
+      data: loginRes,
       errors: null,
     };
   }

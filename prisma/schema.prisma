@@ -67,16 +67,17 @@ enum ServicesName {
 }
 
 model User {
-  id            String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  username      String   @unique @db.VarChar(100)
-  email         String   @unique @db.VarChar(100)
-  password      String   @db.VarChar(100)
-  role          Role     @default(client)
-  full_name     String   @db.VarChar(100)
+  id            String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  username      String        @unique @db.VarChar(100)
+  email         String        @unique @db.VarChar(100)
+  password      String        @db.VarChar(100)
+  role          Role          @default(client)
+  full_name     String        @db.VarChar(100)
   date_of_birth DateTime
   gender        Gender
-  updated_at    DateTime @default(now()) @updatedAt
-  created_at    DateTime @default(now())
+  updated_at    DateTime      @default(now()) @updatedAt
+  created_at    DateTime      @default(now())
+  LegitChecks   LegitChecks[]
 
   @@map("users")
 }
@@ -174,7 +175,6 @@ model Order {
   updated_at      DateTime    @default(now()) @updatedAt
   created_at      DateTime    @default(now())
   code            String
-  client_info     Json
   legit_check_id  String      @db.Uuid
   legit_check     LegitChecks @relation(fields: [legit_check_id], references: [id])
   original_amount String
@@ -182,6 +182,8 @@ model Order {
   voucher         Voucher?    @relation(fields: [voucher_id], references: [id])
   payment_id      String?     @db.Uuid
   payment         Payment?    @relation(fields: [payment_id], references: [id])
+  service_id      String?     @db.Uuid
+  service         Services?   @relation(fields: [service_id], references: [id])
 
   @@map("orders")
 }
@@ -190,6 +192,9 @@ model LegitChecks {
   id               String             @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   updated_at       DateTime           @default(now()) @updatedAt
   created_at       DateTime           @default(now())
+  client_id        String             @db.Uuid
+  client           User               @relation(fields: [client_id], references: [id])
+  code             String
   brand_id         String             @db.Uuid
   brand            Brand              @relation(fields: [brand_id], references: [id])
   category_id      String             @db.Uuid
@@ -201,6 +206,7 @@ model LegitChecks {
   admin_note       String?
   cover_id         String?            @db.Uuid
   cover            File?              @relation(name: "cover_file", fields: [cover_id], references: [id])
+  certificate_code String?
   certificate_id   String?            @db.Uuid
   certificate      File?              @relation(name: "certificate_file", fields: [certificate_id], references: [id])
   LegitCheckImages LegitCheckImages[]
@@ -215,6 +221,7 @@ model Services {
   created_at DateTime     @default(now())
   name       ServicesName
   price      String
+  Order      Order[]
 
   @@map("services")
 }

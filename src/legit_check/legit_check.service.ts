@@ -1,12 +1,15 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { LegitCheckStatus, LegitStatus } from '@prisma/client';
+import { LegitCheckStatus, Role } from '@prisma/client';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { PrismaService } from 'src/common/prisma.service';
 import {
   LegitCheckBrandCategoryDto,
   LegitCheckImagesDto,
+  LegitCheckPaginationQuery,
 } from 'src/dto/request/legit_check.dto';
 import { LegitCheckDto } from 'src/dto/response/legit_check.dto';
+import { UserDto } from 'src/dto/response/user.dto';
+import { generateCode } from 'src/helpers/order_code_generator';
 
 @Injectable()
 export class LegitCheckService {
@@ -16,6 +19,7 @@ export class LegitCheckService {
   ) {}
 
   async upsertLegitCheckBrandCategory(
+    clientInfo: UserDto,
     brandCategoryDto: LegitCheckBrandCategoryDto,
   ): Promise<LegitCheckDto> {
     this.logger.debug(
@@ -30,8 +34,11 @@ export class LegitCheckService {
         data: brandCategoryDto,
       });
     } else {
+      const codePrefix = clientInfo.role === Role.vip_client ? 'VIP' : 'NL';
       legitCheck = await this.prismaService.legitChecks.create({
         data: {
+          client_id: clientInfo.id,
+          code: generateCode(codePrefix),
           brand_id: brandCategoryDto.brand_id,
           category_id: brandCategoryDto.category_id,
           check_status: LegitCheckStatus.brand_category,
@@ -84,5 +91,82 @@ export class LegitCheckService {
     );
 
     return legitCheck;
+  }
+
+  async getPaginatedLegitChecks(
+    query: LegitCheckPaginationQuery,
+  ): Promise<any> {
+    this.logger.debug(
+      `Get paginated legit check with query: ${JSON.stringify(query)}`,
+    );
+
+    const count = await this.prismaService.legitChecks.count({
+      where: {
+        check_status: {
+          in: query.check_status,
+        },
+      },
+    });
+
+    const legitChecks = await this.prismaService.legitChecks.findMany({
+      skip: (+query.page - 1) * +query.limit,
+      take: +query.limit,
+      where: {
+        check_status: {
+          in: query.check_status,
+        },
+      },
+      select: {
+        id: true,
+        product_name: true,
+        check_status: true,
+        legit_status: true,
+        code: true,
+        client: {
+          select: {
+            id: true,
+            username: true,
+            role: true,
+          },
+        },
+        category: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        LegitCheckImages: {
+          select: {
+            id: true,
+            name: true,
+            file: {
+              select: {
+                id: true,
+                path: true,
+                file_name: true,
+                url: true,
+              },
+            },
+          },
+        },
+        Order: {
+          select: {
+            id: true,
+            code: true,
+            service: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return {
+      count,
+      legitChecks,
+    };
   }
 }
