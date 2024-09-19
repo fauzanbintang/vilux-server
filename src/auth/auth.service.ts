@@ -88,9 +88,11 @@ export class AuthService {
 
     const token = generateToken(user, this.configService);
 
+    delete user.password;
+
     return {
-      user_id: user.id,
-      token
+      ...user,
+      token,
     };
   }
 }
