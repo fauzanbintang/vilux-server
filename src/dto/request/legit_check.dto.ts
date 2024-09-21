@@ -82,6 +82,12 @@ export class LegitCheckPaginationQuery {
   })
   limit?: string;
 
+  @ApiPropertyOptional({
+    type: String,
+    default: '00000000-0000-0000-0000-000000000000',
+  })
+  user_id: string;
+
   @ApiProperty({
     enum: LegitCheckStatus,
     isArray: true,
