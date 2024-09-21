@@ -135,7 +135,7 @@ export class LegitCheckController {
         data: {
           currentPage: 1,
           totalPage: 1,
-          legitChecks: [
+          data: [
             {
               id: '4d44f0df-5721-4902-a584-53d52f338e71',
               product_name: null,
@@ -181,8 +181,67 @@ export class LegitCheckController {
       data: {
         currentPage: +query.page,
         totalPage: Math.ceil(data.count / +query.limit),
-        legitChecks: data.legitChecks,
+        data: data.legitChecks,
       },
+      errors: null,
+    };
+  }
+
+  @Get(':id')
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Get detail legit check' })
+  @ApiResponse({
+    status: 200,
+    description: 'Get detail legit check',
+    schema: {
+      example: {
+        message: 'Successfully get detail legit check',
+        data: {
+          message: 'Successfully get detail legit check',
+          data: {
+            id: '4d44f0df-5721-4902-a584-53d52f338e71',
+            product_name: null,
+            check_status: 'brand_category',
+            legit_status: null,
+            code: 'NL01J82W951B',
+            updated_at: '2024-09-18T15:33:42.061Z',
+            client_note: null,
+            admin_note: null,
+            brand: {
+              id: '98af5a95-0889-41d7-805e-b488e975de5e',
+              name: 'Nike',
+              file: null,
+            },
+            category: {
+              id: '131d4edb-e004-4cd5-bf11-fde5de0acf39',
+              name: 'sneakers',
+            },
+            Order: [],
+            LegitCheckImages: [],
+            certificate: null,
+          },
+          errors: null,
+        },
+        errors: null,
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad Request',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+  })
+  async getDetailLegitCheck(
+    @Param('id') id: string,
+  ): Promise<ResponseDto<any>> {
+    const data = await this.legitCheckService.getDetailLegitCheck(id);
+
+    return {
+      message: 'Successfully get detail legit check',
+      data,
       errors: null,
     };
   }

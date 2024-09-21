@@ -105,6 +105,7 @@ export class LegitCheckService {
         check_status: {
           in: query.check_status,
         },
+        client_id: query.user_id,
       },
     });
 
@@ -115,6 +116,7 @@ export class LegitCheckService {
         check_status: {
           in: query.check_status,
         },
+        client_id: query.user_id,
       },
       select: {
         id: true,
@@ -168,5 +170,82 @@ export class LegitCheckService {
       count,
       legitChecks,
     };
+  }
+
+  async getDetailLegitCheck(id: string): Promise<any> {
+    this.logger.debug(`Get detail legit check with id: ${JSON.stringify(id)}`);
+
+    const legitCheck = await this.prismaService.legitChecks.findUnique({
+      where: {
+        id,
+      },
+      select: {
+        id: true,
+        product_name: true,
+        check_status: true,
+        legit_status: true,
+        code: true,
+        updated_at: true, // confirm again to Ryan
+        client_note: true,
+        admin_note: true,
+        brand: {
+          select: {
+            id: true,
+            name: true,
+            file: {
+              select: {
+                id: true,
+                path: true,
+                file_name: true,
+                url: true,
+              },
+            },
+          },
+        },
+        category: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        Order: {
+          select: {
+            id: true,
+            code: true,
+            service: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
+        LegitCheckImages: {
+          select: {
+            id: true,
+            name: true,
+            status: true,
+            file: {
+              select: {
+                id: true,
+                path: true,
+                file_name: true,
+                url: true,
+              },
+            },
+          },
+        },
+        certificate: {
+          select: {
+            id: true,
+            path: true,
+            file_name: true,
+            url: true,
+          },
+        },
+      },
+    });
+
+    return legitCheck
   }
 }
