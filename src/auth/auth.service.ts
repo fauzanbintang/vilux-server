@@ -80,7 +80,10 @@ export class AuthService {
       throw new HttpException('email or password is incorrect', 401);
     }
 
-    const isMatch = comparePassword(validatedLogin.password, user.password);
+    const isMatch = await comparePassword(
+      validatedLogin.password,
+      user.password,
+    );
 
     if (!isMatch) {
       throw new HttpException('email or password is incorrect', 401);
