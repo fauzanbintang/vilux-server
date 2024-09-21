@@ -6,6 +6,7 @@ export class BrandDto {
     default: 'Nike',
   })
   name: string;
+
   @ApiProperty({
     type: String,
     default: '00000000-0000-0000-0000-000000000000',
