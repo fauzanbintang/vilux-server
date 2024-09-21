@@ -21,35 +21,54 @@ export class BrandService {
       },
     });
 
-    return {
-      name: brand.name,
-      file_id: brand.file_id,
-    };
+    return brand;
   }
 
   async findAll(): Promise<BrandDto[]> {
     this.logger.debug('Get all brands');
 
-    const brands = await this.prismaService.brand.findMany();
-    return brands.map((brand) => {
-      return { id: brand.id, name: brand.name, file_id: brand.file_id };
+    const brands = await this.prismaService.brand.findMany({
+      include: {
+        file: {
+          select: {
+            id: true,
+            path: true,
+            file_name: true,
+            url: true,
+          },
+        },
+      },
     });
+
+    return brands;
   }
 
   async findOne(id: string): Promise<BrandDto> {
+    this.logger.debug(`Get brand with id: ${id}`);
+
     const brand = await this.prismaService.brand.findUnique({
       where: { id },
+      include: {
+        file: {
+          select: {
+            id: true,
+            path: true,
+            file_name: true,
+            url: true,
+          },
+        },
+      },
     });
 
-    return {
-      name: brand.name,
-      file_id: brand.file_id,
-    };
+    return brand;
   }
 
   async update(id: string, updateBrandDto: UpdateBrandDto) {
     const brand = await this.prismaService.brand.findUnique({
       where: { id },
+      select: {
+        id: true,
+      },
     });
 
     if (!brand) {
@@ -61,15 +80,15 @@ export class BrandService {
       data: updateBrandDto,
     });
 
-    return {
-      name: updatedBrand.name,
-      file_id: updatedBrand.file_id,
-    };
+    return updatedBrand;
   }
 
   async remove(id: string) {
     const brand = await this.prismaService.brand.findUnique({
       where: { id },
+      select: {
+        id: true,
+      },
     });
 
     if (!brand) {
