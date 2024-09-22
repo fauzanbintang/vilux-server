@@ -1,7 +1,10 @@
 import {
+  Body,
   Controller,
   Get,
   HttpCode,
+  Param,
+  Put,
   UseGuards,
 } from '@nestjs/common';
 import { UserDto } from 'src/dto/response/user.dto';
@@ -9,7 +12,8 @@ import { UserService } from './user.service';
 import { RoleGuard } from 'src/common/roleGuard/role.guard';
 import { Roles } from 'src/common/roleGuard/roles.decorator';
 import { ResponseDto } from 'src/dto/response/response.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { UpdateUserDto, UpdateUserPasswordDto } from 'src/dto/request/auth.dto';
 
 @ApiTags('user')
 @Controller('/api/users')
@@ -18,10 +22,88 @@ export class UserController {
 
   @Get()
   @HttpCode(200)
+  @ApiOperation({ summary: 'Get all users' })
+  @ApiResponse({
+    status: 200,
+    description: 'Get all users',
+    schema: {
+      example: {
+        message: 'Successfully get all users',
+        data: [
+          {
+            id: '60cd3158-6318-49ba-82a2-5b02d0e1af10',
+            username: 'test',
+            email: 'test@mail.com',
+            full_name: 'Test Test',
+            date_of_birth: '1998-12-31T17:00:00.000Z',
+            gender: 'male',
+            role: 'client',
+          },
+        ],
+        errors: null,
+      },
+    },
+  })
   @UseGuards(RoleGuard)
   @Roles(['admin'])
   async getUsers(): Promise<ResponseDto<UserDto[]>> {
     const users = await this.userService.getUsers();
-    return { data: users };
+    return { message: 'Successfully get all users', data: users, errors: null };
+  }
+
+  @Put('change-password/:id')
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Change password for user' })
+  @ApiResponse({
+    status: 200,
+    description: 'Change password for user',
+    schema: {
+      example: {
+        message: 'Successfully change password',
+        data: null,
+        errors: null,
+      },
+    },
+  })
+  async changePassword(
+    @Param('id') id: string,
+    @Body() updateUserPasswordDto: UpdateUserPasswordDto,
+  ): Promise<ResponseDto<UserDto>> {
+    await this.userService.changePassword(id, updateUserPasswordDto);
+    return {
+      message: 'Successfully change password',
+      data: null,
+      errors: null,
+    };
+  }
+
+  @Put(':id')
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Update user' })
+  @ApiResponse({
+    status: 200,
+    description: 'Update user',
+    schema: {
+      example: {
+        message: 'Successfully update user',
+        data: {
+          id: '60cd3158-6318-49ba-82a2-5b02d0e1af10',
+          username: 'test',
+          email: 'test@mail.com',
+          full_name: 'Test Test',
+          date_of_birth: '1998-12-31T17:00:00.000Z',
+          gender: 'male',
+          role: 'client',
+        },
+        errors: null,
+      },
+    },
+  })
+  async updateUser(
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ): Promise<ResponseDto<UserDto>> {
+    const user = await this.userService.update(id, updateUserDto);
+    return { message: 'Successfully update user', data: user, errors: null };
   }
 }
