@@ -16,6 +16,7 @@ import {
   LegitCheckBrandCategoryDto,
   LegitCheckImagesDto,
   LegitCheckPaginationQuery,
+  LegitCheckValidateDataDto,
 } from 'src/dto/request/legit_check.dto';
 import { LegitCheckDto } from 'src/dto/response/legit_check.dto';
 import { ResponseDto } from 'src/dto/response/response.dto';
@@ -118,6 +119,58 @@ export class LegitCheckController {
 
     return {
       message: 'Successfully upsert legit check images',
+      data: legitCheck,
+      errors: null,
+    };
+  }
+
+  @Put(':id/validate-data')
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Update legit check validate date' })
+  @ApiResponse({
+    status: 200,
+    description: 'Update legit check validate date',
+    schema: {
+      example: {
+        message: 'Successfully update legit check validate date',
+        data: {
+          id: '3b2a2e7d-9637-4a93-95d9-4f9f27992fa6',
+          updated_at: '2024-09-13T09:24:49.326Z',
+          created_at: '2024-09-12T17:01:35.059Z',
+          brand_id: '4c2cd434-4afc-41e3-8077-32c8939df322',
+          category_id: '9aa84aac-954c-409f-9b90-188bc7a11e0e',
+          check_status: 'upload_data',
+          product_name: 'Nike Cortez',
+          legit_status: null,
+          client_note: 'This is client note',
+          admin_note: null,
+          cover_id: null,
+          certificate_id: null,
+        },
+        errors: null,
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad Request',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+  })
+  async upsertLegitCheckValidateData(
+    @Param('id') id: string,
+    @Body() legitCheckValidateDataDto: LegitCheckValidateDataDto,
+  ): Promise<ResponseDto<LegitCheckDto>> {
+    const legitCheck =
+      await this.legitCheckService.updateLegitCheckValidateData(
+        id,
+        legitCheckValidateDataDto,
+      );
+
+    return {
+      message: 'Successfully update legit check validate date',
       data: legitCheck,
       errors: null,
     };

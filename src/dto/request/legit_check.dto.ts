@@ -37,6 +37,11 @@ export class LegitCheckImageDto {
     description: 'Outer Shoes, Inside Label, Insole, Additional, etc',
   })
   name: string;
+  @ApiProperty({
+    type: Boolean,
+    default: 'true',
+  })
+  status?: boolean;
 }
 
 export class LegitCheckImagesDto {
@@ -67,6 +72,29 @@ export class LegitCheckImagesDto {
     default: 'This is client note',
   })
   client_note: string;
+}
+
+export class LegitCheckValidateDataDto {
+  @ApiProperty({
+    type: [LegitCheckImageDto],
+    default: [
+      {
+        legit_check_image_id: '00000000-0000-0000-0000-000000000001',
+        status: false,
+      },
+      {
+        legit_check_image_id: '00000000-0000-0000-0000-000000000002',
+        status: true,
+      },
+    ],
+    description: 'List of FileID',
+  })
+  legit_check_images: LegitCheckImageDto[];
+  @ApiProperty({
+    type: String,
+    default: 'This is admin note',
+  })
+  admin_note: string;
 }
 
 export class LegitCheckPaginationQuery {
