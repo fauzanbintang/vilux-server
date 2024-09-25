@@ -14,6 +14,7 @@ import { LegitCheckService } from './legit_check.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
   LegitCheckBrandCategoryDto,
+  LegitCheckCompletedDto,
   LegitCheckImagesDto,
   LegitCheckPaginationQuery,
   LegitCheckValidateDataDto,
@@ -126,13 +127,13 @@ export class LegitCheckController {
 
   @Put(':id/validate-data')
   @HttpCode(200)
-  @ApiOperation({ summary: 'Update legit check validate date' })
+  @ApiOperation({ summary: 'Update legit check validate data' })
   @ApiResponse({
     status: 200,
-    description: 'Update legit check validate date',
+    description: 'Update legit check validate data',
     schema: {
       example: {
-        message: 'Successfully update legit check validate date',
+        message: 'Successfully update legit check validate data',
         data: {
           id: '3b2a2e7d-9637-4a93-95d9-4f9f27992fa6',
           updated_at: '2024-09-13T09:24:49.326Z',
@@ -143,7 +144,7 @@ export class LegitCheckController {
           product_name: 'Nike Cortez',
           legit_status: null,
           client_note: 'This is client note',
-          admin_note: null,
+          admin_note: 'This is admin note',
           cover_id: null,
           certificate_id: null,
         },
@@ -159,7 +160,7 @@ export class LegitCheckController {
     status: 500,
     description: 'Internal Server Error',
   })
-  async upsertLegitCheckValidateData(
+  async updateLegitCheckValidateData(
     @Param('id') id: string,
     @Body() legitCheckValidateDataDto: LegitCheckValidateDataDto,
   ): Promise<ResponseDto<LegitCheckDto>> {
@@ -170,7 +171,58 @@ export class LegitCheckController {
       );
 
     return {
-      message: 'Successfully update legit check validate date',
+      message: 'Successfully update legit check validate data',
+      data: legitCheck,
+      errors: null,
+    };
+  }
+
+  @Put(':id/completed')
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Update legit check completed' })
+  @ApiResponse({
+    status: 200,
+    description: 'Update legit check completed',
+    schema: {
+      example: {
+        message: 'Successfully update legit check completed',
+        data: {
+          id: '3b2a2e7d-9637-4a93-95d9-4f9f27992fa6',
+          updated_at: '2024-09-13T09:24:49.326Z',
+          created_at: '2024-09-12T17:01:35.059Z',
+          brand_id: '4c2cd434-4afc-41e3-8077-32c8939df322',
+          category_id: '9aa84aac-954c-409f-9b90-188bc7a11e0e',
+          check_status: 'upload_data',
+          product_name: 'Nike Cortez',
+          legit_status: 'authentic',
+          client_note: 'This is client note',
+          admin_note: 'This is admin note',
+          cover_id: '3fa84aac-954c-409f-s890-188bc7a1a12y',
+          certificate_id: null,
+        },
+        errors: null,
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad Request',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+  })
+  async updateLegitCheckCompleted(
+    @Param('id') id: string,
+    @Body() legitCheckCompletedDto: LegitCheckCompletedDto,
+  ): Promise<ResponseDto<LegitCheckDto>> {
+    const legitCheck = await this.legitCheckService.updateLegitCheckCompleted(
+      id,
+      legitCheckCompletedDto,
+    );
+
+    return {
+      message: 'Successfully update legit check completed',
       data: legitCheck,
       errors: null,
     };

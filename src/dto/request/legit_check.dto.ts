@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { LegitCheckStatus } from '@prisma/client';
+import { LegitCheckStatus, LegitStatus } from '@prisma/client';
+import { string } from 'zod';
 
 export class LegitCheckBrandCategoryDto {
   @ApiPropertyOptional({
@@ -90,6 +91,24 @@ export class LegitCheckValidateDataDto {
     description: 'List of FileID',
   })
   legit_check_images: LegitCheckImageDto[];
+  @ApiProperty({
+    type: String,
+    default: 'This is admin note',
+  })
+  admin_note: string;
+}
+
+export class LegitCheckCompletedDto {
+  @ApiProperty({
+    type: String,
+    default: '00000000-0000-0000-0000-000000000000',
+  })
+  cover_id: string;
+  @ApiProperty({
+    type: String,
+    default: 'authentic',
+  })
+  legit_status: LegitStatus;
   @ApiProperty({
     type: String,
     default: 'This is admin note',
