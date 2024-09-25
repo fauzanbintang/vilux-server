@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { LegitCheckStatus } from '@prisma/client';
+import { LegitCheckStatus, LegitStatus } from '@prisma/client';
+import { string } from 'zod';
 
 export class LegitCheckBrandCategoryDto {
   @ApiPropertyOptional({
@@ -37,6 +38,11 @@ export class LegitCheckImageDto {
     description: 'Outer Shoes, Inside Label, Insole, Additional, etc',
   })
   name: string;
+  @ApiProperty({
+    type: Boolean,
+    default: 'true',
+  })
+  status?: boolean;
 }
 
 export class LegitCheckImagesDto {
@@ -67,6 +73,47 @@ export class LegitCheckImagesDto {
     default: 'This is client note',
   })
   client_note: string;
+}
+
+export class LegitCheckValidateDataDto {
+  @ApiProperty({
+    type: [LegitCheckImageDto],
+    default: [
+      {
+        legit_check_image_id: '00000000-0000-0000-0000-000000000001',
+        status: false,
+      },
+      {
+        legit_check_image_id: '00000000-0000-0000-0000-000000000002',
+        status: true,
+      },
+    ],
+    description: 'List of FileID',
+  })
+  legit_check_images: LegitCheckImageDto[];
+  @ApiProperty({
+    type: String,
+    default: 'This is admin note',
+  })
+  admin_note: string;
+}
+
+export class LegitCheckCompletedDto {
+  @ApiProperty({
+    type: String,
+    default: '00000000-0000-0000-0000-000000000000',
+  })
+  cover_id: string;
+  @ApiProperty({
+    type: String,
+    default: 'authentic',
+  })
+  legit_status: LegitStatus;
+  @ApiProperty({
+    type: String,
+    default: 'This is admin note',
+  })
+  admin_note: string;
 }
 
 export class LegitCheckPaginationQuery {
