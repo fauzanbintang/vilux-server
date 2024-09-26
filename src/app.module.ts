@@ -17,7 +17,8 @@ import { BrandModule } from './brand/brand.module';
 import { PaymentModule } from './payment/payment.module';
 import { VoucherModule } from './voucher/voucher.module';
 import { CategoryModule } from './category/category.module';
-import { CategoryInstructionModule } from './category_instruction/category_instruction.module';
+import { SubcategoryModule } from './subcategory/subcategory.module';
+import { SubcategoryInstructionModule } from './subcategory_instruction/subcategory_instruction.module';
 import { OrderModule } from './order/order.module';
 import { LegitCheckModule } from './legit_check/legit_check.module';
 
@@ -31,7 +32,8 @@ import { LegitCheckModule } from './legit_check/legit_check.module';
     VoucherModule,
     BrandModule,
     CategoryModule,
-    CategoryInstructionModule,
+    SubcategoryModule,
+    SubcategoryInstructionModule,
     OrderModule,
     LegitCheckModule,
   ],

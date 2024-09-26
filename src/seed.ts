@@ -1,4 +1,4 @@
-import { CategoryName, Gender, PrismaClient, Role } from '@prisma/client';
+import { Gender, PrismaClient, Role } from '@prisma/client';
 import { hashPassword } from './helpers/bcrypt';
 
 const prisma = new PrismaClient();
@@ -43,29 +43,24 @@ async function main() {
       gender: Gender.male,
     },
   });
-  // seed brands
-  const brands = ['Nike', 'Adidas', 'Gucci'];
-  brands.forEach(async (e) => {
-    await prisma.brand.create({
-      data: {
-        name: e,
-      },
-    });
-  });
-  // seed categories
-  const categories = [
-    CategoryName.sneakers,
-    CategoryName.bag,
-    CategoryName.apparel,
-    CategoryName.accessories,
-  ];
-  categories.forEach(async (e) => {
-    await prisma.category.create({
-      data: {
-        name: CategoryName[e],
-      },
-    });
-  });
+  // // seed brands
+  // const brands = ['Gucci', 'MCM', 'LV'];
+  // brands.forEach(async (e) => {
+  //   await prisma.brand.create({
+  //     data: {
+  //       name: e,
+  //     },
+  //   });
+  // });
+  // // seed categories
+  // const categories = ['Bags', 'Footwear']
+  // categories.forEach(async (e) => {
+  //   await prisma.category.create({
+  //     data: {
+  //       name: e,
+  //     },
+  //   });
+  // });
 }
 
 main()

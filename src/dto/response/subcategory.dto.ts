@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CategoryDto {
+export class SubcategoryDto {
   @ApiProperty({
     type: String,
     default: '00000000-0000-0000-0000-000000000000',
@@ -9,9 +9,15 @@ export class CategoryDto {
 
   @ApiProperty({
     type: String,
-    default: 'footwear',
+    default: 'sneakers',
   })
   name: string;
+
+  @ApiProperty({
+    type: String,
+    default: '00000000-0000-0000-0000-000000000000',
+  })
+  category_id: string;
 
   @ApiProperty({
     type: String,

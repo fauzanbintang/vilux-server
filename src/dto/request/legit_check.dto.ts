@@ -8,16 +8,24 @@ export class LegitCheckBrandCategoryDto {
     default: '00000000-0000-0000-0000-000000000000',
   })
   id: string;
+
   @ApiProperty({
     type: String,
     default: '00000000-0000-0000-0000-000000000000',
   })
   brand_id: string;
+
   @ApiProperty({
     type: String,
     default: '00000000-0000-0000-0000-000000000000',
   })
   category_id: string;
+
+  @ApiProperty({
+    type: String,
+    default: '00000000-0000-0000-0000-000000000000',
+  })
+  subcategory_id: string;
 }
 
 export class LegitCheckImageDto {
