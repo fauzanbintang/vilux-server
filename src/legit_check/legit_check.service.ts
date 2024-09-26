@@ -43,6 +43,7 @@ export class LegitCheckService {
           code: generateCode(codePrefix),
           brand_id: brandCategoryDto.brand_id,
           category_id: brandCategoryDto.category_id,
+          subcategory_id: brandCategoryDto.subcategory_id,
           check_status: LegitCheckStatus.brand_category,
         },
       });
