@@ -108,19 +108,44 @@ export class FileController {
     };
   }
 
-  @Post('certificates')
+  @Post('certificates/:frameId')
   @HttpCode(201)
-  @UseInterceptors(FilesInterceptor('files'))
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiOperation({ summary: 'Create certificate' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({ type: FileUploadDto })
+  @ApiResponse({
+    status: 201,
+    description: 'The certificate has been created successfully.',
+    schema: {
+      example: {
+        message: 'Certificate created successfully',
+        data: {
+          id: '00000000-0000-0000-0000-000000000000',
+          path: '/testfile.png',
+          file_name: 'testfile.png',
+          url: 'https://ik.imagekit.io/users/testfile.png',
+          updated_at: '2024-09-10T08:21:41.495Z',
+          created_at: '2024-09-10T08:21:41.495Z',
+        },
+        errors: null,
+      },
+    },
+  })
   async mergeImages(
-    @UploadedFiles() files: Express.Multer.File[],
+    @Param('frameId') frameId: string,
+    @UploadedFile() file: Express.Multer.File,
   ): Promise<ResponseDto<FileDto>> {
-    const frame = files[0];
-    const content = files[1];
     const certificate = await this.fileService.mergeImages(
-      frame.buffer,
-      content.buffer,
+      frameId,
+      file.buffer,
     );
-    return { data: certificate };
+
+    return {
+      message: 'Certificate created successfully',
+      data: certificate,
+      errors: null,
+    };
   }
 
   @Get(':id')
