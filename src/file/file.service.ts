@@ -4,6 +4,7 @@ import { PrismaService } from 'src/common/prisma.service';
 import { extname } from 'path';
 import ImageKit from 'imagekit';
 import sharp from 'sharp';
+import { log } from 'console';
 
 @Injectable()
 export class FileService {
@@ -16,10 +17,32 @@ export class FileService {
   private readonly allowedExtensions = ['.jpg', '.png', '.jpeg']; // Add allowed extensions
   private readonly maxFileSize = 100 * 1024 * 1024; // 100MB (adjust as needed)
 
-  async mergeImages(frameBuffer: Buffer, contentBuffer: Buffer) {
+  async mergeImages(frameId: string, contentBuffer: Buffer) {
     try {
-      const mergedImage = await sharp(frameBuffer)
-        .composite([{ input: contentBuffer, gravity: 'center' }])
+      const resizedContentBuffer = await sharp(contentBuffer)
+        .resize({
+          width: 1080,
+          height: 1920,
+          fit: 'contain',
+        })
+        .toBuffer();
+
+      const frame = await this.prismaService.file.findUnique({
+        where: {
+          id: frameId,
+        },
+      });
+
+      if (!frame) {
+        throw new HttpException('Frame not found', 404);
+      }
+
+      const frameBuffer = await fetch(frame.url).then((res) =>
+        res.arrayBuffer(),
+      );
+
+      const mergedImage = await sharp(resizedContentBuffer)
+        .composite([{ input: Buffer.from(frameBuffer), gravity: 'center' }])
         .toBuffer();
 
       const imagekit = await this.imagekit.upload({
@@ -37,10 +60,9 @@ export class FileService {
 
       return newFile;
     } catch (error) {
-      throw new HttpException(
-        JSON.stringify(error),
-        error.getStatus() ? error.getStatus() : 500,
-      );
+      console.log(error, 'AFSFAS');
+
+      throw new HttpException(error.message, 500);
     }
   }
 
@@ -135,7 +157,7 @@ export class FileService {
 
   async findById(id: string) {
     try {
-      const file = await this.prismaService.file.findFirst({
+      const file = await this.prismaService.file.findUnique({
         where: { id },
       });
 
