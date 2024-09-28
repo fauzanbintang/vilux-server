@@ -24,7 +24,7 @@ export class FileService {
 
       const imagekit = await this.imagekit.upload({
         file: mergedImage.toString('base64'),
-        fileName: `sertifikat-${Date.now()}`,
+        fileName: `certificate-${Date.now()}`,
       });
 
       const newFile = await this.prismaService.file.create({

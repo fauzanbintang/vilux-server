@@ -24,6 +24,7 @@ export class UserService {
         date_of_birth: true,
         gender: true,
         role: true,
+        created_at: true,
       },
     });
   }

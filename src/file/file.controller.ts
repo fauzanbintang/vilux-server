@@ -108,7 +108,7 @@ export class FileController {
     };
   }
 
-  @Post('sertificates')
+  @Post('certificates')
   @HttpCode(201)
   @UseInterceptors(FilesInterceptor('files'))
   async mergeImages(
@@ -116,11 +116,11 @@ export class FileController {
   ): Promise<ResponseDto<FileDto>> {
     const frame = files[0];
     const content = files[1];
-    const sertificate = await this.fileService.mergeImages(
+    const certificate = await this.fileService.mergeImages(
       frame.buffer,
       content.buffer,
     );
-    return { data: sertificate };
+    return { data: certificate };
   }
 
   @Get(':id')

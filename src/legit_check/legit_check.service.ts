@@ -1,11 +1,13 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { HttpException, Inject, Injectable, Logger } from '@nestjs/common';
 import { LegitCheckStatus, Role } from '@prisma/client';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { PrismaService } from 'src/common/prisma.service';
 import {
   LegitCheckBrandCategoryDto,
+  LegitCheckCompletedDto,
   LegitCheckImagesDto,
   LegitCheckPaginationQuery,
+  LegitCheckValidateDataDto,
 } from 'src/dto/request/legit_check.dto';
 import { LegitCheckDto } from 'src/dto/response/legit_check.dto';
 import { UserDto } from 'src/dto/response/user.dto';
@@ -41,6 +43,7 @@ export class LegitCheckService {
           code: generateCode(codePrefix),
           brand_id: brandCategoryDto.brand_id,
           category_id: brandCategoryDto.category_id,
+          subcategory_id: brandCategoryDto.subcategory_id,
           check_status: LegitCheckStatus.brand_category,
         },
       });
@@ -91,6 +94,88 @@ export class LegitCheckService {
     );
 
     return legitCheck;
+  }
+
+  async updateLegitCheckValidateData(
+    id: string,
+    legitCheckValidateDataDto: LegitCheckValidateDataDto,
+  ): Promise<LegitCheckDto> {
+    this.logger.debug(
+      `Update legit check: validate data ${JSON.stringify(legitCheckValidateDataDto)}`,
+    );
+
+    await Promise.all(
+      legitCheckValidateDataDto.legit_check_images.map(async (v) => {
+        return this.prismaService.legitCheckImages.update({
+          where: { id: v.legit_check_image_id },
+          data: {
+            status: v.status,
+          },
+        });
+      }),
+    );
+
+    const legitCheckImages = await this.prismaService.legitCheckImages.findMany(
+      {
+        where: { legit_check_id: id },
+      },
+    );
+
+    legitCheckImages.forEach((e) => {
+      if (e.status == null) {
+        throw new HttpException('legit check image not found', 404);
+      }
+    });
+
+    let updatedLegitCheck: LegitCheckDto =
+      await this.prismaService.legitChecks.update({
+        where: { id },
+        data: {
+          admin_note: legitCheckValidateDataDto.admin_note,
+          check_status: LegitCheckStatus.data_validation,
+        },
+      });
+
+    return updatedLegitCheck;
+  }
+
+  async updateLegitCheckCompleted(
+    id: string,
+    legitCheckCompletedDto: LegitCheckCompletedDto,
+  ): Promise<LegitCheckDto> {
+    this.logger.debug(
+      `Update legit check: completed ${JSON.stringify(legitCheckCompletedDto)}`,
+    );
+
+    const legitCheck = await this.prismaService.legitChecks.findUnique({
+      where: { id },
+      include: {
+        LegitCheckImages: true,
+      },
+    });
+
+    if (!legitCheck) {
+      throw new HttpException('legit check not found', 404);
+    }
+
+    legitCheck.LegitCheckImages.forEach((e) => {
+      if (e.status == null || e.status === false) {
+        throw new HttpException('legit check image not found', 404);
+      }
+    });
+
+    let updatedLegitCheck: LegitCheckDto =
+      await this.prismaService.legitChecks.update({
+        where: { id },
+        data: {
+          cover_id: legitCheckCompletedDto.cover_id,
+          legit_status: legitCheckCompletedDto.legit_status,
+          admin_note: legitCheckCompletedDto.admin_note,
+          check_status: LegitCheckStatus.legit_checking,
+        },
+      });
+
+    return updatedLegitCheck;
   }
 
   async getPaginatedLegitChecks(
@@ -246,6 +331,6 @@ export class LegitCheckService {
       },
     });
 
-    return legitCheck
+    return legitCheck;
   }
 }

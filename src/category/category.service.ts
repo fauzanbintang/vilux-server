@@ -26,39 +26,48 @@ export class CategoryService {
       },
     });
 
-    return {
-      name: category.name,
-      file_id: category.file_id,
-    };
+    return category;
   }
 
   async findAll(): Promise<CategoryDto[]> {
     this.logger.debug('Get all categories');
 
-    const categories = await this.prismaService.category.findMany();
-
-    return categories.map((category) => {
-      return {
-        id: category.id,
-        name: category.name,
-        file_id: category.file_id,
-      };
+    const categories = await this.prismaService.category.findMany({
+      include: {
+        file: {
+          select: {
+            id: true,
+            path: true,
+            file_name: true,
+            url: true,
+          },
+        },
+      },
     });
+
+    return categories;
   }
 
   async findOne(id: string): Promise<CategoryDto> {
     const category = await this.prismaService.category.findUnique({
       where: { id },
+      include: {
+        file: {
+          select: {
+            id: true,
+            path: true,
+            file_name: true,
+            url: true,
+          },
+        },
+      },
     });
 
     if (!category) {
       throw new HttpException('category not found', 404);
     }
 
-    return {
-      name: category.name,
-      file_id: category.file_id,
-    };
+    return category;
   }
 
   async update(
@@ -67,6 +76,9 @@ export class CategoryService {
   ): Promise<CategoryDto> {
     const category = await this.prismaService.category.findUnique({
       where: { id },
+      select: {
+        id: true,
+      },
     });
 
     if (!category) {
@@ -78,15 +90,15 @@ export class CategoryService {
       data: updateCategoryDto,
     });
 
-    return {
-      name: updatedCategory.name,
-      file_id: updatedCategory.file_id,
-    };
+    return updatedCategory;
   }
 
   async remove(id: string) {
     const category = await this.prismaService.category.findUnique({
       where: { id },
+      select: {
+        id: true,
+      },
     });
 
     if (!category) {
