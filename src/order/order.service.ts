@@ -22,7 +22,7 @@ export class OrderService {
       data: {
         code: generateCode('OD'),
         legit_check_id: createOrderDto.legit_check_id,
-        original_amount: service.price,
+        original_amount: service.normal_price.toString(), // conditional for vip
         voucher_id: createOrderDto.voucher_id,
       },
     });

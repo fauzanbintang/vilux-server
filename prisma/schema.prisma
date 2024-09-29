@@ -55,11 +55,6 @@ enum LegitStatus {
   unidentified
 }
 
-enum ServicesName {
-  fast_checking
-  normal_checking
-}
-
 model User {
   id             String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   username       String        @unique @db.VarChar(100)
@@ -92,6 +87,7 @@ model File {
   LegitChecks_certificate LegitChecks[]            @relation(name: "certificate_file")
   LegitChecks             LegitChecks[]
   LegitCheckImages        LegitCheckImages[]
+  Services                Services[]
 
   @@map("files")
 }
@@ -205,8 +201,8 @@ model LegitChecks {
   certificate_code String?
   certificate_id   String?            @db.Uuid
   certificate      File?              @relation(name: "certificate_file", fields: [certificate_id], references: [id])
-  File             File?              @relation(fields: [fileId], references: [id])
-  fileId           String?            @db.Uuid
+  file             File?              @relation(fields: [file_id], references: [id])
+  file_id          String?            @db.Uuid
   Order            Order[]
   LegitCheckImages LegitCheckImages[]
 
@@ -214,12 +210,16 @@ model LegitChecks {
 }
 
 model Services {
-  id         String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  updated_at DateTime     @default(now()) @updatedAt
-  created_at DateTime     @default(now())
-  name       ServicesName
-  price      String
-  Order      Order[]
+  id            String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  updated_at    DateTime @default(now()) @updatedAt
+  created_at    DateTime @default(now())
+  name          String
+  working_hours Int
+  normal_price  BigInt
+  vip_price     BigInt
+  file          File?    @relation(fields: [file_id], references: [id])
+  file_id       String?  @db.Uuid
+  Order         Order[]
 
   @@map("services")
 }
