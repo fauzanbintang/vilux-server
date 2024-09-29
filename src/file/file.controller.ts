@@ -111,7 +111,10 @@ export class FileController {
   @Post('certificates/:frameId')
   @HttpCode(201)
   @UseInterceptors(FileInterceptor('file'))
-  @ApiOperation({ summary: 'Create certificate' })
+  @ApiOperation({
+    summary:
+      'Create certificate with frame => real frame id : b104d5f9-57cd-45df-9a63-b8e53d4c21e9, fake frame id : 5dea4736-29c9-4316-b249-c3316f8c2396',
+  })
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: FileUploadDto })
   @ApiResponse({
