@@ -21,6 +21,7 @@ import { SubcategoryModule } from './subcategory/subcategory.module';
 import { SubcategoryInstructionModule } from './subcategory_instruction/subcategory_instruction.module';
 import { OrderModule } from './order/order.module';
 import { LegitCheckModule } from './legit_check/legit_check.module';
+import { ServiceModule } from './service/service.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { LegitCheckModule } from './legit_check/legit_check.module';
     SubcategoryInstructionModule,
     OrderModule,
     LegitCheckModule,
+    ServiceModule,
   ],
   controllers: [],
   providers: [LogMiddleware, AuthenticationMiddleware],
