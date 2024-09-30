@@ -23,7 +23,7 @@ export class ServiceService {
         file_id: createServiceDto.file_id,
       },
     });
-    console.log(service, 'ini service');
+
     return {
       ...service,
       normal_price: service.normal_price.toString(),

@@ -7,7 +7,7 @@ export class LegitCheckBrandCategoryDto {
     type: String,
     default: '00000000-0000-0000-0000-000000000000',
   })
-  id: string;
+  id?: string;
 
   @ApiProperty({
     type: String,
@@ -35,20 +35,22 @@ export class LegitCheckImageDto {
     default: '00000000-0000-0000-0000-000000000000',
   })
   legit_check_image_id: string;
+
   @ApiProperty({
     type: String,
     default: '00000000-0000-0000-0000-000000000000',
   })
   file_id: string;
+
   @ApiProperty({
     type: String,
-    default: 'Inside Label',
-    description: 'Outer Shoes, Inside Label, Insole, Additional, etc',
+    default: '00000000-0000-0000-0000-000000000000',
   })
-  name: string;
+  subcategory_instruction_id?: string;
+
   @ApiProperty({
     type: Boolean,
-    default: 'true',
+    default: null,
   })
   status?: boolean;
 }
@@ -56,26 +58,26 @@ export class LegitCheckImageDto {
 export class LegitCheckImagesDto {
   @ApiProperty({
     type: String,
-    default: 'Nike Cortez',
+    default: 'Armani Clutch',
   })
   product_name: string;
+
   @ApiProperty({
     type: [LegitCheckImageDto],
     default: [
       {
-        legit_check_image_id: '00000000-0000-0000-0000-000000000001',
         file_id: '00000000-0000-0000-0000-000000000001',
-        name: 'Outer Shoes',
+        subcategory_instruction_id: '00000000-0000-0000-0000-000000000001',
       },
       {
-        legit_check_image_id: '00000000-0000-0000-0000-000000000002',
         file_id: '00000000-0000-0000-0000-000000000002',
-        name: 'Insole',
+        subcategory_instruction_id: '00000000-0000-0000-0000-000000000002',
       },
     ],
-    description: 'List of FileID',
+    description: 'List of LegitCheckImage',
   })
   legit_check_images: LegitCheckImageDto[];
+
   @ApiProperty({
     type: String,
     default: 'This is client note',

@@ -57,7 +57,7 @@ async function seedUsers() {
 async function seedBrands() {
   const brands = ['armani', 'diesel', 'calvin klein'];
   brands.forEach(async (name) => {
-    const brand = prisma.brand.findFirst({
+    const brand = await prisma.brand.findFirst({
       where: { name },
       select: { id: true },
     });
@@ -73,7 +73,7 @@ async function seedBrands() {
 async function seedCategories() {
   const categories = ['bags', 'apparel', 'footwear'];
   categories.forEach(async (name) => {
-    const category = prisma.category.findFirst({
+    const category = await prisma.category.findFirst({
       where: { name },
       select: { id: true },
     });

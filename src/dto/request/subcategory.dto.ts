@@ -1,4 +1,4 @@
-import { ApiProperty, PartialType } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
 
 export class CreateSubcategoryDto {
   @ApiProperty({
@@ -21,3 +21,11 @@ export class CreateSubcategoryDto {
 }
 
 export class UpdateSubcategoryDto extends PartialType(CreateSubcategoryDto) {}
+
+export class SubcategoriesQuery {
+  @ApiPropertyOptional({
+    type: String,
+    default: '00000000-0000-0000-0000-000000000000',
+  })
+  category_id: string;
+}
