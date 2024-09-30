@@ -11,11 +11,17 @@ export class SubcategoryInstructionDto {
     type: String,
     default: '00000000-0000-0000-0000-000000000000',
   })
-  file_id: string;
+  subcategory_id: string;
 
   @ApiProperty({
     type: String,
     default: '00000000-0000-0000-0000-000000000000',
   })
-  subcategory_id: string;
+  icon_id: string;
+
+  @ApiProperty({
+    type: String,
+    default: '00000000-0000-0000-0000-000000000000',
+  })
+  example_image_id: string;
 }
