@@ -3,6 +3,7 @@ import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { PrismaService } from 'src/common/prisma.service';
 import {
   CreateSubcategoryInstructionDto,
+  SubcategoryInstructionsQuery,
   UpdateSubcategoryInstructionDto,
 } from 'src/dto/request/subcategory_instruction.dto';
 import { SubcategoryInstructionDto } from 'src/dto/response/subcategory_instruction.dto';
@@ -25,48 +26,89 @@ export class SubcategoryInstructionService {
       await this.prismaService.subcategoryInstruction.create({
         data: {
           name: createSubcategoryInstructionDto.name,
-          file_id: createSubcategoryInstructionDto.file_id,
           subcategory_id: createSubcategoryInstructionDto.subcategory_id,
+          icon_id: createSubcategoryInstructionDto.icon_id,
+          example_image_id: createSubcategoryInstructionDto.example_image_id,
         },
       });
 
-    return {
-      name: subcategoryInstruction.name,
-      file_id: subcategoryInstruction.file_id,
-      subcategory_id: subcategoryInstruction.subcategory_id,
-    };
+    return subcategoryInstruction;
   }
 
-  async findAll(): Promise<SubcategoryInstructionDto[]> {
+  async findAll(
+    query: SubcategoryInstructionsQuery,
+  ): Promise<SubcategoryInstructionDto[]> {
     this.logger.debug('Get all subcategory instructions');
 
     const subcategoryInstructions =
-      await this.prismaService.subcategoryInstruction.findMany();
+      await this.prismaService.subcategoryInstruction.findMany({
+        where: {
+          subcategory_id: query.subcategory_id,
+        },
+        include: {
+          subcategory: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          icon: {
+            select: {
+              id: true,
+              path: true,
+              file_name: true,
+              url: true,
+            },
+          },
+          example_image: {
+            select: {
+              id: true,
+              path: true,
+              file_name: true,
+              url: true,
+            },
+          },
+        },
+      });
 
-    return subcategoryInstructions.map((subcategoryInstruction) => {
-      return {
-        name: subcategoryInstruction.name,
-        file_id: subcategoryInstruction.file_id,
-        subcategory_id: subcategoryInstruction.subcategory_id,
-      };
-    });
+    return subcategoryInstructions;
   }
 
   async findOne(id: string): Promise<SubcategoryInstructionDto> {
     const subcategoryInstruction =
       await this.prismaService.subcategoryInstruction.findUnique({
         where: { id },
+        include: {
+          subcategory: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          icon: {
+            select: {
+              id: true,
+              path: true,
+              file_name: true,
+              url: true,
+            },
+          },
+          example_image: {
+            select: {
+              id: true,
+              path: true,
+              file_name: true,
+              url: true,
+            },
+          },
+        },
       });
 
     if (!subcategoryInstruction) {
       throw new HttpException('subcategory instruction not found', 404);
     }
 
-    return {
-      name: subcategoryInstruction.name,
-      file_id: subcategoryInstruction.file_id,
-      subcategory_id: subcategoryInstruction.subcategory_id,
-    };
+    return subcategoryInstruction;
   }
 
   async update(
@@ -76,6 +118,9 @@ export class SubcategoryInstructionService {
     const subcategoryInstruction =
       await this.prismaService.subcategoryInstruction.findUnique({
         where: { id },
+        select: {
+          id: true,
+        },
       });
 
     if (!subcategoryInstruction) {
@@ -88,17 +133,16 @@ export class SubcategoryInstructionService {
         data: updateSubcategoryInstructionDto,
       });
 
-    return {
-      name: updatedSubcategoryInstruction.name,
-      file_id: updatedSubcategoryInstruction.file_id,
-      subcategory_id: updatedSubcategoryInstruction.subcategory_id,
-    };
+    return updatedSubcategoryInstruction;
   }
 
   async remove(id: string) {
     const subcategoryInstruction =
       await this.prismaService.subcategoryInstruction.findUnique({
         where: { id },
+        select: {
+          id: true,
+        },
       });
 
     if (!subcategoryInstruction) {

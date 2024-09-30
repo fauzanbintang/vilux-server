@@ -4,6 +4,7 @@ import { PrismaService } from 'src/common/prisma.service';
 import { extname } from 'path';
 import ImageKit from 'imagekit';
 import sharp from 'sharp';
+import { readFileSync } from 'fs';
 
 @Injectable()
 export class FileService {
@@ -16,14 +17,62 @@ export class FileService {
   private readonly allowedExtensions = ['.jpg', '.png', '.jpeg']; // Add allowed extensions
   private readonly maxFileSize = 100 * 1024 * 1024; // 100MB (adjust as needed)
 
-  async mergeImages(frameBuffer: Buffer, contentBuffer: Buffer) {
+  async mergeImages(frameId: string, contentBuffer: Buffer) {
     try {
-      const mergedImage = await sharp(frameBuffer)
-        .composite([{ input: contentBuffer, gravity: 'center' }])
+      const resizedContentBuffer = await sharp(contentBuffer)
+        .resize({
+          width: 1080,
+          height: 1920,
+          fit: 'contain',
+        })
+        .toBuffer();
+
+      const frame = await this.prismaService.file.findUnique({
+        where: {
+          id: frameId,
+        },
+      });
+
+      if (!frame) {
+        throw new HttpException('Frame not found', 404);
+      }
+
+      const frameResponse = await fetch(frame.url);
+      if (!frameResponse.ok) {
+        throw new HttpException('Failed to fetch frame', 500);
+      }
+
+      const frameBuffer = await frameResponse.arrayBuffer();
+
+      const mergedImage = await sharp(resizedContentBuffer)
+        .composite([{ input: Buffer.from(frameBuffer), gravity: 'center' }])
+        .toBuffer();
+
+      const uniqueCode = '1A3G56';
+
+      const glacialIndifferenceFont = readFileSync(
+        './src/file/fonts/GlacialIndifference-Bold.otf',
+      ).toString('base64');
+
+      const svgText = `
+        <svg width="1080" height="1920" xmlns="http://www.w3.org/2000/svg">
+          <style>
+            @font-face {
+              font-family: 'GlacialIndifference';
+              src: url('data:font/ttf;base64,${glacialIndifferenceFont}') format('truetype');
+            }
+            .code { fill: white; font-size: 80px; font-family: 'GlacialIndifference'; font-weight: bold; }
+          </style>
+          <text x="150" y="1410" class="code">${uniqueCode}</text>
+        </svg>
+      `;
+
+      const finalImageBuffer = await sharp(mergedImage)
+        .composite([{ input: Buffer.from(svgText), gravity: 'southeast' }])
         .toBuffer();
 
       const imagekit = await this.imagekit.upload({
-        file: mergedImage.toString('base64'),
+        file: finalImageBuffer.toString('base64'),
         fileName: `certificate-${Date.now()}`,
       });
 
@@ -37,10 +86,7 @@ export class FileService {
 
       return newFile;
     } catch (error) {
-      throw new HttpException(
-        JSON.stringify(error),
-        error.getStatus() ? error.getStatus() : 500,
-      );
+      throw new HttpException(error.message, 500);
     }
   }
 
@@ -135,7 +181,7 @@ export class FileService {
 
   async findById(id: string) {
     try {
-      const file = await this.prismaService.file.findFirst({
+      const file = await this.prismaService.file.findUnique({
         where: { id },
       });
 

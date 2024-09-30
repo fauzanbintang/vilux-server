@@ -32,6 +32,7 @@ async function bootstrap() {
     .addTag('category')
     .addTag('subcategory')
     .addTag('subcategory instruction')
+    .addTag('service')
     .build();
   const options: SwaggerDocumentOptions = {
     operationIdFactory: (controllerKey: string, methodKey: string) => methodKey,

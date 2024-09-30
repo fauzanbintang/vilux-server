@@ -1,11 +1,20 @@
-import { Gender, PrismaClient, Role } from '@prisma/client';
+import { Gender, Prisma, PrismaClient, Role } from '@prisma/client';
 import { hashPassword } from './helpers/bcrypt';
+import { DefaultArgs } from '@prisma/client/runtime/library';
 
 const prisma = new PrismaClient();
 async function main() {
-  // seed users
+  await seedUsers();
+  await seedBrands();
+  await seedCategories();
+  await seedSubcategories();
+  await seedSubcategoryInstructions();
+  await seedServices();
+}
+
+async function seedUsers() {
   await prisma.user.upsert({
-    where: { email: 'client@vilux.id' },
+    where: { email: 'admin@vilux.id' },
     update: {},
     create: {
       username: 'admin_vilux',
@@ -43,24 +52,144 @@ async function main() {
       gender: Gender.male,
     },
   });
-  // // seed brands
-  // const brands = ['Gucci', 'MCM', 'LV'];
-  // brands.forEach(async (e) => {
-  //   await prisma.brand.create({
-  //     data: {
-  //       name: e,
-  //     },
-  //   });
-  // });
-  // // seed categories
-  // const categories = ['Bags', 'Footwear']
-  // categories.forEach(async (e) => {
-  //   await prisma.category.create({
-  //     data: {
-  //       name: e,
-  //     },
-  //   });
-  // });
+}
+
+async function seedBrands() {
+  const brands = ['armani', 'diesel', 'calvin klein'];
+  brands.forEach(async (name) => {
+    const brand = await prisma.brand.findFirst({
+      where: { name },
+      select: { id: true },
+    });
+
+    if (!brand) {
+      await prisma.brand.create({
+        data: { name },
+      });
+    }
+  });
+}
+
+async function seedCategories() {
+  const categories = ['bags', 'apparel', 'footwear'];
+  categories.forEach(async (name) => {
+    const category = await prisma.category.findFirst({
+      where: { name },
+      select: { id: true },
+    });
+
+    if (!category) {
+      await prisma.category.create({
+        data: { name },
+      });
+    }
+  });
+}
+
+async function seedSubcategories() {
+  const bags = ['clutch', 'handbag'];
+  const apparel = ['t-shirts', 'hoodie'];
+  const footwear = ['sneakers', 'loafers'];
+
+  for (let i = 0; i < bags.length; i++) {
+    await findAndCreateSubcategory(prisma.subcategory, bags[i], 'bags');
+    await findAndCreateSubcategory(prisma.subcategory, apparel[i], 'apparel');
+    await findAndCreateSubcategory(prisma.subcategory, footwear[i], 'footwear');
+  }
+}
+
+async function findAndCreateSubcategory(
+  subcategoryDelegate: Prisma.SubcategoryDelegate<DefaultArgs>,
+  name: string,
+  categoryName: string,
+) {
+  const data = await subcategoryDelegate.findFirst({
+    where: { name },
+    select: { id: true },
+  });
+
+  if (!data) {
+    const category = await prisma.category.findFirst({
+      where: { name: categoryName },
+      select: { id: true },
+    });
+
+    if (category) {
+      await subcategoryDelegate.create({
+        data: {
+          name,
+          category_id: category.id,
+        },
+      });
+    }
+  }
+}
+
+async function seedSubcategoryInstructions() {
+  const clutch = [
+    'clutch look',
+    'outer front logo',
+    'serial code tag',
+    'made in tag',
+    'zipper slides',
+    'zipper pull tab',
+    'donut badge',
+    'inner tag',
+    'material look',
+  ];
+
+  const subcategory = await prisma.subcategory.findFirst({
+    where: { name: 'clutch' },
+    select: { id: true },
+  });
+
+  if (subcategory) {
+    clutch.forEach(async (name) => {
+      const data = await prisma.subcategoryInstruction.findFirst({
+        where: { name },
+        select: { id: true },
+      });
+
+      if (!data) {
+        await prisma.subcategoryInstruction.create({
+          data: {
+            name,
+            subcategory_id: subcategory.id,
+          },
+        });
+      }
+    });
+  }
+}
+
+async function seedServices() {
+  const services = [
+    {
+      name: 'fast service',
+      working_hours: 3,
+      normal_price: 195000,
+      vip_price: 160000,
+    },
+    {
+      name: 'reguler service',
+      working_hours: 24,
+      normal_price: 145000,
+      vip_price: 110000,
+    },
+  ];
+
+  services.forEach(async (data) => {
+    const service = await prisma.services.findFirst({
+      where: { name: data.name },
+      select: { id: true },
+    });
+
+    if (!service) {
+      await prisma.services.create({
+        data,
+      });
+    }
+  });
 }
 
 main()

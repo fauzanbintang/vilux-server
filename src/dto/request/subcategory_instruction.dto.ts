@@ -1,4 +1,4 @@
-import { ApiProperty, PartialType } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
 
 export class CreateSubcategoryInstructionDto {
   @ApiProperty({
@@ -11,15 +11,29 @@ export class CreateSubcategoryInstructionDto {
     type: String,
     default: '00000000-0000-0000-0000-000000000000',
   })
-  file_id: string;
+  subcategory_id: string;
 
   @ApiProperty({
     type: String,
     default: '00000000-0000-0000-0000-000000000000',
   })
-  subcategory_id: string;
+  icon_id: string;
+
+  @ApiProperty({
+    type: String,
+    default: '00000000-0000-0000-0000-000000000000',
+  })
+  example_image_id: string;
 }
 
 export class UpdateSubcategoryInstructionDto extends PartialType(
   CreateSubcategoryInstructionDto,
 ) {}
+
+export class SubcategoryInstructionsQuery {
+  @ApiPropertyOptional({
+    type: String,
+    default: '00000000-0000-0000-0000-000000000000',
+  })
+  subcategory_id: string;
+}
