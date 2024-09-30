@@ -172,7 +172,7 @@ model SubcategoryInstruction {
   created_at       DateTime    @default(now())
   name             String
   subcategory_id   String      @db.Uuid
-  subcategory         Subcategory @relation(fields: [subcategory_id], references: [id])
+  subcategory      Subcategory @relation(fields: [subcategory_id], references: [id])
   icon_id          String?     @db.Uuid
   icon             File?       @relation(name: "icon_file", fields: [icon_id], references: [id])
   example_image_id String?     @db.Uuid
