@@ -17,7 +17,7 @@ export class CreateOrderDto {
     type: String,
     default: '00000000-0000-0000-0000-000000000000',
   })
-  voucher_id: string;
+  voucher_id?: string;
 }
 
 export class UpdateOrderDto extends PartialType(CreateOrderDto) {}

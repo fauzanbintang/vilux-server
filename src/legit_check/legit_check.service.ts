@@ -30,10 +30,20 @@ export class LegitCheckService {
 
     var legitCheck: LegitCheckDto;
     if (brandCategoryDto.id && brandCategoryDto.id.length !== 0) {
-      // should check if it still exist or not
       legitCheck = await this.prismaService.legitChecks.update({
         where: { id: brandCategoryDto.id },
         data: brandCategoryDto,
+        select: {
+          id: true,
+          updated_at: true,
+          created_at: true,
+          client_id: true,
+          code: true,
+          brand_id: true,
+          category_id: true,
+          subcategory_id: true,
+          check_status: true,
+        },
       });
     } else {
       const codePrefix = clientInfo.role === Role.vip_client ? 'VIP' : 'NL';
@@ -45,6 +55,17 @@ export class LegitCheckService {
           category_id: brandCategoryDto.category_id,
           subcategory_id: brandCategoryDto.subcategory_id,
           check_status: LegitCheckStatus.brand_category,
+        },
+        select: {
+          id: true,
+          updated_at: true,
+          created_at: true,
+          client_id: true,
+          code: true,
+          brand_id: true,
+          category_id: true,
+          subcategory_id: true,
+          check_status: true,
         },
       });
     }
@@ -61,22 +82,26 @@ export class LegitCheckService {
     );
 
     legitCheckImagesDto.legit_check_images.forEach(async (v) => {
-      if (v.legit_check_image_id && v.legit_check_image_id.length !== 0) {
-        // should check if it still exist or not
+      // for now, additional legitCheckImage will always create new
+      const legitCheckImage =
+        await this.prismaService.legitCheckImages.findFirst({
+          where: { subcategory_instruction_id: v.subcategory_instruction_id },
+          select: { id: true },
+        });
+
+      if (legitCheckImage) {
         await this.prismaService.legitCheckImages.update({
-          where: { id: v.legit_check_image_id },
+          where: { id: legitCheckImage.id },
           data: {
-            name: v.name,
-            legit_check_id: id,
             file_id: v.file_id,
           },
         });
       } else {
         await this.prismaService.legitCheckImages.create({
           data: {
-            name: v.name,
             legit_check_id: id,
             file_id: v.file_id,
+            subcategory_instruction_id: v.subcategory_instruction_id,
           },
         });
       }
@@ -89,6 +114,19 @@ export class LegitCheckService {
           product_name: legitCheckImagesDto.product_name,
           client_note: legitCheckImagesDto.client_note,
           check_status: LegitCheckStatus.upload_data,
+        },
+        select: {
+          id: true,
+          updated_at: true,
+          created_at: true,
+          client_id: true,
+          code: true,
+          brand_id: true,
+          category_id: true,
+          subcategory_id: true,
+          check_status: true,
+          product_name: true,
+          client_note: true,
         },
       },
     );
@@ -225,13 +263,18 @@ export class LegitCheckService {
         LegitCheckImages: {
           select: {
             id: true,
-            name: true,
             file: {
               select: {
                 id: true,
                 path: true,
                 file_name: true,
                 url: true,
+              },
+            },
+            subcategory_instruction: {
+              select: {
+                id: true,
+                name: true,
               },
             },
           },
@@ -308,7 +351,6 @@ export class LegitCheckService {
         LegitCheckImages: {
           select: {
             id: true,
-            name: true,
             status: true,
             file: {
               select: {
@@ -316,6 +358,12 @@ export class LegitCheckService {
                 path: true,
                 file_name: true,
                 url: true,
+              },
+            },
+            subcategory_instruction: {
+              select: {
+                id: true,
+                name: true,
               },
             },
           },

@@ -3,6 +3,7 @@ import { PrismaService } from 'src/common/prisma.service';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import {
   CreateSubcategoryDto,
+  SubcategoriesQuery,
   UpdateSubcategoryDto,
 } from 'src/dto/request/subcategory.dto';
 import { SubcategoryDto } from 'src/dto/response/subcategory.dto';
@@ -32,7 +33,7 @@ export class SubcategoryService {
     return subcategory;
   }
 
-  async findAll(): Promise<SubcategoryDto[]> {
+  async findAll(query: SubcategoriesQuery): Promise<SubcategoryDto[]> {
     this.logger.debug('Get all categories');
 
     const categories = await this.prismaService.subcategory.findMany({
@@ -59,6 +60,9 @@ export class SubcategoryService {
             url: true,
           },
         },
+      },
+      where: {
+        category_id: query.category_id,
       },
     });
 

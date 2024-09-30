@@ -7,11 +7,13 @@ import {
   Param,
   Delete,
   HttpCode,
+  Query,
 } from '@nestjs/common';
 import { SubcategoryService } from './subcategory.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
   CreateSubcategoryDto,
+  SubcategoriesQuery,
   UpdateSubcategoryDto,
 } from 'src/dto/request/subcategory.dto';
 import { ResponseDto } from 'src/dto/response/response.dto';
@@ -111,8 +113,10 @@ export class SubcategoryController {
     status: 500,
     description: 'Internal Server Error',
   })
-  async findAll(): Promise<ResponseDto<SubcategoryDto[]>> {
-    const categories = await this.subcategoryService.findAll();
+  async findAll(
+    @Query() query: SubcategoriesQuery,
+  ): Promise<ResponseDto<SubcategoryDto[]>> {
+    const categories = await this.subcategoryService.findAll(query);
 
     return {
       message: 'Successfully get all categories',

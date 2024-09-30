@@ -29,17 +29,25 @@ export class LegitCheckController {
 
   @Post('brand-category')
   @HttpCode(201)
-  @ApiOperation({ summary: 'Upsert legit check brand and category' })
+  @ApiOperation({
+    summary: 'Upsert legit check brand, category and subcategory',
+  })
   @ApiResponse({
     status: 201,
-    description: 'Upsert legit check brand and category',
+    description: 'Successfully upsert legit check',
     schema: {
       example: {
-        message: 'Legit check successfully created or updated',
+        message: 'Successfully upsert legit check',
         data: {
-          id: '123e4567-e89b-12d3-a456-426614174000',
-          brand_id: '123e4567-e89b-12d3-a456-426614174001',
-          category_id: '123e4567-e89b-12d3-a456-426614174002',
+          id: '59e4c335-01bc-42db-a742-8b52b010d4f9',
+          updated_at: '2024-09-30T13:01:33.011Z',
+          created_at: '2024-09-30T13:01:33.011Z',
+          client_id: '2ddab221-d4a3-4297-a3d9-3e7ca8d9d2eb',
+          code: 'NL01J91GB5YH',
+          brand_id: 'f254dcee-11d6-41f8-8bc8-94c9107c0c44',
+          category_id: 'fe380803-ea33-4c75-8e04-dd0a3c14c4fa',
+          subcategory_id: '64491799-2d05-4212-9335-bc0eb801ad47',
+          check_status: 'brand_category',
         },
         errors: null,
       },
@@ -65,11 +73,7 @@ export class LegitCheckController {
 
     return {
       message: 'Successfully upsert legit check',
-      data: {
-        id: legitCheck.id,
-        brand_id: legitCheck.brand_id,
-        category_id: legitCheck.category_id,
-      },
+      data: legitCheck,
       errors: null,
     };
   }
@@ -84,18 +88,17 @@ export class LegitCheckController {
       example: {
         message: 'Successfully upsert legit check images',
         data: {
-          id: '3b2a2e7d-9637-4a93-95d9-4f9f27992fa6',
-          updated_at: '2024-09-13T09:24:49.326Z',
-          created_at: '2024-09-12T17:01:35.059Z',
-          brand_id: '4c2cd434-4afc-41e3-8077-32c8939df322',
-          category_id: '9aa84aac-954c-409f-9b90-188bc7a11e0e',
+          id: '59e4c335-01bc-42db-a742-8b52b010d4f9',
+          updated_at: '2024-09-30T14:02:42.859Z',
+          created_at: '2024-09-30T13:01:33.011Z',
+          client_id: '2ddab221-d4a3-4297-a3d9-3e7ca8d9d2eb',
+          code: 'NL01J91GB5YH',
+          brand_id: 'f254dcee-11d6-41f8-8bc8-94c9107c0c44',
+          category_id: 'fe380803-ea33-4c75-8e04-dd0a3c14c4fa',
+          subcategory_id: '64491799-2d05-4212-9335-bc0eb801ad47',
           check_status: 'upload_data',
-          product_name: 'Nike Cortez',
-          legit_status: null,
+          product_name: 'Armani Clutch',
           client_note: 'This is client note',
-          admin_note: null,
-          cover_id: null,
-          certificate_id: null,
         },
         errors: null,
       },
