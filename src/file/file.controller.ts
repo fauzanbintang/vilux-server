@@ -7,6 +7,7 @@ import {
   UploadedFiles,
   Get,
   Param,
+  Body,
 } from '@nestjs/common';
 import { FileService } from './file.service';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
@@ -19,12 +20,12 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { FileUploadDto, FilesUploadDto } from 'src/dto/request/file.dto';
+import { CreateCertificateDto, FileUploadDto, FilesUploadDto } from 'src/dto/request/file.dto';
 
 @ApiTags('file')
 @Controller('/api/files')
 export class FileController {
-  constructor(private readonly fileService: FileService) {}
+  constructor(private readonly fileService: FileService) { }
 
   @Post('uploads')
   @HttpCode(201)
@@ -108,15 +109,12 @@ export class FileController {
     };
   }
 
-  @Post('certificates/:frameId')
+  @Post('certificates')
   @HttpCode(201)
-  @UseInterceptors(FileInterceptor('file'))
   @ApiOperation({
     summary:
-      'Create certificate with frame => real frame id : b104d5f9-57cd-45df-9a63-b8e53d4c21e9, fake frame id : 5dea4736-29c9-4316-b249-c3316f8c2396',
+      'Creates a new certificate by merging frame and content images',
   })
-  @ApiConsumes('multipart/form-data')
-  @ApiBody({ type: FileUploadDto })
   @ApiResponse({
     status: 201,
     description: 'The certificate has been created successfully.',
@@ -136,12 +134,10 @@ export class FileController {
     },
   })
   async mergeImages(
-    @Param('frameId') frameId: string,
-    @UploadedFile() file: Express.Multer.File,
+    @Body() createCertificateDto: CreateCertificateDto,
   ): Promise<ResponseDto<FileDto>> {
     const certificate = await this.fileService.mergeImages(
-      frameId,
-      file.buffer,
+      createCertificateDto
     );
 
     return {

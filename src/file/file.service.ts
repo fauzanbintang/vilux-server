@@ -5,6 +5,7 @@ import { extname } from 'path';
 import ImageKit from 'imagekit';
 import sharp from 'sharp';
 import { readFileSync } from 'fs';
+import { CreateCertificateDto } from 'src/dto/request/file.dto';
 
 @Injectable()
 export class FileService {
@@ -12,13 +13,32 @@ export class FileService {
     private prismaService: PrismaService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
     @Inject('IMAGEKIT') private readonly imagekit: ImageKit,
-  ) {}
+  ) { }
 
   private readonly allowedExtensions = ['.jpg', '.png', '.jpeg']; // Add allowed extensions
   private readonly maxFileSize = 100 * 1024 * 1024; // 100MB (adjust as needed)
 
-  async mergeImages(frameId: string, contentBuffer: Buffer) {
+  async mergeImages(createCertificateDto: CreateCertificateDto) {
+    const { frameId, contentId } = createCertificateDto;
     try {
+      const content = await this.prismaService.file.findUnique({
+        where: {
+          id: contentId,
+        },
+      });
+
+      if (!content) {
+        throw new HttpException('Content not found', 404);
+      }
+
+      const contentResponse = await fetch(content.url);
+
+      if (!contentResponse.ok) {
+        throw new HttpException('Failed to fetch content', 500);
+      }
+
+      const contentBuffer = await contentResponse.arrayBuffer();
+
       const resizedContentBuffer = await sharp(contentBuffer)
         .resize({
           width: 1080,
@@ -38,6 +58,7 @@ export class FileService {
       }
 
       const frameResponse = await fetch(frame.url);
+
       if (!frameResponse.ok) {
         throw new HttpException('Failed to fetch frame', 500);
       }
