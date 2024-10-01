@@ -17,7 +17,7 @@ export class AuthService {
     private validationService: ValidationService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
     private configService: ConfigService,
-  ) {}
+  ) { }
 
   async register(registerUserDto: RegisterUserDto): Promise<UserDto> {
     this.logger.debug(`Register new user ${JSON.stringify(registerUserDto)}`);
@@ -49,6 +49,7 @@ export class AuthService {
         full_name: registerUserDto.full_name,
         date_of_birth: new Date(registerUserDto.date_of_birth),
         gender: Gender[registerUserDto.gender],
+        phone_number: registerUserDto.phone_number || null,
       },
     });
 
