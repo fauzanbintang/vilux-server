@@ -80,7 +80,7 @@ export class PaymentService {
         client_amount: createPaymentDto.client_amount,
       },
     });
-    return { data: payment };
+    return payment
   }
 
   async handleNotification(notificationJson: any) {
@@ -192,7 +192,7 @@ export class PaymentService {
         client_amount: true,
       },
     });
-    return { data: payments };
+    return payments
   }
 
   async findOne(id: string) {
@@ -206,7 +206,7 @@ export class PaymentService {
       throw new HttpException('Payment not found', 404);
     }
 
-    return { data: payment };
+    return payment
   }
 
   async update(id: string, updatePaymentDto: UpdatePaymentDto) {
@@ -224,7 +224,7 @@ export class PaymentService {
       where: { id },
       data: updatePaymentDto,
     });
-    return { data: updatedPayment };
+    return updatedPayment
   }
 
   async remove(id: string) {
