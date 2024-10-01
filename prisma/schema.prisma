@@ -64,6 +64,7 @@ model User {
   full_name      String        @db.VarChar(100)
   date_of_birth  DateTime
   gender         Gender
+  phone_number   String?
   verified_email Boolean       @default(false)
   updated_at     DateTime      @default(now()) @updatedAt
   created_at     DateTime      @default(now())

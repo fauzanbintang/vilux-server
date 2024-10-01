@@ -39,6 +39,16 @@ export class UserDto {
   role?: Role;
   @ApiProperty({
     type: String,
+    default: '+1234567890',
+  })
+  phone_number?: string;
+  @ApiProperty({
+    type: Date,
+    default: new Date('01-01-1999'),
+  })
+  created_at?: Date;
+  @ApiProperty({
+    type: String,
     default: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJle...',
   })
   token?: string;
