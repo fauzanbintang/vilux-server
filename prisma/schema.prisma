@@ -69,6 +69,7 @@ model User {
   updated_at     DateTime      @default(now()) @updatedAt
   created_at     DateTime      @default(now())
   LegitChecks    LegitChecks[]
+  Voucher        Voucher[]
 
   @@map("users")
 }
@@ -123,18 +124,19 @@ model Payment {
 }
 
 model Voucher {
-  id            String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  updated_at    DateTime    @default(now()) @updatedAt
-  created_at    DateTime    @default(now())
-  name          String
-  code          String
-  voucher_type  VoucherType
-  discount      String
-  quota_usage   Int
-  started_at    DateTime
-  expired_at    DateTime
-  active_status Boolean     @default(false)
-  Order         Order[]
+  id           String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  updated_at   DateTime    @default(now()) @updatedAt
+  created_at   DateTime    @default(now())
+  name         String
+  voucher_type VoucherType
+  started_at   DateTime
+  expired_at   DateTime
+  used         Boolean     @default(false)
+  discount     Int?
+  code         String?
+  user_id      String?     @db.Uuid
+  user         User?       @relation(fields: [user_id], references: [id])
+  Order        Order[]
 
   @@map("vouchers")
 }
