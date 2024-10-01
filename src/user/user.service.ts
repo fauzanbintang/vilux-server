@@ -10,7 +10,7 @@ export class UserService {
   constructor(
     private prismaService: PrismaService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
-  ) {}
+  ) { }
 
   async getUsers(): Promise<UserDto[]> {
     this.logger.debug('Get all users');
@@ -27,6 +27,30 @@ export class UserService {
         created_at: true,
       },
     });
+  }
+
+  async getUser(id: string): Promise<UserDto> {
+    this.logger.debug(`Get user by id ${id}`);
+
+    const user = await this.prismaService.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        full_name: true,
+        date_of_birth: true,
+        gender: true,
+        role: true,
+        created_at: true,
+      },
+    });
+
+    if (!user) {
+      throw new HttpException('User not found', 404);
+    }
+
+    return user;
   }
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<UserDto> {
