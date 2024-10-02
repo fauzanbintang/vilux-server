@@ -70,6 +70,7 @@ model User {
   updated_at         DateTime      @default(now()) @updatedAt
   created_at         DateTime      @default(now())
   LegitChecks        LegitChecks[]
+  Voucher            Voucher[]
 
   @@map("users")
 }
@@ -124,18 +125,19 @@ model Payment {
 }
 
 model Voucher {
-  id            String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  updated_at    DateTime    @default(now()) @updatedAt
-  created_at    DateTime    @default(now())
-  name          String
-  code          String
-  voucher_type  VoucherType
-  discount      String
-  quota_usage   Int
-  started_at    DateTime
-  expired_at    DateTime
-  active_status Boolean     @default(false)
-  Order         Order[]
+  id           String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  updated_at   DateTime    @default(now()) @updatedAt
+  created_at   DateTime    @default(now())
+  name         String
+  voucher_type VoucherType
+  started_at   DateTime
+  expired_at   DateTime
+  used         Boolean     @default(false)
+  discount     Int?
+  code         String?
+  user_id      String?     @db.Uuid
+  user         User?       @relation(fields: [user_id], references: [id])
+  Order        Order[]
 
   @@map("vouchers")
 }
@@ -237,13 +239,13 @@ model Order {
   code            String
   legit_check_id  String      @db.Uuid
   legit_check     LegitChecks @relation(fields: [legit_check_id], references: [id])
-  original_amount String
+  service_id      String      @db.Uuid
+  service         Services    @relation(fields: [service_id], references: [id])
+  original_amount BigInt
   voucher_id      String?     @db.Uuid
   voucher         Voucher?    @relation(fields: [voucher_id], references: [id])
   payment_id      String?     @db.Uuid
   payment         Payment?    @relation(fields: [payment_id], references: [id])
-  service_id      String?     @db.Uuid
-  service         Services?   @relation(fields: [service_id], references: [id])
 
   @@map("orders")
 }

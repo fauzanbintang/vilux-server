@@ -109,7 +109,6 @@ export class PaymentService {
       const payment = await this.prismaService.payment.findUnique({
         where: { external_id: orderId },
       });
-      console.log(payment, 'AFASFASF');
 
       if (!payment) {
         throw new HttpException('Payment not found', 404);
