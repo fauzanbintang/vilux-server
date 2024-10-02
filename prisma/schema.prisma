@@ -238,13 +238,13 @@ model Order {
   code            String
   legit_check_id  String      @db.Uuid
   legit_check     LegitChecks @relation(fields: [legit_check_id], references: [id])
-  original_amount String
+  service_id      String      @db.Uuid
+  service         Services    @relation(fields: [service_id], references: [id])
+  original_amount BigInt
   voucher_id      String?     @db.Uuid
   voucher         Voucher?    @relation(fields: [voucher_id], references: [id])
   payment_id      String?     @db.Uuid
   payment         Payment?    @relation(fields: [payment_id], references: [id])
-  service_id      String?     @db.Uuid
-  service         Services?   @relation(fields: [service_id], references: [id])
 
   @@map("orders")
 }

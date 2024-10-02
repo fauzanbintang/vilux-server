@@ -7,7 +7,7 @@ export class CreateOrderDto {
   })
   legit_check_id: string;
 
-  @ApiPropertyOptional({
+  @ApiProperty({
     type: String,
     default: '00000000-0000-0000-0000-000000000000',
   })
@@ -18,6 +18,12 @@ export class CreateOrderDto {
     default: '00000000-0000-0000-0000-000000000000',
   })
   voucher_id?: string;
+
+  @ApiProperty({
+    type: BigInt,
+    default: 156000,
+  })
+  total_order: bigint;
 }
 
 export class UpdateOrderDto extends PartialType(CreateOrderDto) {}

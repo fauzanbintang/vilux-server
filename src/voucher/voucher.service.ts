@@ -22,7 +22,7 @@ export class VoucherService {
     voucherType: VoucherType,
   ) {
     this.logger.debug(`Create voucher ${JSON.stringify(createVoucherDto)}`);
-    console.log(voucherType, createVoucherDto);
+    
     const startedAt = new Date(createVoucherDto.started_at ?? Date.now());
     const expiredAt = new Date(createVoucherDto.expired_at);
     if (expiredAt < startedAt) {
