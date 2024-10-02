@@ -37,6 +37,11 @@ export class RegisterUserDto {
     default: 'male',
   })
   gender: Gender;
+  @ApiProperty({
+    type: String,
+    default: '+1234567890',
+  })
+  phone_number?: string;
 }
 
 export class LoginUserDto {

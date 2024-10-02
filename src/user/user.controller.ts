@@ -18,7 +18,7 @@ import { UpdateUserDto, UpdateUserPasswordDto } from 'src/dto/request/auth.dto';
 @ApiTags('user')
 @Controller('/api/users')
 export class UserController {
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService) { }
 
   @Get()
   @HttpCode(200)
@@ -38,6 +38,7 @@ export class UserController {
             date_of_birth: '1998-12-31T17:00:00.000Z',
             gender: 'male',
             role: 'client',
+            created_at: '2021-01-01T17:00:00.000Z',
           },
         ],
         errors: null,
@@ -75,6 +76,35 @@ export class UserController {
       data: null,
       errors: null,
     };
+  }
+
+  @Get(':id')
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Get user' })
+  @ApiResponse({
+    status: 200,
+    description: 'Get user',
+    schema: {
+      example: {
+        message: 'Successfully get user',
+        data: {
+          id: '60cd3158-6318-49ba-82a2-5b02d0e1af10',
+          username: 'test',
+          email: 'test@mail.com',
+          full_name: 'Test Test',
+          date_of_birth: '1998-12-31T17:00:00.000Z',
+          gender: 'male',
+          role: 'client',
+          phone_number: '+1234567890',
+          created_at: '2021-01-01T17:00:00.000Z',
+        },
+        errors: null,
+      },
+    },
+  })
+  async getUser(@Param('id') id: string): Promise<ResponseDto<UserDto>> {
+    const user = await this.userService.getUser(id);
+    return { message: 'Successfully get user', data: user, errors: null };
   }
 
   @Put(':id')
