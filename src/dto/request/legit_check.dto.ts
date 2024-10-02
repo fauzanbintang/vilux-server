@@ -110,13 +110,8 @@ export class LegitCheckValidateDataDto {
 
 export class LegitCheckCompletedDto {
   @ApiProperty({
-    type: String,
-    default: '00000000-0000-0000-0000-000000000000',
-  })
-  cover_id: string;
-  @ApiProperty({
-    type: String,
-    default: 'authentic',
+    enum: LegitStatus,
+    default: LegitStatus.authentic,
   })
   legit_status: LegitStatus;
   @ApiProperty({

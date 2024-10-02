@@ -69,7 +69,7 @@ export class FileService {
         .composite([{ input: Buffer.from(frameBuffer), gravity: 'center' }])
         .toBuffer();
 
-      const uniqueCode = '1A3G56';
+      const uniqueCode = createCertificateDto.code;
 
       const glacialIndifferenceFont = readFileSync(
         './src/file/fonts/GlacialIndifference-Bold.otf',
@@ -204,6 +204,25 @@ export class FileService {
     try {
       const file = await this.prismaService.file.findUnique({
         where: { id },
+      });
+
+      if (!file) {
+        throw new HttpException('File not found', 404);
+      }
+
+      return file;
+    } catch (error) {
+      throw new HttpException(
+        JSON.stringify(error),
+        error.getStatus() ? error.getStatus() : 500,
+      );
+    }
+  }
+
+  async findByFileName(name: string) {
+    try {
+      const file = await this.prismaService.file.findUnique({
+        where: { file_name: name },
       });
 
       if (!file) {

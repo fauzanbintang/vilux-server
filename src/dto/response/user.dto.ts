@@ -43,6 +43,11 @@ export class UserDto {
   })
   phone_number?: string;
   @ApiProperty({
+    type: String,
+    default: 'VLX',
+  })
+  certificate_prefix?: string;
+  @ApiProperty({
     type: Date,
     default: new Date('01-01-1999'),
   })
