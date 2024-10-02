@@ -56,19 +56,20 @@ enum LegitStatus {
 }
 
 model User {
-  id             String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  username       String        @unique @db.VarChar(100)
-  email          String        @unique @db.VarChar(100)
-  password       String        @db.VarChar(100)
-  role           Role          @default(client)
-  full_name      String        @db.VarChar(100)
-  date_of_birth  DateTime
-  gender         Gender
-  phone_number   String?
-  verified_email Boolean       @default(false)
-  updated_at     DateTime      @default(now()) @updatedAt
-  created_at     DateTime      @default(now())
-  LegitChecks    LegitChecks[]
+  id                 String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  username           String        @unique @db.VarChar(100)
+  email              String        @unique @db.VarChar(100)
+  password           String        @db.VarChar(100)
+  role               Role          @default(client)
+  full_name          String        @db.VarChar(100)
+  date_of_birth      DateTime
+  gender             Gender
+  certificate_prefix String        @default("VLX") @db.VarChar(3)
+  phone_number       String?
+  verified_email     Boolean       @default(false)
+  updated_at         DateTime      @default(now()) @updatedAt
+  created_at         DateTime      @default(now())
+  LegitChecks        LegitChecks[]
 
   @@map("users")
 }
@@ -76,7 +77,7 @@ model User {
 model File {
   id                                 String                   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   path                               String
-  file_name                          String
+  file_name                          String                   @unique
   url                                String
   updated_at                         DateTime                 @default(now()) @updatedAt
   created_at                         DateTime                 @default(now())

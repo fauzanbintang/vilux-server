@@ -10,6 +10,7 @@ async function main() {
   await seedSubcategories();
   await seedSubcategoryInstructions();
   await seedServices();
+  await seedFiles();
 }
 
 async function seedUsers() {
@@ -190,6 +191,44 @@ async function seedServices() {
       });
     }
   });
+}
+
+async function seedFiles() {
+  const files = [
+    {
+      name: 'fake-frame',
+      url: 'https://ik.imagekit.io/viluxmedia/fake-certificate.png',
+      path: "/fake-certificate.png"
+    },
+    {
+      name: 'authentic-frame',
+      url: 'https://ik.imagekit.io/viluxmedia/real-certificate.png',
+      path: "/real-certificate.png"
+    },
+  ]
+
+  files.forEach(async (data) => {
+    const file = await prisma.file.findFirst({
+      where: { url: data.url },
+      select: { id: true },
+    });
+
+    if (!file) {
+      await prisma.file.upsert({
+        where: { file_name: data.name },
+        create: {
+          file_name: data.name,
+          path: data.path,
+          url: data.url,
+        },
+        update: {
+          file_name: data.name,
+          path: data.path,
+          url: data.url,
+        },
+      });
+    }
+  })
 }
 
 main()

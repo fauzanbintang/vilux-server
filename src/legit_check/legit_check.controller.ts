@@ -201,7 +201,7 @@ export class LegitCheckController {
           client_note: 'This is client note',
           admin_note: 'This is admin note',
           cover_id: '3fa84aac-954c-409f-s890-188bc7a1a12y',
-          certificate_id: null,
+          certificate_id: '3fa84aac-954c-409w-s8sa-188b1121dy',
         },
         errors: null,
       },
@@ -216,12 +216,14 @@ export class LegitCheckController {
     description: 'Internal Server Error',
   })
   async updateLegitCheckCompleted(
+    @Req() req: Request,
     @Param('id') id: string,
     @Body() legitCheckCompletedDto: LegitCheckCompletedDto,
   ): Promise<ResponseDto<LegitCheckDto>> {
     const legitCheck = await this.legitCheckService.updateLegitCheckCompleted(
       id,
       legitCheckCompletedDto,
+      req.user,
     );
 
     return {

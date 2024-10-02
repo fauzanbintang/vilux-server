@@ -2,6 +2,7 @@ import { HttpException, Inject, Injectable, Logger } from '@nestjs/common';
 import { LegitCheckStatus, Role } from '@prisma/client';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { PrismaService } from 'src/common/prisma.service';
+import { CreateCertificateDto } from 'src/dto/request/file.dto';
 import {
   LegitCheckBrandCategoryDto,
   LegitCheckCompletedDto,
@@ -9,16 +10,19 @@ import {
   LegitCheckPaginationQuery,
   LegitCheckValidateDataDto,
 } from 'src/dto/request/legit_check.dto';
+import { FileDto } from 'src/dto/response/file.dto';
 import { LegitCheckDto } from 'src/dto/response/legit_check.dto';
 import { UserDto } from 'src/dto/response/user.dto';
+import { FileService } from 'src/file/file.service';
 import { generateCode } from 'src/helpers/order_code_generator';
 
 @Injectable()
 export class LegitCheckService {
   constructor(
     private prismaService: PrismaService,
+    private readonly fileService: FileService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
-  ) {}
+  ) { }
 
   async upsertLegitCheckBrandCategory(
     clientInfo: UserDto,
@@ -180,6 +184,7 @@ export class LegitCheckService {
   async updateLegitCheckCompleted(
     id: string,
     legitCheckCompletedDto: LegitCheckCompletedDto,
+    clientInfo: UserDto,
   ): Promise<LegitCheckDto> {
     this.logger.debug(
       `Update legit check: completed ${JSON.stringify(legitCheckCompletedDto)}`,
@@ -202,11 +207,26 @@ export class LegitCheckService {
       }
     });
 
+    let dataCertificate: CreateCertificateDto = { frameId: '', contentId: legitCheck.LegitCheckImages[0].id, code: generateCode(clientInfo.certificate_prefix) }
+    let certificate: FileDto;
+    if (legitCheck.legit_status == 'authentic') {
+      const frame = await this.fileService.findByFileName('authentic-frame')
+      dataCertificate.frameId = frame.id
+    } else if (legitCheck.legit_status == 'fake') {
+      const frame = await this.fileService.findByFileName('fake-frame')
+      dataCertificate.frameId = frame.id
+    }
+
+    if (legitCheck.legit_status !== 'unidentified') {
+      certificate = await this.fileService.mergeImages(dataCertificate)
+    }
+
     let updatedLegitCheck: LegitCheckDto =
       await this.prismaService.legitChecks.update({
         where: { id },
         data: {
-          cover_id: legitCheckCompletedDto.cover_id,
+          certificate_code: dataCertificate.code,
+          certificate_id: certificate ? certificate.id : null,
           legit_status: legitCheckCompletedDto.legit_status,
           admin_note: legitCheckCompletedDto.admin_note,
           check_status: LegitCheckStatus.legit_checking,

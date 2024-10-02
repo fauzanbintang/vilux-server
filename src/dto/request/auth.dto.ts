@@ -97,3 +97,12 @@ export class UpdateUserPasswordDto {
   })
   newPassword: string;
 }
+
+export class UserQuery {
+  @ApiProperty({
+    enum: Role,
+    isArray: true,
+    default: [Role.vip_client],
+  })
+  role?: Role[];
+}
