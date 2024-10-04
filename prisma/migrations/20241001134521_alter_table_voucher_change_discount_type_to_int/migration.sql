@@ -6,8 +6,6 @@
   - The `discount` column on the `vouchers` table would be dropped and recreated. This will lead to data loss if there is data in the column.
 
 */
--- AlterTable
-ALTER TABLE "users" ADD COLUMN     "phone_number" TEXT;
 
 -- AlterTable
 ALTER TABLE "vouchers" DROP COLUMN "active_status",
