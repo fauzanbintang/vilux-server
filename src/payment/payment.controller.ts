@@ -7,7 +7,9 @@ import {
   Delete,
   HttpCode,
   Put,
+  Req,
 } from '@nestjs/common';
+import { Request } from 'express';
 import { PaymentService } from './payment.service';
 import {
   CreatePaymentDto,
@@ -50,9 +52,10 @@ export class PaymentController {
     }
   })
   async create(
+    @Req() req: Request,
     @Body() createPaymentDto: CreatePaymentDto,
   ): Promise<ResponseDto<PaymentDto>> {
-    const payment = await this.paymentService.create(createPaymentDto);
+    const payment = await this.paymentService.create(createPaymentDto, req.user);
 
     return {
       message: 'Successfully created payment',

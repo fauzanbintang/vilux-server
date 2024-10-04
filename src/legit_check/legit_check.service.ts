@@ -259,6 +259,15 @@ export class LegitCheckService {
         check_status: {
           in: query.check_status,
         },
+        Order: {
+          some: {
+            payment: {
+              status: {
+                in: query.payment_status,
+              },
+            },
+          },
+        },
         client_id: query.user_id,
       },
       select: {
@@ -309,6 +318,13 @@ export class LegitCheckService {
                 name: true,
               },
             },
+            payment: {
+              select: {
+                status: true,
+                client_amount: true,
+                method: true
+              }
+            }
           },
         },
       },
@@ -366,6 +382,13 @@ export class LegitCheckService {
                 name: true,
               },
             },
+            payment: {
+              select: {
+                status: true,
+                client_amount: true,
+                method: true
+              }
+            }
           },
         },
         LegitCheckImages: {

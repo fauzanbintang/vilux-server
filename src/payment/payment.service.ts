@@ -8,6 +8,7 @@ import {
   CreatePaymentDto,
   UpdatePaymentDto,
 } from 'src/dto/request/payment.dto';
+import { UserDto } from 'src/dto/response/user.dto';
 const midtransClient = require('midtrans-client');
 
 @Injectable()
@@ -26,7 +27,7 @@ export class PaymentService {
     });
   }
 
-  async create(createPaymentDto: CreatePaymentDto) {
+  async create(createPaymentDto: CreatePaymentDto, clientInfo: UserDto) {
     this.logger.debug(`Create payment ${JSON.stringify(createPaymentDto)}`);
 
     const secret = this.configService.get('MIDTRANS_SERVER_KEY');
@@ -44,9 +45,14 @@ export class PaymentService {
         'bni_va',
         'permata_va',
         'gopay',
-        'dana',
+        'qris',
         'echannel',
       ],
+      customer_details: {
+        first_name: clientInfo.full_name,
+        email: clientInfo.email,
+        phone: clientInfo.phone_number ? clientInfo.phone_number : '0123456789',
+      },
     };
 
     const midtrans = await fetch(
@@ -71,12 +77,12 @@ export class PaymentService {
 
     const payment = await this.prismaService.payment.create({
       data: {
+        service_fee: '0',
         method: response,
         amount: createPaymentDto.amount,
         status: PaymentStatus.pending,
         status_log: { success: null, failed: null, pending: Date.now() },
         external_id: response.order_id,
-        service_fee: createPaymentDto.service_fee,
         client_amount: createPaymentDto.client_amount,
       },
     });
@@ -85,13 +91,9 @@ export class PaymentService {
 
   async handleNotification(notificationJson: any) {
     const paymentGatewayFees = {
-      bca_va: '1000',
-      bri_va: '2000',
-      bni_va: '3000',
-      mandiri_va: '4000',
-      permata_va: '5000',
-      gopay: '6000',
-      dana: '7000',
+      virtualAccount: '4000',
+      gopay: 0.02,
+      qris: 0.007,
     };
 
     try {
@@ -130,21 +132,15 @@ export class PaymentService {
         throw new HttpException('Invalid transaction status', 400);
       }
 
-      let serviceFee: string;
-      if (statusResponse.payment_type === 'echannel') {
-        serviceFee = paymentGatewayFees['mandiri_va'];
-      } else if (statusResponse.permata_va_number) {
-        serviceFee = paymentGatewayFees['permata_va'];
-      } else if (statusResponse.va_numbers[0].bank === 'bca') {
-        serviceFee = paymentGatewayFees['bca_va'];
-      } else if (statusResponse.va_numbers[0].bank === 'bni') {
-        serviceFee = paymentGatewayFees['bni_va'];
-      } else if (statusResponse.va_numbers[0].bank === 'bri') {
-        serviceFee = paymentGatewayFees['bri_va'];
-      } else if (statusResponse.acquirer) {
-        serviceFee = paymentGatewayFees['gopay'];
+      let serviceFee: any;
+      if (statusResponse.payment_type === 'echannel' || statusResponse.permata_va_number || statusResponse.va_numbers[0].bank) {
+        serviceFee = paymentGatewayFees['virtualAccount'];
+      } else if (statusResponse.payment_type === 'gopay') {
+        serviceFee = Number(payment.amount) * paymentGatewayFees.gopay;
+      } else if (statusResponse.payment_type === 'qris') {
+        serviceFee = Number(payment.amount) * paymentGatewayFees.qris;
       } else {
-        serviceFee = paymentGatewayFees['dana'];
+        throw new HttpException('Invalid payment type', 400);
       }
 
       await this.prismaService.payment.update({
@@ -165,7 +161,7 @@ export class PaymentService {
                 ? Date.now()
                 : payment.status_log['pending'],
           },
-          service_fee: serviceFee,
+          service_fee: JSON.stringify(serviceFee),
         },
       });
 

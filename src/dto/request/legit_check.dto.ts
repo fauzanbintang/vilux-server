@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { LegitCheckStatus, LegitStatus } from '@prisma/client';
+import { LegitCheckStatus, LegitStatus, PaymentStatus } from '@prisma/client';
 import { string } from 'zod';
 
 export class LegitCheckBrandCategoryDto {
@@ -146,4 +146,11 @@ export class LegitCheckPaginationQuery {
     default: [LegitCheckStatus.brand_category],
   })
   check_status?: LegitCheckStatus[];
+
+  @ApiProperty({
+    enum: PaymentStatus,
+    isArray: true,
+    default: [PaymentStatus.pending],
+  })
+  payment_status?: PaymentStatus[];
 }
