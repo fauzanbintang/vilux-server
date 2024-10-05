@@ -4,7 +4,7 @@ import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { CreateOrderDto, UpdateOrderDto } from 'src/dto/request/order.dto';
 import { generateCode } from 'src/helpers/order_code_generator';
 import { UserDto } from 'src/dto/response/user.dto';
-import { Role } from '@prisma/client';
+import { LegitCheckStatus, Role } from '@prisma/client';
 import { ServiceDto } from 'src/dto/response/service.dto';
 import { VoucherDto } from 'src/dto/response/voucher.dto';
 
@@ -27,24 +27,24 @@ export class OrderService {
       vip_price: service.vip_price.toString(),
     };
 
+    // TODO: add validation for refund (one time only)
+    // TODO: add validation for one user one time only
     let voucher: VoucherDto;
     if (createOrderDto.voucher_id && createOrderDto.voucher_id.length > 0) {
       voucher = await this.prismaService.voucher.findUnique({
         where: { id: createOrderDto.voucher_id },
       });
+
+      const now = new Date(Date.now());
+      if (now < voucher.started_at || now > voucher.expired_at) {
+        throw new HttpException('Voucher not valid', 400);
+      }
     }
 
     const original_amount = countTotalOriginalAmount(
       clientInfo.role,
       newService,
-      voucher,
     );
-
-    if (
-      original_amount != Number.parseInt(createOrderDto.total_order.toString())
-    ) {
-      throw new HttpException('Invalid total_order', 400);
-    }
 
     const order = await this.prismaService.order.create({
       data: {
@@ -53,6 +53,13 @@ export class OrderService {
         service_id: createOrderDto.service_id,
         original_amount: original_amount,
         voucher_id: createOrderDto.voucher_id,
+      },
+    });
+
+    await this.prismaService.legitChecks.update({
+      where: { id: createOrderDto.legit_check_id },
+      data: {
+        check_status: LegitCheckStatus.payment,
       },
     });
 
@@ -133,20 +140,12 @@ export class OrderService {
   }
 }
 
-function countTotalOriginalAmount(
-  role: Role,
-  service: ServiceDto,
-  voucher?: VoucherDto,
-): number {
+function countTotalOriginalAmount(role: Role, service: ServiceDto): number {
   let result: number;
 
   role == Role.vip_client
     ? (result = +service.vip_price)
     : (result = +service.normal_price);
-
-  if (voucher) {
-    result -= result * (voucher.discount / 100);
-  }
 
   return result;
 }

@@ -52,9 +52,9 @@ export class CreateVoucherReferralDto {
 
   @ApiPropertyOptional({
     type: String,
-    default: '00000000-0000-0000-0000-000000000000',
+    default: 'test@mail.com',
   })
-  user_id?: string;
+  email?: string;
 
   @ApiProperty({
     type: String,
