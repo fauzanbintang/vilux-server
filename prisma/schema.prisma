@@ -132,7 +132,6 @@ model Voucher {
   voucher_type VoucherType
   started_at   DateTime
   expired_at   DateTime
-  used         Boolean     @default(false)
   discount     Int?
   code         String?
   user_id      String?     @db.Uuid
