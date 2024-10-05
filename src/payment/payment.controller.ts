@@ -24,46 +24,6 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 export class PaymentController {
   constructor(private readonly paymentService: PaymentService) { }
 
-  @Post()
-  @HttpCode(201)
-  @ApiOperation({ summary: 'Create payment' })
-  @ApiResponse({
-    status: 201,
-    description: 'Created payment',
-    schema: {
-      example: {
-        message: 'Successfully created payment',
-        data: {
-          id: 'string',
-          method: 'string',
-          amount: 0,
-          status: 'string',
-          status_log: {
-            success: 'string',
-            failed: 'string',
-            pending: 'string',
-          },
-          external_id: 'string',
-          service_fee: 0,
-          client_amount: 0,
-        },
-        errors: null
-      }
-    }
-  })
-  async create(
-    @Req() req: Request,
-    @Body() createPaymentDto: CreatePaymentDto,
-  ): Promise<ResponseDto<PaymentDto>> {
-    const payment = await this.paymentService.create(createPaymentDto, req.user);
-
-    return {
-      message: 'Successfully created payment',
-      data: payment,
-      errors: null
-    }
-  }
-
   @Get()
   @HttpCode(200)
   @ApiOperation({ summary: 'Get all payments' })
@@ -119,6 +79,55 @@ export class PaymentController {
     @Body() notification: any,
   ): Promise<{ status: string }> {
     return await this.paymentService.handleNotification(notification);
+  }
+
+  @Post(':order_id')
+  @HttpCode(201)
+  @ApiOperation({ summary: 'Create payment' })
+  @ApiResponse({
+    status: 201,
+    description: 'Created payment',
+    schema: {
+      example: {
+        message: 'Successfully created payment',
+        data: {
+          id: 'string',
+          method: 'string',
+          amount: 0,
+          status: 'string',
+          status_log: {
+            success: 'string',
+            failed: 'string',
+            pending: 'string',
+          },
+          external_id: 'string',
+          service_fee: 0,
+          client_amount: 0,
+        },
+        errors: null
+      }
+    }
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad Request',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+  })
+  async create(
+    @Req() req: Request,
+    @Param('order_id') orderId: string,
+    @Body() createPaymentDto: CreatePaymentDto,
+  ): Promise<ResponseDto<PaymentDto>> {
+    const payment = await this.paymentService.create(createPaymentDto, req.user, orderId);
+
+    return {
+      message: 'Successfully created payment',
+      data: payment,
+      errors: null
+    }
   }
 
   @Get(':id')

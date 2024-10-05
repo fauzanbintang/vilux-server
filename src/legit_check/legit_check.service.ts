@@ -146,8 +146,12 @@ export class LegitCheckService {
       `Update legit check: validate data ${JSON.stringify(legitCheckValidateDataDto)}`,
     );
 
+    let flag: boolean = true;
     await Promise.all(
       legitCheckValidateDataDto.legit_check_images.map(async (v) => {
+        if (v.status == false) {
+          flag = false
+        }
         return this.prismaService.legitCheckImages.update({
           where: { id: v.legit_check_image_id },
           data: {
@@ -159,22 +163,20 @@ export class LegitCheckService {
 
     const legitCheckImages = await this.prismaService.legitCheckImages.findMany(
       {
-        where: { legit_check_id: id },
+        where: { legit_check_id: id, status: null },
       },
     );
 
-    legitCheckImages.forEach((e) => {
-      if (e.status == null) {
-        throw new HttpException('legit check image not found', 404);
-      }
-    });
+    if (legitCheckImages.length > 0) {
+      throw new HttpException('please input status for all the images', 400);
+    }
 
     let updatedLegitCheck: LegitCheckDto =
       await this.prismaService.legitChecks.update({
         where: { id },
         data: {
           admin_note: legitCheckValidateDataDto.admin_note,
-          check_status: LegitCheckStatus.data_validation,
+          check_status: flag ? LegitCheckStatus.legit_checking : LegitCheckStatus.revise_data,
         },
       });
 
@@ -201,12 +203,6 @@ export class LegitCheckService {
       throw new HttpException('legit check not found', 404);
     }
 
-    legitCheck.LegitCheckImages.forEach((e) => {
-      if (e.status == null || e.status === false) {
-        throw new HttpException('legit check image not found', 404);
-      }
-    });
-
     let dataCertificate: CreateCertificateDto = { frameId: '', contentId: legitCheck.LegitCheckImages[0].id, code: generateCode(clientInfo.certificate_prefix) }
     let certificate: FileDto;
     if (legitCheck.legit_status == 'authentic') {
@@ -217,6 +213,7 @@ export class LegitCheckService {
       dataCertificate.frameId = frame.id
     }
 
+    // create voucher referral if legit check is unidentified
     if (legitCheck.legit_status !== 'unidentified') {
       certificate = await this.fileService.mergeImages(dataCertificate)
     }
@@ -229,7 +226,7 @@ export class LegitCheckService {
           certificate_id: certificate ? certificate.id : null,
           legit_status: legitCheckCompletedDto.legit_status,
           admin_note: legitCheckCompletedDto.admin_note,
-          check_status: LegitCheckStatus.legit_checking,
+          check_status: LegitCheckStatus.completed,
         },
       });
 
