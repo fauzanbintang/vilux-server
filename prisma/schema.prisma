@@ -109,7 +109,7 @@ model Brand {
 }
 
 model Payment {
-  id            String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id            String        @id @unique @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   updated_at    DateTime      @default(now()) @updatedAt
   created_at    DateTime      @default(now())
   method        Json
@@ -119,7 +119,7 @@ model Payment {
   external_id   String        @unique
   service_fee   String
   client_amount String
-  Order         Order[]
+  order         Order?        @relation()
 
   @@map("payments")
 }
@@ -243,7 +243,7 @@ model Order {
   original_amount BigInt
   voucher_id      String?     @db.Uuid
   voucher         Voucher?    @relation(fields: [voucher_id], references: [id])
-  payment_id      String?     @db.Uuid
+  payment_id      String?     @unique @db.Uuid
   payment         Payment?    @relation(fields: [payment_id], references: [id])
 
   @@map("orders")
