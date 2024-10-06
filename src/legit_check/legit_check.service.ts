@@ -22,7 +22,7 @@ export class LegitCheckService {
     private prismaService: PrismaService,
     private readonly fileService: FileService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
-  ) { }
+  ) {}
 
   async upsertLegitCheckBrandCategory(
     clientInfo: UserDto,
@@ -150,7 +150,7 @@ export class LegitCheckService {
     await Promise.all(
       legitCheckValidateDataDto.legit_check_images.map(async (v) => {
         if (v.status == false) {
-          flag = false
+          flag = false;
         }
         return this.prismaService.legitCheckImages.update({
           where: { id: v.legit_check_image_id },
@@ -176,7 +176,9 @@ export class LegitCheckService {
         where: { id },
         data: {
           admin_note: legitCheckValidateDataDto.admin_note,
-          check_status: flag ? LegitCheckStatus.legit_checking : LegitCheckStatus.revise_data,
+          check_status: flag
+            ? LegitCheckStatus.legit_checking
+            : LegitCheckStatus.revise_data,
         },
       });
 
@@ -203,19 +205,23 @@ export class LegitCheckService {
       throw new HttpException('legit check not found', 404);
     }
 
-    let dataCertificate: CreateCertificateDto = { frameId: '', contentId: legitCheck.LegitCheckImages[0].id, code: generateCode(clientInfo.certificate_prefix) }
+    let dataCertificate: CreateCertificateDto = {
+      frameId: '',
+      contentId: legitCheck.LegitCheckImages[0].id,
+      code: generateCode(clientInfo.certificate_prefix),
+    };
     let certificate: FileDto;
     if (legitCheck.legit_status == 'authentic') {
-      const frame = await this.fileService.findByFileName('authentic-frame')
-      dataCertificate.frameId = frame.id
+      const frame = await this.fileService.findByFileName('authentic-frame');
+      dataCertificate.frameId = frame.id;
     } else if (legitCheck.legit_status == 'fake') {
-      const frame = await this.fileService.findByFileName('fake-frame')
-      dataCertificate.frameId = frame.id
+      const frame = await this.fileService.findByFileName('fake-frame');
+      dataCertificate.frameId = frame.id;
     }
 
     // create voucher referral if legit check is unidentified
     if (legitCheck.legit_status !== 'unidentified') {
-      certificate = await this.fileService.mergeImages(dataCertificate)
+      certificate = await this.fileService.mergeImages(dataCertificate);
     }
 
     let updatedLegitCheck: LegitCheckDto =
@@ -240,22 +246,17 @@ export class LegitCheckService {
       `Get paginated legit check with query: ${JSON.stringify(query)}`,
     );
 
-    const count = await this.prismaService.legitChecks.count({
-      where: {
-        check_status: {
-          in: query.check_status,
-        },
-        client_id: query.user_id,
+    let whereClause = {
+      check_status: {
+        in: query.check_status,
       },
-    });
+      client_id: query.user_id,
+      Order: {},
+    };
 
-    const legitChecks = await this.prismaService.legitChecks.findMany({
-      skip: (+query.page - 1) * +query.limit,
-      take: +query.limit,
-      where: {
-        check_status: {
-          in: query.check_status,
-        },
+    if (query.payment_status && query.payment_status.length >= 1) {
+      whereClause = {
+        ...whereClause,
         Order: {
           some: {
             payment: {
@@ -265,8 +266,17 @@ export class LegitCheckService {
             },
           },
         },
-        client_id: query.user_id,
-      },
+      };
+    }
+
+    const count = await this.prismaService.legitChecks.count({
+      where: whereClause,
+    });
+
+    const legitChecks = await this.prismaService.legitChecks.findMany({
+      skip: (+query.page - 1) * +query.limit,
+      take: +query.limit,
+      where: whereClause,
       select: {
         id: true,
         product_name: true,
@@ -319,9 +329,9 @@ export class LegitCheckService {
               select: {
                 status: true,
                 client_amount: true,
-                method: true
-              }
-            }
+                method: true,
+              },
+            },
           },
         },
       },
@@ -383,9 +393,9 @@ export class LegitCheckService {
               select: {
                 status: true,
                 client_amount: true,
-                method: true
-              }
-            }
+                method: true,
+              },
+            },
           },
         },
         LegitCheckImages: {
