@@ -43,7 +43,7 @@ export class VoucherService {
       data: {
         ...createVoucherDto,
         voucher_type: voucherType,
-        user_id: user.id ?? null,
+        user_id: user?.id ?? null,
       },
     });
 
