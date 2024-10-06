@@ -25,7 +25,7 @@ import { ResponseDto } from 'src/dto/response/response.dto';
 @ApiTags('legit-check')
 @Controller('api/legit-checks')
 export class LegitCheckController {
-  constructor(private readonly legitCheckService: LegitCheckService) { }
+  constructor(private readonly legitCheckService: LegitCheckService) {}
 
   @Post('brand-category')
   @HttpCode(201)
@@ -284,7 +284,13 @@ export class LegitCheckController {
     query.check_status = Array.isArray(query.check_status)
       ? query.check_status
       : [query.check_status];
-    query.payment_status = Array.isArray(query.payment_status) ? query.payment_status : [query.payment_status];
+
+    if (query.payment_status) {
+      query.payment_status = Array.isArray(query.payment_status)
+        ? query.payment_status
+        : [query.payment_status];
+    }
+
     const data = await this.legitCheckService.getPaginatedLegitChecks(query);
 
     return {
