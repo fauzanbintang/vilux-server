@@ -25,7 +25,7 @@ import { ResponseDto } from 'src/dto/response/response.dto';
 @ApiTags('legit-check')
 @Controller('api/legit-checks')
 export class LegitCheckController {
-  constructor(private readonly legitCheckService: LegitCheckService) {}
+  constructor(private readonly legitCheckService: LegitCheckService) { }
 
   @Post('brand-category')
   @HttpCode(201)
@@ -201,7 +201,7 @@ export class LegitCheckController {
           client_note: 'This is client note',
           admin_note: 'This is admin note',
           cover_id: '3fa84aac-954c-409f-s890-188bc7a1a12y',
-          certificate_id: null,
+          certificate_id: '3fa84aac-954c-409w-s8sa-188b1121dy',
         },
         errors: null,
       },
@@ -216,12 +216,14 @@ export class LegitCheckController {
     description: 'Internal Server Error',
   })
   async updateLegitCheckCompleted(
+    @Req() req: Request,
     @Param('id') id: string,
     @Body() legitCheckCompletedDto: LegitCheckCompletedDto,
   ): Promise<ResponseDto<LegitCheckDto>> {
     const legitCheck = await this.legitCheckService.updateLegitCheckCompleted(
       id,
       legitCheckCompletedDto,
+      req.user,
     );
 
     return {
@@ -282,6 +284,7 @@ export class LegitCheckController {
     query.check_status = Array.isArray(query.check_status)
       ? query.check_status
       : [query.check_status];
+    query.payment_status = Array.isArray(query.payment_status) ? query.payment_status : [query.payment_status];
     const data = await this.legitCheckService.getPaginatedLegitChecks(query);
 
     return {

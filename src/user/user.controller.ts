@@ -5,6 +5,7 @@ import {
   HttpCode,
   Param,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { UserDto } from 'src/dto/response/user.dto';
@@ -13,7 +14,7 @@ import { RoleGuard } from 'src/common/roleGuard/role.guard';
 import { Roles } from 'src/common/roleGuard/roles.decorator';
 import { ResponseDto } from 'src/dto/response/response.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { UpdateUserDto, UpdateUserPasswordDto } from 'src/dto/request/auth.dto';
+import { UpdateUserDto, UpdateUserPasswordDto, UserQuery } from 'src/dto/request/auth.dto';
 
 @ApiTags('user')
 @Controller('/api/users')
@@ -47,8 +48,14 @@ export class UserController {
   })
   @UseGuards(RoleGuard)
   @Roles(['admin'])
-  async getUsers(): Promise<ResponseDto<UserDto[]>> {
-    const users = await this.userService.getUsers();
+  async getUsers(
+    @Query() query: UserQuery,
+  ): Promise<ResponseDto<UserDto[]>> {
+    query.role = Array.isArray(query.role)
+      ? query.role
+      : [query.role];
+
+    const users = await this.userService.getUsers(query);
     return { message: 'Successfully get all users', data: users, errors: null };
   }
 

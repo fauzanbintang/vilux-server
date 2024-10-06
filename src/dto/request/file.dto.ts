@@ -20,6 +20,11 @@ export class CreateCertificateDto {
     default: '00000000-0000-0000-0000-000000000000',
   })
   contentId: string;
+  @ApiProperty({
+    type: String,
+    default: 'VLX12345',
+  })
+  code: string;
 }
 
 export class FilesUploadDto {

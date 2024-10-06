@@ -1,7 +1,7 @@
 import { HttpException, Inject, Injectable, Logger } from '@nestjs/common';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { PrismaService } from 'src/common/prisma.service';
-import { UpdateUserDto, UpdateUserPasswordDto } from 'src/dto/request/auth.dto';
+import { UpdateUserDto, UpdateUserPasswordDto, UserQuery } from 'src/dto/request/auth.dto';
 import { UserDto } from 'src/dto/response/user.dto';
 import { comparePassword, hashPassword } from 'src/helpers/bcrypt';
 
@@ -12,10 +12,17 @@ export class UserService {
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
   ) { }
 
-  async getUsers(): Promise<UserDto[]> {
+  async getUsers(
+    query: UserQuery,
+  ): Promise<UserDto[]> {
     this.logger.debug('Get all users');
 
     return await this.prismaService.user.findMany({
+      where: {
+        role: {
+          in: query.role
+        }
+      },
       select: {
         id: true,
         username: true,

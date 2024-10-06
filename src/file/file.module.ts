@@ -6,5 +6,6 @@ import { ImageKitProvider } from './imagekit.provider';
 @Module({
   controllers: [FileController],
   providers: [FileService, ImageKitProvider],
+  exports: [FileService],
 })
 export class FileModule {}

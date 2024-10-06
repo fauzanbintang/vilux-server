@@ -18,21 +18,32 @@ export class VoucherService {
   ) {}
 
   async create(
-    createVoucherDto: CreateVoucherPromotionDto | CreateVoucherReferralDto,
+    createVoucherDto: CreateVoucherReferralDto | CreateVoucherPromotionDto,
     voucherType: VoucherType,
   ) {
     this.logger.debug(`Create voucher ${JSON.stringify(createVoucherDto)}`);
-    
+
     const startedAt = new Date(createVoucherDto.started_at ?? Date.now());
     const expiredAt = new Date(createVoucherDto.expired_at);
     if (expiredAt < startedAt) {
       throw new HttpException('Invalid expiration date', 400);
     }
 
+    let user;
+    if ('email' in createVoucherDto) {
+      user = await this.prismaService.user.findUnique({
+        where: { email: createVoucherDto.email },
+      });
+      if (!user) {
+        throw new HttpException('User not found', 404);
+      }
+    }
+
     const voucher = await this.prismaService.voucher.create({
       data: {
         ...createVoucherDto,
         voucher_type: voucherType,
+        user_id: user.id ?? null,
       },
     });
 
@@ -49,7 +60,6 @@ export class VoucherService {
         voucher_type: true,
         started_at: true,
         expired_at: true,
-        used: true,
         discount: true,
         code: true,
         user_id: true,

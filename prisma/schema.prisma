@@ -56,20 +56,21 @@ enum LegitStatus {
 }
 
 model User {
-  id             String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  username       String        @unique @db.VarChar(100)
-  email          String        @unique @db.VarChar(100)
-  password       String        @db.VarChar(100)
-  role           Role          @default(client)
-  full_name      String        @db.VarChar(100)
-  date_of_birth  DateTime
-  gender         Gender
-  phone_number   String?
-  verified_email Boolean       @default(false)
-  updated_at     DateTime      @default(now()) @updatedAt
-  created_at     DateTime      @default(now())
-  LegitChecks    LegitChecks[]
-  Voucher        Voucher[]
+  id                 String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  username           String        @unique @db.VarChar(100)
+  email              String        @unique @db.VarChar(100)
+  password           String        @db.VarChar(100)
+  role               Role          @default(client)
+  full_name          String        @db.VarChar(100)
+  date_of_birth      DateTime
+  gender             Gender
+  certificate_prefix String        @default("VLX") @db.VarChar(3)
+  phone_number       String?
+  verified_email     Boolean       @default(false)
+  updated_at         DateTime      @default(now()) @updatedAt
+  created_at         DateTime      @default(now())
+  LegitChecks        LegitChecks[]
+  Voucher            Voucher[]
 
   @@map("users")
 }
@@ -77,7 +78,7 @@ model User {
 model File {
   id                                 String                   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   path                               String
-  file_name                          String
+  file_name                          String                   @unique
   url                                String
   updated_at                         DateTime                 @default(now()) @updatedAt
   created_at                         DateTime                 @default(now())
@@ -108,7 +109,7 @@ model Brand {
 }
 
 model Payment {
-  id            String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id            String        @id @unique @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   updated_at    DateTime      @default(now()) @updatedAt
   created_at    DateTime      @default(now())
   method        Json
@@ -118,7 +119,7 @@ model Payment {
   external_id   String        @unique
   service_fee   String
   client_amount String
-  Order         Order[]
+  order         Order?        @relation()
 
   @@map("payments")
 }
@@ -131,7 +132,6 @@ model Voucher {
   voucher_type VoucherType
   started_at   DateTime
   expired_at   DateTime
-  used         Boolean     @default(false)
   discount     Int?
   code         String?
   user_id      String?     @db.Uuid
@@ -243,7 +243,7 @@ model Order {
   original_amount BigInt
   voucher_id      String?     @db.Uuid
   voucher         Voucher?    @relation(fields: [voucher_id], references: [id])
-  payment_id      String?     @db.Uuid
+  payment_id      String?     @unique @db.Uuid
   payment         Payment?    @relation(fields: [payment_id], references: [id])
 
   @@map("orders")
