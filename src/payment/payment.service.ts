@@ -91,7 +91,10 @@ export class PaymentService {
     }
 
     let clientAmount = Number(order.original_amount);
-    clientAmount -= clientAmount * (order.voucher.discount / 100);
+
+    if (order.voucher.discount) {
+      clientAmount -= clientAmount * (order.voucher.discount / 100);
+    }
 
     if (Number(createPaymentDto.client_amount) != clientAmount) {
       throw new HttpException('Invalid client_amount', 400);
