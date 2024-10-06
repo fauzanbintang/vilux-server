@@ -147,7 +147,7 @@ export class LegitCheckPaginationQuery {
   })
   check_status?: LegitCheckStatus[];
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     enum: PaymentStatus,
     isArray: true,
     default: [PaymentStatus.pending],
