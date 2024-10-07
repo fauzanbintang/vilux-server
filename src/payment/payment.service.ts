@@ -92,7 +92,7 @@ export class PaymentService {
 
     let clientAmount = Number(order.original_amount);
 
-    if (order.voucher.discount) {
+    if (order.voucher?.discount) {
       clientAmount -= clientAmount * (order.voucher.discount / 100);
     }
 
