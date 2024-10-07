@@ -255,8 +255,8 @@ model LegitCheckImages {
   created_at                 DateTime                @default(now())
   legit_check_id             String                  @db.Uuid
   legit_check                LegitChecks             @relation(fields: [legit_check_id], references: [id])
-  file_id                    String                  @db.Uuid
-  file                       File                    @relation(fields: [file_id], references: [id])
+  file_id                    String?                 @db.Uuid
+  file                       File?                   @relation(fields: [file_id], references: [id])
   subcategory_instruction_id String?                 @db.Uuid
   subcategory_instruction    SubcategoryInstruction? @relation(fields: [subcategory_instruction_id], references: [id])
   status                     Boolean?
