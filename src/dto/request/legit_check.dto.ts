@@ -153,4 +153,10 @@ export class LegitCheckPaginationQuery {
     default: [PaymentStatus.pending],
   })
   payment_status?: PaymentStatus[];
+
+  @ApiPropertyOptional({
+    type: String,
+    default: 'test',
+  })
+  search?: string;
 }
