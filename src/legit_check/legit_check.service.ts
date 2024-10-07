@@ -89,7 +89,10 @@ export class LegitCheckService {
       // for now, additional legitCheckImage will always create new
       const legitCheckImage =
         await this.prismaService.legitCheckImages.findFirst({
-          where: { subcategory_instruction_id: v.subcategory_instruction_id },
+          where: {
+            legit_check_id: id,
+            subcategory_instruction_id: v.subcategory_instruction_id,
+          },
           select: { id: true },
         });
 
