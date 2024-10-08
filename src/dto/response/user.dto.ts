@@ -54,6 +54,11 @@ export class UserDto {
   created_at?: Date;
   @ApiProperty({
     type: String,
+    default: 'JF839H0S'
+  })
+  referral?: string;
+  @ApiProperty({
+    type: String,
     default: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJle...',
   })
   token?: string;
