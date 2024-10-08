@@ -65,7 +65,7 @@ model User {
   date_of_birth      DateTime
   gender             Gender
   certificate_prefix String        @default("VLX") @db.VarChar(3)
-  phone_number       String?
+  phone_number       String?       @unique
   verified_email     Boolean       @default(false)
   updated_at         DateTime      @default(now()) @updatedAt
   created_at         DateTime      @default(now())

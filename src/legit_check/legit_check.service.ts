@@ -22,7 +22,7 @@ export class LegitCheckService {
     private prismaService: PrismaService,
     private readonly fileService: FileService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
-  ) {}
+  ) { }
 
   async upsertLegitCheckBrandCategory(
     clientInfo: UserDto,
@@ -249,13 +249,20 @@ export class LegitCheckService {
       `Get paginated legit check with query: ${JSON.stringify(query)}`,
     );
 
-    let whereClause = {
+    let whereClause: any = {
       check_status: {
         in: query.check_status,
       },
       client_id: query.user_id,
       Order: {},
     };
+
+    if (query.search) {
+      whereClause.OR = [
+        { code: { contains: query.search, mode: 'insensitive' } },
+        { product_name: { contains: query.search, mode: 'insensitive' } },
+      ];
+    }
 
     if (query.payment_status && query.payment_status.length >= 1) {
       whereClause = {
