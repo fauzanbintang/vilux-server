@@ -30,33 +30,44 @@ export class UserController {
     schema: {
       example: {
         message: 'Successfully get all users',
-        data: [
-          {
-            id: '60cd3158-6318-49ba-82a2-5b02d0e1af10',
-            username: 'test',
-            email: 'test@mail.com',
-            full_name: 'Test Test',
-            date_of_birth: '1998-12-31T17:00:00.000Z',
-            gender: 'male',
-            role: 'client',
-            created_at: '2021-01-01T17:00:00.000Z',
-          },
-        ],
+        data: {
+          currentPage: 1,
+          totalPage: 1,
+          data: [
+            {
+              id: '60cd3158-6318-49ba-82a2-5b02d0e1af10',
+              username: 'test',
+              email: 'test@mail.com',
+              full_name: 'Test Test',
+              date_of_birth: '1998-12-31T17:00:00.000Z',
+              gender: 'male',
+              role: 'client',
+              created_at: '2021-01-01T17:00:00.000Z',
+            },
+          ]
+        },
         errors: null,
       },
     },
   })
-  @UseGuards(RoleGuard)
-  @Roles(['admin'])
+  // @UseGuards(RoleGuard)
+  // @Roles(['admin'])
   async getUsers(
     @Query() query: UserQuery,
-  ): Promise<ResponseDto<UserDto[]>> {
+  ): Promise<ResponseDto<any>> {
     query.role = Array.isArray(query.role)
       ? query.role
       : [query.role];
 
-    const users = await this.userService.getUsers(query);
-    return { message: 'Successfully get all users', data: users, errors: null };
+    const data = await this.userService.getUsers(query);
+    return {
+      message: 'Successfully get all users',
+      data: {
+        currentPage: +query.page,
+        totalPage: Math.ceil(data.count / +query.limit),
+        data: data.users,
+      }, errors: null
+    };
   }
 
   @Put('change-password/:id')
@@ -104,6 +115,7 @@ export class UserController {
           role: 'client',
           phone_number: '+1234567890',
           created_at: '2021-01-01T17:00:00.000Z',
+          referral: "JF839H9Z"
         },
         errors: null,
       },

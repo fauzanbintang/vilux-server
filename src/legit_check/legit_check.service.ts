@@ -22,7 +22,7 @@ export class LegitCheckService {
     private prismaService: PrismaService,
     private readonly fileService: FileService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
-  ) {}
+  ) { }
 
   async upsertLegitCheckBrandCategory(
     clientInfo: UserDto,
@@ -210,14 +210,14 @@ export class LegitCheckService {
 
     let dataCertificate: CreateCertificateDto = {
       frameId: '',
-      contentId: legitCheck.LegitCheckImages[0].id,
-      code: generateCode(clientInfo.certificate_prefix),
+      contentId: legitCheck.LegitCheckImages[0].file_id,
+      code: generateCode(clientInfo.certificate_prefix).slice(0, -5),
     };
     let certificate: FileDto;
-    if (legitCheck.legit_status == 'authentic') {
+    if (legitCheckCompletedDto.legit_status == 'authentic') {
       const frame = await this.fileService.findByFileName('authentic-frame');
       dataCertificate.frameId = frame.id;
-    } else if (legitCheck.legit_status == 'fake') {
+    } else if (legitCheckCompletedDto.legit_status == 'fake') {
       const frame = await this.fileService.findByFileName('fake-frame');
       dataCertificate.frameId = frame.id;
     }
@@ -249,13 +249,20 @@ export class LegitCheckService {
       `Get paginated legit check with query: ${JSON.stringify(query)}`,
     );
 
-    let whereClause = {
+    let whereClause: any = {
       check_status: {
         in: query.check_status,
       },
       client_id: query.user_id,
       Order: {},
     };
+
+    if (query.search) {
+      whereClause.OR = [
+        { code: { contains: query.search, mode: 'insensitive' } },
+        { product_name: { contains: query.search, mode: 'insensitive' } },
+      ];
+    }
 
     if (query.payment_status && query.payment_status.length >= 1) {
       whereClause = {
