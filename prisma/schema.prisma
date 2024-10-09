@@ -211,6 +211,7 @@ model LegitChecks {
   certificate      File?              @relation(name: "certificate_file", fields: [certificate_id], references: [id])
   file_id          String?            @db.Uuid
   file             File?              @relation(fields: [file_id], references: [id])
+  watched          Boolean            @default(false)
   Order            Order[]
   LegitCheckImages LegitCheckImages[]
 
