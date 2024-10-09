@@ -22,7 +22,7 @@ export class LegitCheckService {
     private prismaService: PrismaService,
     private readonly fileService: FileService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
-  ) { }
+  ) {}
 
   async upsertLegitCheckBrandCategory(
     clientInfo: UserDto,
@@ -293,6 +293,7 @@ export class LegitCheckService {
         check_status: true,
         legit_status: true,
         code: true,
+        watched: true,
         client: {
           select: {
             id: true,
@@ -369,6 +370,7 @@ export class LegitCheckService {
         updated_at: true, // confirm again to Ryan
         client_note: true,
         admin_note: true,
+        watched: true,
         brand: {
           select: {
             id: true,
@@ -440,5 +442,41 @@ export class LegitCheckService {
     });
 
     return legitCheck;
+  }
+
+  async patchWatch(id: string) {
+    const legitCheck = await this.prismaService.legitChecks.findUnique({
+      where: { id },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!legitCheck) {
+      throw new HttpException('legitCheck not found', 404);
+    }
+
+    await this.prismaService.legitChecks.update({
+      where: { id },
+      data: {
+        watched: true,
+      },
+    });
+  }
+
+  async getUnwatched() {
+    const count = await this.prismaService.legitChecks.count({
+      where: {
+        check_status: {
+          in: ['data_validation', 'legit_checking'],
+        },
+        watched: false,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    return count
   }
 }

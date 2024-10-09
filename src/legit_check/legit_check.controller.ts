@@ -4,6 +4,7 @@ import {
   Get,
   HttpCode,
   Param,
+  Patch,
   Post,
   Put,
   Query,
@@ -74,6 +75,42 @@ export class LegitCheckController {
     return {
       message: 'Successfully upsert legit check',
       data: legitCheck,
+      errors: null,
+    };
+  }
+
+  @Get('unwatched')
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Get unwatched legit checks' })
+  @ApiResponse({
+    status: 200,
+    description: 'Get unwatched legit checks',
+    schema: {
+      example: {
+        message: 'Successfully get unwatched legit checks',
+        data: {
+          count: 4,
+        },
+        errors: null,
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad Request',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+  })
+  async getUnwatchedLegitChecks(): Promise<ResponseDto<any>> {
+    const count = await this.legitCheckService.getUnwatched();
+
+    return {
+      message: 'Successfully get unwatched legit checks count',
+      data: {
+        count: count,
+      },
       errors: null,
     };
   }
@@ -362,4 +399,40 @@ export class LegitCheckController {
       errors: null,
     };
   }
+
+  @Patch(':id/watch')
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Update legit check watch' })
+  @ApiResponse({
+    status: 200,
+    description: 'Update legit check watch',
+    schema: {
+      example: {
+        message: 'Successfully update legit check watch',
+        data: null,
+        errors: null,
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad Request',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+  })
+  async patchWatch(
+    @Param('id') id: string,
+  ): Promise<ResponseDto<LegitCheckDto>> {
+    await this.legitCheckService.patchWatch(id);
+
+    return {
+      message: 'Successfully update legit check watch',
+      data: null,
+      errors: null,
+    };
+  }
+
+ 
 }
