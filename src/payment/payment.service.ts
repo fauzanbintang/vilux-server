@@ -130,11 +130,9 @@ export class PaymentService {
       gopay: 0.02,
       qris: 0.007,
     };
-
     try {
       const statusResponse =
         await this.apiClient.transaction.notification(notificationJson);
-
       const orderId = statusResponse.order_id.split('-').slice(0, -1).join('-');
       const transactionStatus = statusResponse.transaction_status;
       const fraudStatus = statusResponse.fraud_status;
@@ -172,8 +170,18 @@ export class PaymentService {
         throw new HttpException('Invalid transaction status', 400);
       }
 
+      let paymentMethod = Object.assign({}, payment.method);
       let serviceFee: any;
       if (statusResponse.payment_type === 'echannel' || statusResponse.permata_va_number || statusResponse.va_numbers[0].bank) {
+        if (statusResponse.payment_type === 'echannel') {
+          paymentMethod['biller_code'] = statusResponse.biller_code
+          paymentMethod['bill_key'] = statusResponse.bill_key
+        } else {
+          paymentMethod['va_number'] = statusResponse.permata_va_number || statusResponse.va_numbers[0].va_number
+        }
+        paymentMethod['bank'] = statusResponse.payment_type == 'echannel' ? 'mandiri' : statusResponse.permata_va_number ? 'permata' : statusResponse.va_numbers[0].bank
+        paymentMethod['expiry_time'] = statusResponse.expiry_time
+        paymentMethod['payment_type'] = "bank_transfer"
         serviceFee = paymentGatewayFees.virtualAccount;
       } else if (statusResponse.payment_type === 'gopay') {
         serviceFee = Number(payment.client_amount) * paymentGatewayFees.gopay;

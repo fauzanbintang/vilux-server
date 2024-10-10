@@ -14,15 +14,36 @@ export class UserService {
 
   async getUsers(
     query: UserQuery,
-  ): Promise<UserDto[]> {
+  ): Promise<any> {
     this.logger.debug('Get all users');
 
-    return await this.prismaService.user.findMany({
-      where: {
-        role: {
-          in: query.role
-        }
-      },
+    const whereClause: any = {};
+
+    if (query.search) {
+      whereClause.OR = [
+        { username: { contains: query.search, mode: 'insensitive' } },
+        { email: { contains: query.search, mode: 'insensitive' } },
+        { full_name: { contains: query.search, mode: 'insensitive' } }
+      ];
+    }
+
+    if (query.role && query.role.length >= 1) {
+      whereClause.role = {
+        in: query.role,
+      };
+    }
+
+    const count = await this.prismaService.user.count({
+      where: whereClause,
+    });
+
+    const page = query.page ? Math.max(1, +query.page) : 1;
+    const limit = query.limit ? Math.max(1, +query.limit) : 10;
+
+    const users = await this.prismaService.user.findMany({
+      skip: (page - 1) * limit,
+      take: limit,
+      where: whereClause,
       select: {
         id: true,
         username: true,
@@ -34,6 +55,11 @@ export class UserService {
         created_at: true,
       },
     });
+
+    return {
+      count,
+      users,
+    };
   }
 
   async getUser(id: string): Promise<UserDto> {
@@ -57,6 +83,17 @@ export class UserService {
     if (!user) {
       throw new HttpException('User not found', 404);
     }
+
+    const voucher = await this.prismaService.voucher.findFirst({
+      where: {
+        user_id: user.id
+      },
+      select: {
+        code: true
+      }
+    })
+
+    user['referral'] = voucher ? voucher.code : null
 
     return user;
   }

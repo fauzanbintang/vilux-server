@@ -65,7 +65,7 @@ model User {
   date_of_birth      DateTime
   gender             Gender
   certificate_prefix String        @default("VLX") @db.VarChar(3)
-  phone_number       String?
+  phone_number       String?       @unique
   verified_email     Boolean       @default(false)
   updated_at         DateTime      @default(now()) @updatedAt
   created_at         DateTime      @default(now())
@@ -92,6 +92,7 @@ model File {
   LegitChecks                        LegitChecks[]
   LegitCheckImages                   LegitCheckImages[]
   Services                           Services[]
+  Banner                             Banner[]
 
   @@map("files")
 }
@@ -210,6 +211,7 @@ model LegitChecks {
   certificate      File?              @relation(name: "certificate_file", fields: [certificate_id], references: [id])
   file_id          String?            @db.Uuid
   file             File?              @relation(fields: [file_id], references: [id])
+  watched          Boolean            @default(false)
   Order            Order[]
   LegitCheckImages LegitCheckImages[]
 
@@ -262,4 +264,16 @@ model LegitCheckImages {
   status                     Boolean?
 
   @@map("legit_check_images")
+}
+
+model Banner {
+  id         String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  updated_at DateTime @default(now()) @updatedAt
+  created_at DateTime @default(now())
+  name       String
+  link       String?
+  file_id    String?  @db.Uuid
+  file       File?    @relation(fields: [file_id], references: [id])
+
+  @@map("banners")
 }
