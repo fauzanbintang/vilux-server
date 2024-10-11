@@ -1,6 +1,7 @@
 import { Gender, Prisma, PrismaClient, Role } from '@prisma/client';
 import { hashPassword } from './helpers/bcrypt';
 import { DefaultArgs } from '@prisma/client/runtime/library';
+import brands from './seeds/brands.json';
 
 const prisma = new PrismaClient();
 async function main() {
@@ -56,19 +57,43 @@ async function seedUsers() {
 }
 
 async function seedBrands() {
-  const brands = ['armani', 'diesel', 'calvin klein'];
-  brands.forEach(async (name) => {
-    const brand = await prisma.brand.findFirst({
-      where: { name },
+  for (const brand of brands) {
+    let file;
+    file = await prisma.file.findFirst({
+      where: { url: brand.logoUrl },
       select: { id: true },
     });
 
-    if (!brand) {
-      await prisma.brand.create({
-        data: { name },
+    if (!file) {
+      file = await prisma.file.upsert({
+        where: { file_name: brand.brand },
+        create: {
+          file_name: brand.brand,
+          path: `/${brand.brand}`,
+          url: brand.logoUrl,
+        },
+        update: {
+          file_name: brand.brand,
+          path: `/${brand.brand}`,
+          url: brand.logoUrl,
+        },
       });
     }
-  });
+
+    const existingBrand = await prisma.brand.findFirst({
+      where: { name: brand.brand },
+      select: { id: true },
+    });
+
+    if (!existingBrand) {
+      await prisma.brand.create({
+        data: {
+          name: brand.brand,
+          file_id: file.id,
+        },
+      });
+    }
+  }
 }
 
 async function seedCategories() {
