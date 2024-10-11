@@ -125,9 +125,10 @@ export class PaymentService {
   }
 
   async handleNotification(notificationJson: any) {
+    this.logger.debug(`Notification received: ${JSON.stringify(notificationJson)}`);
+
     const paymentGatewayFees = {
       virtualAccount: 4000,
-      gopay: 0.02,
       qris: 0.007,
     };
     try {
@@ -172,7 +173,7 @@ export class PaymentService {
 
       let paymentMethod = Object.assign({}, payment.method);
       let serviceFee: any;
-      if (statusResponse.payment_type === 'echannel' || statusResponse.permata_va_number || statusResponse.va_numbers[0].bank) {
+      if (statusResponse.payment_type === 'echannel' || statusResponse.permata_va_number || (statusResponse.va_numbers && statusResponse.va_numbers[0].bank)) {
         if (statusResponse.payment_type === 'echannel') {
           paymentMethod['biller_code'] = statusResponse.biller_code
           paymentMethod['bill_key'] = statusResponse.bill_key
@@ -180,16 +181,16 @@ export class PaymentService {
           paymentMethod['va_number'] = statusResponse.permata_va_number || statusResponse.va_numbers[0].va_number
         }
         paymentMethod['bank'] = statusResponse.payment_type == 'echannel' ? 'mandiri' : statusResponse.permata_va_number ? 'permata' : statusResponse.va_numbers[0].bank
-        paymentMethod['expiry_time'] = statusResponse.expiry_time
         paymentMethod['payment_type'] = "bank_transfer"
         serviceFee = paymentGatewayFees.virtualAccount;
-      } else if (statusResponse.payment_type === 'gopay') {
-        serviceFee = Number(payment.client_amount) * paymentGatewayFees.gopay;
       } else if (statusResponse.payment_type === 'qris') {
         serviceFee = Number(payment.client_amount) * paymentGatewayFees.qris;
+        paymentMethod['payment_type'] = "qris"
+        paymentMethod['platform'] = statusResponse.issuer
       } else {
         throw new HttpException('Invalid payment type', 400);
       }
+      paymentMethod['expiry_time'] = statusResponse.expiry_time
       paymentMethod['order_id'] = statusResponse.order_id
 
       await this.prismaService.payment.update({
