@@ -92,6 +92,14 @@ async function seedBrands() {
           file_id: file.id,
         },
       });
+    } else {
+      await prisma.brand.update({
+        where: { id: existingBrand.id },
+        data: {
+          name: brand.brand,
+          file_id: file.id,
+        },
+      });
     }
   }
 }
