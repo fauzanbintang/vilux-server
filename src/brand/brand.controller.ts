@@ -7,11 +7,16 @@ import {
   Param,
   Delete,
   HttpCode,
+  Query,
 } from '@nestjs/common';
 import { BrandService } from './brand.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ResponseDto } from 'src/dto/response/response.dto';
-import { CreateBrandDto, UpdateBrandDto } from 'src/dto/request/brand.dto';
+import {
+  BrandPaginationQuery,
+  CreateBrandDto,
+  UpdateBrandDto,
+} from 'src/dto/request/brand.dto';
 import { BrandDto } from 'src/dto/response/brand.dto';
 
 @ApiTags('brand')
@@ -61,44 +66,48 @@ export class BrandController {
 
   @Get()
   @HttpCode(200)
-  @ApiOperation({ summary: 'Get all brands' })
+  @ApiOperation({ summary: 'Get paginated brands' })
   @ApiResponse({
     status: 200,
-    description: 'Get all brands',
+    description: 'Get paginated brands',
     schema: {
       example: {
-        message: 'Successfully get all brands',
-        data: [
-          {
-            id: '0593bca4-3c6e-4a73-bd52-78e9122fe72f',
-            name: 'Adidas',
-            file_id: null,
-            updated_at: '2024-09-18T15:29:40.911Z',
-            created_at: '2024-09-18T15:29:40.911Z',
-            file: null,
-          },
-          {
-            id: 'ba149365-12a5-4723-888b-5b406d31ca70',
-            name: 'Gucci',
-            file_id: null,
-            updated_at: '2024-09-18T15:29:40.911Z',
-            created_at: '2024-09-18T15:29:40.911Z',
-            file: null,
-          },
-          {
-            id: '92141809-446c-47ce-829f-bfa53489ace4',
-            name: 'Nike',
-            file_id: 'f9682e0b-0d4e-4eae-9b50-2b77004dc9c7',
-            updated_at: '2024-09-18T15:29:40.911Z',
-            created_at: '2024-09-18T15:29:40.911Z',
-            file: {
-              id: 'f9682e0b-0d4e-4eae-9b50-2b77004dc9c7',
-              path: '/Screenshot_from_2024-09-21_20-25-16_RLIHs9JUC.png',
-              file_name: 'Screenshot_from_2024-09-21_20-25-16_RLIHs9JUC.png',
-              url: 'https://ik.imagekit.io/saf16/Screenshot_from_2024-09-21_20-25-16_RLIHs9JUC.png',
+        message: 'Successfully get paginated brands',
+        data: {
+          currentPage: 1,
+          totalPage: 1,
+          data: [
+            {
+              id: '0593bca4-3c6e-4a73-bd52-78e9122fe72f',
+              name: 'Adidas',
+              file_id: null,
+              updated_at: '2024-09-18T15:29:40.911Z',
+              created_at: '2024-09-18T15:29:40.911Z',
+              file: null,
             },
-          },
-        ],
+            {
+              id: 'ba149365-12a5-4723-888b-5b406d31ca70',
+              name: 'Gucci',
+              file_id: null,
+              updated_at: '2024-09-18T15:29:40.911Z',
+              created_at: '2024-09-18T15:29:40.911Z',
+              file: null,
+            },
+            {
+              id: '92141809-446c-47ce-829f-bfa53489ace4',
+              name: 'Nike',
+              file_id: 'f9682e0b-0d4e-4eae-9b50-2b77004dc9c7',
+              updated_at: '2024-09-18T15:29:40.911Z',
+              created_at: '2024-09-18T15:29:40.911Z',
+              file: {
+                id: 'f9682e0b-0d4e-4eae-9b50-2b77004dc9c7',
+                path: '/Screenshot_from_2024-09-21_20-25-16_RLIHs9JUC.png',
+                file_name: 'Screenshot_from_2024-09-21_20-25-16_RLIHs9JUC.png',
+                url: 'https://ik.imagekit.io/saf16/Screenshot_from_2024-09-21_20-25-16_RLIHs9JUC.png',
+              },
+            },
+          ],
+        },
         errors: null,
       },
     },
@@ -111,12 +120,18 @@ export class BrandController {
     status: 500,
     description: 'Internal Server Error',
   })
-  async findAll(): Promise<ResponseDto<BrandDto[]>> {
-    const data = await this.brandService.findAll();
+  async findAll(
+    @Query() query: BrandPaginationQuery,
+  ): Promise<ResponseDto<any>> {
+    const data = await this.brandService.findAll(query);
 
     return {
       message: 'Successfully get all brands',
-      data,
+      data: {
+        currentPage: +query.page,
+        totalPage: Math.ceil(data.count / +query.limit),
+        data: data.brands,
+      },
       errors: null,
     };
   }
