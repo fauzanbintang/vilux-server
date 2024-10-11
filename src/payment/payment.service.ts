@@ -195,7 +195,6 @@ export class PaymentService {
       await this.prismaService.payment.update({
         where: { external_id: orderId },
         data: {
-          external_id: statusResponse.order_id,
           status: newStatus,
           method: paymentMethod,
           status_log: {
