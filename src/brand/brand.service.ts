@@ -1,7 +1,11 @@
 import { HttpException, Inject, Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from 'src/common/prisma.service';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
-import { CreateBrandDto, UpdateBrandDto } from 'src/dto/request/brand.dto';
+import {
+  BrandPaginationQuery,
+  CreateBrandDto,
+  UpdateBrandDto,
+} from 'src/dto/request/brand.dto';
 import { BrandDto } from 'src/dto/response/brand.dto';
 
 @Injectable()
@@ -24,10 +28,30 @@ export class BrandService {
     return brand;
   }
 
-  async findAll(): Promise<BrandDto[]> {
-    this.logger.debug('Get all brands');
+  async findAll(query: BrandPaginationQuery): Promise<any> {
+    this.logger.debug(
+      `Get paginated brand with query: ${JSON.stringify(query)}`,
+    );
+
+    let whereClause: any = {
+      name: {}
+    };
+    
+    if (query.search) {
+      whereClause.name = {
+        contains: query.search,
+        mode: 'insensitive',
+      };
+    }
+
+    const count = await this.prismaService.brand.count({
+      where: whereClause,
+    });
 
     const brands = await this.prismaService.brand.findMany({
+      skip: (+query.page - 1) * +query.limit,
+      take: +query.limit,
+      where: whereClause,
       include: {
         file: {
           select: {
@@ -40,7 +64,10 @@ export class BrandService {
       },
     });
 
-    return brands;
+    return {
+      count,
+      brands,
+    };
   }
 
   async findOne(id: string): Promise<BrandDto> {

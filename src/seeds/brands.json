@@ -1,0 +1,518 @@
+[
+    {
+        "brand": "Armani",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-02.png?updatedAt=1727417789444"
+    },
+    {
+        "brand": "Diesel",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-03.png?updatedAt=1727417792119"
+    },
+    {
+        "brand": "Calvin Klein",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-04.png?updatedAt=1727417786474"
+    },
+    {
+        "brand": "Bally",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-05.png?updatedAt=1727417788942"
+    },
+    {
+        "brand": "Bvlgari",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-06.png?updatedAt=1727417789376"
+    },
+    {
+        "brand": "Alexander McQueen",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-07.png?updatedAt=1727417789208"
+    },
+    {
+        "brand": "Alexander wang",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-08.png?updatedAt=1727417785743"
+    },
+    {
+        "brand": "Kenzo",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-09.png?updatedAt=1727417786157"
+    },
+    {
+        "brand": "Canadagoose",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-10.png?updatedAt=1727417786260"
+    },
+    {
+        "brand": "Acne studios",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-11.png?updatedAt=1727417788927"
+    },
+    {
+        "brand": "Coach",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-12.png?updatedAt=1727417789275"
+    },
+    {
+        "brand": "Balenciaga",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-13.png?updatedAt=1727417789309"
+    },
+    {
+        "brand": "Balmain Paris",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-105.png?updatedAt=1727417798697"
+    },
+    {
+        "brand": "Marni",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-105.png?updatedAt=1727417798697"
+    },
+    {
+        "brand": "Jimmychoo",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-16.png?updatedAt=1727417789580"
+    },
+    {
+        "brand": "MiuMiu",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-17.png?updatedAt=1727417790186"
+    },
+    {
+        "brand": "Fendi",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-18.png?updatedAt=1727417782411"
+    },
+    {
+        "brand": "Tod's",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-19.png?updatedAt=1727417780116"
+    },
+    {
+        "brand": "Goyard",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-20.png?updatedAt=1727417785948"
+    },
+    {
+        "brand": "Charles Keith",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-21.png?updatedAt=1727417786141"
+    },
+    {
+        "brand": "Vetements",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-22.png?updatedAt=1727417785724"
+    },
+    {
+        "brand": "Christian Louboutin",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-23.png?updatedAt=1727417783043"
+    },
+    {
+        "brand": "Longchamp",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-24.png?updatedAt=1727417782502"
+    },
+    {
+        "brand": "LOEWE",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-25.png?updatedAt=1727417779964"
+    },
+    {
+        "brand": "ToryBurch",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-26.png?updatedAt=1727417782641"
+    },
+    {
+        "brand": "Issey Miyake",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-27.png?updatedAt=1727417782884"
+    },
+    {
+        "brand": "Kate spade",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-28.png?updatedAt=1727417792566"
+    },
+    {
+        "brand": "VivienneWestwood",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-29.png?updatedAt=1727417792052"
+    },
+    {
+        "brand": "Drew house",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-30.png?updatedAt=1727417782519"
+    },
+    {
+        "brand": "HERMES",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-31.png?updatedAt=1727417779812"
+    },
+    {
+        "brand": "Givenchy",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-32.png?updatedAt=1727417782944"
+    },
+    {
+        "brand": "Versace",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-33.png?updatedAt=1727417782702"
+    },
+    {
+        "brand": "Rimowa",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-34.png?updatedAt=1727417785840"
+    },
+    {
+        "brand": "Berluti",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-35.png?updatedAt=1727417786127"
+    },
+    {
+        "brand": "Yeezy",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-65.png?updatedAt=1727417799257"
+    },
+    {
+        "brand": "Dior",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-37.png?updatedAt=1727417783617"
+    },
+    {
+        "brand": "Bottega Veneta",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-38.png?updatedAt=1727417786850"
+    },
+    {
+        "brand": "Celine",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-39.png?updatedAt=1727417789018"
+    },
+    {
+        "brand": "Cartier",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-40.png?updatedAt=1727417772557"
+    },
+    {
+        "brand": "Tumi",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-41.png?updatedAt=1727417775633"
+    },
+    {
+        "brand": "Valentino",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-42.png?updatedAt=1727417778828"
+    },
+    {
+        "brand": "Chanel",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-43.png?updatedAt=1727417778479"
+    },
+    {
+        "brand": "Thom Browne",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-44.png?updatedAt=1727417772062"
+    },
+    {
+        "brand": "Prada",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-45.png?updatedAt=1727417769166"
+    },
+    {
+        "brand": "Yves Saint laurent ysl slp",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-46.png?updatedAt=1727417765949"
+    },
+    {
+        "brand": "MCM",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-47.png?updatedAt=1727417765944"
+    },
+    {
+        "brand": "Gucci",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-49.png?updatedAt=1727417799117"
+    },
+    {
+        "brand": "Van Cleef",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-50.png?updatedAt=1727417769892"
+    },
+    {
+        "brand": "Gentle monster",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-51.png?updatedAt=1727417769186"
+    },
+    {
+        "brand": "Montblanc",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-52.png?updatedAt=1727417765491"
+    },
+    {
+        "brand": "Swarovski",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-53.png?updatedAt=1727417765813"
+    },
+    {
+        "brand": "TIFFANY & CO",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-54.png?updatedAt=1727417773403"
+    },
+    {
+        "brand": "MLB",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-55.png?updatedAt=1727417775658"
+    },
+    {
+        "brand": "Thrasher",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-56.png?updatedAt=1727417779403"
+    },
+    {
+        "brand": "Ripndip",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-57.png?updatedAt=1727417776877"
+    },
+    {
+        "brand": "Fila",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-58.png?updatedAt=1727417796055"
+    },
+    {
+        "brand": "Carhartt",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-59.png?updatedAt=1727417799321"
+    },
+    {
+        "brand": "Revenge storm",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-60.png?updatedAt=1727417802431"
+    },
+    {
+        "brand": "KITH",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-61.png?updatedAt=1727417799181"
+    },
+    {
+        "brand": "OFF-WHITE",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-62.png?updatedAt=1727417802494"
+    },
+    {
+        "brand": "Evisu",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-63.png?updatedAt=1727417805562"
+    },
+    {
+        "brand": "SALOMON",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-64.png?updatedAt=1727417795840"
+    },
+    {
+        "brand": "acme de la vie adlv",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-66.png?updatedAt=1727417795676"
+    },
+    {
+        "brand": "Raf Simons",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-67.png?updatedAt=1727417792754"
+    },
+    {
+        "brand": "Amiri",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-68.png?updatedAt=1727417773094"
+    },
+    {
+        "brand": "Rhude",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-69.png?updatedAt=1727417775701"
+    },
+    {
+        "brand": "Undercover",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-70.png?updatedAt=1727417795820"
+    },
+    {
+        "brand": "patagonia",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-71.png?updatedAt=1727417799010"
+    },
+    {
+        "brand": "Stussy",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-72.png?updatedAt=1727417796344"
+    },
+    {
+        "brand": "Aape",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-73.png?updatedAt=1727417792610"
+    },
+    {
+        "brand": "Bape",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-74.png?updatedAt=1727417802273"
+    },
+    {
+        "brand": "Neighborhood",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-75.png?updatedAt=1727417799690"
+    },
+    {
+        "brand": "Wtaps",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-76.png?updatedAt=1727417802568"
+    },
+    {
+        "brand": "CPFM",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-77.png?updatedAt=1727417805513"
+    },
+    {
+        "brand": "The North Face tnf",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-78.png?updatedAt=1727417769389"
+    },
+    {
+        "brand": "Comme des Garçons",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-79.png?updatedAt=1727417769290"
+    },
+    {
+        "brand": "Murakami Takashi",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-80.png?updatedAt=1727417776583"
+    },
+    {
+        "brand": "MARCELO BURLON",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-81.png?updatedAt=1727417778980"
+    },
+    {
+        "brand": "Moncler",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-87.png?updatedAt=1727417772429"
+    },
+    {
+        "brand": "new era",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-82.png?updatedAt=1727417776770"
+    },
+    {
+        "brand": "Moschino",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-83.png?updatedAt=1727417772429"
+    },
+    {
+        "brand": "Heron Preston",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-84.png?updatedAt=1727417765892"
+    },
+    {
+        "brand": "Ambush",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-85.png?updatedAt=1727417765639"
+    },
+    {
+        "brand": "Tommy Hilfiger",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-86.png?updatedAt=1727417765913"
+    },
+    {
+        "brand": "saint louis",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-123.png?updatedAt=1727417779009"
+    },
+    {
+        "brand": "Maison Kitsune",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-122.png?updatedAt=1727417778906"
+    },
+    {
+        "brand": "Ih nom uh nit",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-89.png?updatedAt=1727417802438"
+    },
+    {
+        "brand": "Lost General",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-90.png?updatedAt=1727417765944"
+    },
+    {
+        "brand": "PalmAngles",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-98.png?updatedAt=1727417792604"
+    },
+    {
+        "brand": "Rick Owens",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-91.png?updatedAt=1727417765891"
+    },
+    {
+        "brand": "Arcteryx",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-92.png?updatedAt=1727417768921"
+    },
+    {
+        "brand": "dolce & gabbana dolce and gabbana",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-93.png?updatedAt=1727417772403"
+    },
+    {
+        "brand": "Lanvin",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-94.png?updatedAt=1727417776455"
+    },
+    {
+        "brand": "Ami",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-95.png?updatedAt=1727417779708"
+    },
+    {
+        "brand": "Jilsander",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-96.png?updatedAt=1727417775802"
+    },
+    {
+        "brand": "Cav Empt",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-97.png?updatedAt=1727417772593"
+    },
+    {
+        "brand": "Y-3",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-99.png?updatedAt=1727417795785"
+    },
+    {
+        "brand": "Ecco",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-106.png?updatedAt=1727417795288"
+    },
+    {
+        "brand": "crocs",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-104.png?updatedAt=1727417797191"
+    },
+    {
+        "brand": "Charlie Luciano",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-103.png?updatedAt=1727417805380"
+    },
+    {
+        "brand": "Ferragamo",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-01.png?updatedAt=1727417792355"
+    },
+    {
+        "brand": "Michael Kors",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-14.png?updatedAt=1727417792526"
+    },
+    {
+        "brand": "Ourlegacy",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-101.png?updatedAt=1727417800529"
+    },
+    {
+        "brand": "Burberry",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-36.png?updatedAt=1727417783355"
+    },
+    {
+        "brand": "Stone Island",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-102.png?updatedAt=1727417804353"
+    },
+    {
+        "brand": "GIORGIO ARMANI",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-107.png?updatedAt=1727417795180"
+    },
+    {
+        "brand": "Giuseppe Zanotti",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-108.png?updatedAt=1727417773650"
+    },
+    {
+        "brand": "Ermenegildo Zegna",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-109.png?updatedAt=1727417775640"
+    },
+    {
+        "brand": "jacquemus",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-110.png?updatedAt=1727417798790"
+    },
+    {
+        "brand": "Stefano Ricci",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-111.png?updatedAt=1727417798785"
+    },
+    {
+        "brand": "Supreme",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-112.png?updatedAt=1727417795422"
+    },
+    {
+        "brand": "Boy London",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-113.png?updatedAt=1727417793509"
+    },
+    {
+        "brand": "PHILIPP PLEIN",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-114.png?updatedAt=1727417802100"
+    },
+    {
+        "brand": "Fear of god FOG",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-115.png?updatedAt=1727417802301"
+    },
+    {
+        "brand": "ESSENTIALS",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-116.png?updatedAt=1727417802877"
+    },
+    {
+        "brand": "Loro Piana",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-126.png?updatedAt=1727417765887"
+    },
+    {
+        "brand": "Chrome Hearts",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-117.png?updatedAt=1727417805509"
+    },
+    {
+        "brand": "Palace",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-118.png?updatedAt=1727417769963"
+    },
+    {
+        "brand": "Dr.Martens",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-119.png?updatedAt=1727417769348"
+    },
+    {
+        "brand": "Vlone",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-124.png?updatedAt=1727417769733"
+    },
+    {
+        "brand": "Travis Scott",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-120.png?updatedAt=1727417773190"
+    },
+    {
+        "brand": "Ralph Lauren",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-121.png?updatedAt=1727417775298"
+    },
+    {
+        "brand": "Clot",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-125.png?updatedAt=1727417769289"
+    },
+    {
+        "brand": "Lv",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/2.png?updatedAt=1727677067573"
+    },
+    {
+        "brand": "ALYX",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/1.png?updatedAt=1727677067486"
+    },
+    {
+        "brand": "Saint michael",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/3.png?updatedAt=1727677067170"
+    },
+    {
+        "brand": "Yohji Yamamoto",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/4.png?updatedAt=1727677067513"
+    },
+    {
+        "brand": "A-COLD-WALL a cold wall",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/BRAND_LOGO_B-88.png?updatedAt=1727417805676"
+    },
+    {
+        "brand": "We11done welldone well done",
+        "logoUrl": "https://ik.imagekit.io/viluxmedia/brand-icon/Untitled%20design%20(4).png?updatedAt=1727677076926"
+    }
+]

@@ -190,12 +190,13 @@ export class PaymentService {
       } else {
         throw new HttpException('Invalid payment type', 400);
       }
+      paymentMethod['order_id'] = statusResponse.order_id
 
       await this.prismaService.payment.update({
         where: { external_id: orderId },
         data: {
-          external_id: statusResponse.order_id,
           status: newStatus,
+          method: paymentMethod,
           status_log: {
             success:
               newStatus === PaymentStatus.success
