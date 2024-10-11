@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { PartialType } from '@nestjs/swagger';
 
 export class CreateBrandDto {
@@ -16,3 +16,23 @@ export class CreateBrandDto {
 }
 
 export class UpdateBrandDto extends PartialType(CreateBrandDto) {}
+
+export class BrandPaginationQuery {
+  @ApiProperty({
+    type: String,
+    default: '1',
+  })
+  page?: string;
+
+  @ApiProperty({
+    type: String,
+    default: '10',
+  })
+  limit?: string;
+
+  @ApiPropertyOptional({
+    type: String,
+    default: 'test',
+  })
+  search?: string;
+}
