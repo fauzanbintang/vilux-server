@@ -115,6 +115,44 @@ export class LegitCheckController {
     };
   }
 
+  @Get('top-brands')
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Get top brands by successful legit checks' })
+  @ApiResponse({
+    status: 200,
+    description: 'Get top brands by successful legit checks',
+    schema: {
+      example: {
+        message: 'Successfully retrieved top brands',
+        data: [
+          { id: 'brand1-id', name: 'Brand 1', count: 15 },
+          { id: 'brand2-id', name: 'Brand 2', count: 12 },
+          { id: 'brand3-id', name: 'Brand 3', count: 10 },
+        ],
+        errors: null,
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad Request',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+  })
+  async getTopBrands(
+    @Query('limit') limit: string,
+  ): Promise<ResponseDto<any>> {
+    const brands = await this.legitCheckService.getTopBrands(Number(limit));
+
+    return {
+      message: 'Successfully retrieved top brands',
+      data: brands,
+      errors: null,
+    };
+  }
+
   @Put(':id/images')
   @HttpCode(200)
   @ApiOperation({ summary: 'Upsert legit check images' })
@@ -434,5 +472,5 @@ export class LegitCheckController {
     };
   }
 
- 
+
 }
