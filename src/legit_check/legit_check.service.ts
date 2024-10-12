@@ -322,7 +322,13 @@ export class LegitCheckService {
               select: {
                 id: true,
                 name: true,
+                sort_order: true,
               },
+            },
+          },
+          orderBy: {
+            subcategory_instruction: {
+              sort_order: 'asc',
             },
           },
         },
@@ -477,6 +483,6 @@ export class LegitCheckService {
       },
     });
 
-    return count
+    return count;
   }
 }

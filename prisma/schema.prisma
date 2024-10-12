@@ -177,6 +177,7 @@ model SubcategoryInstruction {
   name             String
   subcategory_id   String             @db.Uuid
   subcategory      Subcategory        @relation(fields: [subcategory_id], references: [id])
+  sort_order       Int                @default(0)
   icon_id          String?            @db.Uuid
   icon             File?              @relation(name: "icon_file", fields: [icon_id], references: [id])
   example_image_id String?            @db.Uuid
