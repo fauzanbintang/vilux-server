@@ -1,0 +1,305 @@
+{
+    "BAGS": {
+        "Clutch": {
+            "categoryInstructions": [
+                "Clutch Look",
+                "Outer Front Logo",
+                "Serial Code Tag",
+                "Made in Tag",
+                "Zipper Slides",
+                "Zipper Pull Tab",
+                "Donut Badge",
+                "Inner Tag",
+                "Materials Look"
+            ]
+        },
+        "Handbag": {
+            "categoryInstructions": [
+                "Handbag Look",
+                "Materials Look",
+                "Zipper Slides",
+                "Logo Emboss Outside",
+                "Logo Emboss Inside",
+                "Inside Bag",
+                "Zipper Pull Tab",
+                "Feet Look",
+                "Inside Logo Tag",
+                "Serial Code Tag",
+                "Dust Bag",
+                "Certificate",
+                "Lock and Key"
+            ]
+        },
+        "Backpack": {
+            "categoryInstructions": [
+                "Backpack Front Look",
+                "Backpack Back Look",
+                "Zipper Bag",
+                "Zipper Back",
+                "Front Logo Bag",
+                "Inner Label Tag",
+                "Strap",
+                "Dustbag",
+                "Materials Look"
+            ]
+        },
+        "Waistbag": {
+            "categoryInstructions": [
+                "Waistbag Look",
+                "Zipper",
+                "Tag Front",
+                "Zipper Back",
+                "Side Bag Strap",
+                "Strap Front",
+                "Strap Back",
+                "Dust Bag",
+                "Materials Look"
+            ]
+        },
+        "Wallet": {
+            "categoryInstructions": [
+                "Wallet Front Look",
+                "Wallet Back Look",
+                "Wallet Surface Look",
+                "Front Emboss",
+                "Inside Emboss",
+                "Materials Look",
+                "Zipper Pull Tab",
+                "Code Emboss"
+            ]
+        },
+        "Tote bag": {
+            "categoryInstructions": []
+        },
+        "Luggage": {
+            "categoryInstructions": []
+        },
+        "Card holder": {
+            "categoryInstructions": [
+                "Wallet Front Look",
+                "Wallet Back Look",
+                "Wallet Surface Look",
+                "Front Emboss",
+                "Inside Emboss",
+                "Materials Look"
+            ]
+        }
+    },
+    "APPAREL": {
+        "T-shirts": {
+            "categoryInstructions": [
+                "T-Shirt Look Front",
+                "T-Shirt Look Back",
+                "Neck and Size Tag Front",
+                "Neck and Size Tag Back",
+                "Wash Tag",
+                "Wash Tag Pages",
+                "Embroidery",
+                "Side Tag",
+                "Price Tag",
+                "Packaging"
+            ]
+        },
+        "Hoodie": {
+            "categoryInstructions": [
+                "Outer Look",
+                "Hood",
+                "Wash Tag",
+                "Wash Tag Pages",
+                "Neck and Size Tag Front",
+                "Neck and Size Tag Back",
+                "Hand Tag Front",
+                "Hand Tag Back",
+                "Price Tag",
+                "Packaging"
+            ]
+        },
+        "Jacket": {
+            "categoryInstructions": [
+                "Outer Look",
+                "Wash Tag",
+                "Wash Tag Pages",
+                "Neck and Size Tag Front",
+                "Neck and Size Tag Back",
+                "Hand Tag Front",
+                "Hand Tag Back",
+                "Price Tag",
+                "Packaging"
+            ]
+        },
+        "Shirts": {
+            "categoryInstructions": [
+                "Outer Look Front",
+                "Outer Look Back",
+                "Neck and Size Tag Front",
+                "Neck and Size Tag Back",
+                "Wash Tag",
+                "Wash Tag Pages",
+                "Embroidery",
+                "Size Tag",
+                "Made in Tag",
+                "Price Tag",
+                "Packaging"
+            ]
+        },
+        "Pants": {
+            "categoryInstructions": [
+                "Pants Look Front",
+                "Pants Look Back",
+                "Waist Tag Front",
+                "Waist Tag Back",
+                "Size Tag",
+                "Made in Tag",
+                "Wash Tag",
+                "Wash Tag Pages"
+            ]
+        }
+    },
+    "FOOTWEAR": {
+        "Sneakers": {
+            "categoryInstructions": [
+                "Outer Shoes",
+                "Shoes Soles",
+                "Size Tag Right",
+                "Size Tag Left",
+                "Stitching Left",
+                "Stitching Right",
+                "Insole Front",
+                "Insole Back",
+                "Tongue Front Label Left",
+                "Tongue Front Label Right",
+                "Tongue Back Label Left",
+                "Tongue Back Label Right",
+                "Shoebox Size Label",
+                "Shoebox Side Label",
+                "Shoe Box Label",
+                "Shoe Tree"
+            ]
+        },
+        "Loafers": {
+            "categoryInstructions": [
+                "Outer Loafer",
+                "Tongue Back Code",
+                "Stitching Left",
+                "Stitching Right",
+                "Insoles Front",
+                "Bag Detail",
+                "Loafers Logo Detail",
+                "Shoe Box Label"
+            ]
+        },
+        "Slides": {
+            "categoryInstructions": [
+                "Outer Slides",
+                "Outsole Slides",
+                "Outsole Left",
+                "Outsole Right",
+                "Insole Right",
+                "Insole Left",
+                "Size Tag Left",
+                "Size Tag Right",
+                "Heet Lift",
+                "Logo Tag",
+                "Made in Tag",
+                "Packaging"
+            ]
+        },
+        "High Heels": {
+            "categoryInstructions": [
+                "Outer Heels",
+                "Size Tag",
+                "Insole Heels Front",
+                "Logo Heels",
+                "Bag Detail"
+            ]
+        },
+        "Boots": {
+            "categoryInstructions": [
+                "Outer Boots",
+                "Size Tag Right",
+                "Size Tag Left",
+                "Stitching Left",
+                "Stitching Right",
+                "Insole Front",
+                "Insole Back",
+                "Shoe Box Label"
+            ]
+        }
+    },
+    "ACCESSORIES": {
+        "Belt": {
+            "categoryInstructions": [
+                "Belt Buckle Logo Front",
+                "Belt Buckle Logo Back",
+                "Belt Loop Back",
+                "Belt Strap Emboss"
+            ]
+        },
+        "Hat": {
+            "categoryInstructions": [
+                "Hat Front Look",
+                "Hat Side Look",
+                "Hat Inside Look",
+                "Logo Tag",
+                "Size Tag Front",
+                "Size Tag Back",
+                "Wash Tag",
+                "Wash Tag Page",
+                "Price Tag",
+                "Paper Tag",
+                "Materials Look"
+            ]
+        },
+        "Glasses": {
+            "categoryInstructions": [
+                "Glasses Front Look",
+                "Glasses Back Look",
+                "Temples Code",
+                "Temples Logo",
+                "Temples Tip",
+                "Logo Emboss",
+                "Bridge",
+                "Hinges Left",
+                "Hinges Right",
+                "Cloth",
+                "Certificate Card",
+                "Glasses Box",
+                "Inside Box"
+            ]
+        },
+        "Bracelet": {
+            "categoryInstructions": [
+                "Bracelet Front Look",
+                "Bracelet Top Look",
+                "Front Strap",
+                "Made in Emboss",
+                "Logo Emboss",
+                "Clasp Detail",
+                "Materials Look"
+            ]
+        },
+        "Necklace": {
+            "categoryInstructions": [
+                "Necklace Look",
+                "Pendant Front Look",
+                "Pendant Back Look",
+                "Clasp Detail",
+                "Chain Code"
+            ]
+        },
+        "Ring": {
+            "categoryInstructions": [
+                "Ring Look",
+                "Head Detail",
+                "Materials Look",
+                "Shank Logo",
+                "Logo Engraving",
+                "Made in Engraving",
+                "Serial Code Engraving"
+            ]
+        },
+        "Scarf": {
+            "categoryInstructions": []
+        }
+    }
+}
