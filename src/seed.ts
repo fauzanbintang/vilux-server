@@ -1,15 +1,13 @@
-import { Gender, Prisma, PrismaClient, Role } from '@prisma/client';
+import { Gender, PrismaClient, Role } from '@prisma/client';
 import { hashPassword } from './helpers/bcrypt';
-import { DefaultArgs } from '@prisma/client/runtime/library';
 import brands from './seeds/brands.json';
+import categories from './seeds/categories.json';
 
 const prisma = new PrismaClient();
 async function main() {
   await seedUsers();
   await seedBrands();
   await seedCategories();
-  await seedSubcategories();
-  await seedSubcategoryInstructions();
   await seedServices();
   await seedFiles();
 }
@@ -105,94 +103,46 @@ async function seedBrands() {
 }
 
 async function seedCategories() {
-  const categories = ['bags', 'apparel', 'footwear'];
-  categories.forEach(async (name) => {
-    const category = await prisma.category.findFirst({
-      where: { name },
-      select: { id: true },
+  for (const [categoryName, subcategories] of Object.entries(categories)) {
+    let category = await prisma.category.findFirst({
+      where: { name: categoryName.toLowerCase() },
     });
 
     if (!category) {
-      await prisma.category.create({
-        data: { name },
+      category = await prisma.category.create({
+        data: { name: categoryName.toLowerCase() },
       });
     }
-  });
-}
 
-async function seedSubcategories() {
-  const bags = ['clutch', 'handbag'];
-  const apparel = ['t-shirts', 'hoodie'];
-  const footwear = ['sneakers', 'loafers'];
-
-  for (let i = 0; i < bags.length; i++) {
-    await findAndCreateSubcategory(prisma.subcategory, bags[i], 'bags');
-    await findAndCreateSubcategory(prisma.subcategory, apparel[i], 'apparel');
-    await findAndCreateSubcategory(prisma.subcategory, footwear[i], 'footwear');
-  }
-}
-
-async function findAndCreateSubcategory(
-  subcategoryDelegate: Prisma.SubcategoryDelegate<DefaultArgs>,
-  name: string,
-  categoryName: string,
-) {
-  const data = await subcategoryDelegate.findFirst({
-    where: { name },
-    select: { id: true },
-  });
-
-  if (!data) {
-    const category = await prisma.category.findFirst({
-      where: { name: categoryName },
-      select: { id: true },
-    });
-
-    if (category) {
-      await subcategoryDelegate.create({
-        data: {
-          name,
-          category_id: category.id,
-        },
-      });
-    }
-  }
-}
-
-async function seedSubcategoryInstructions() {
-  const clutch = [
-    'clutch look',
-    'outer front logo',
-    'serial code tag',
-    'made in tag',
-    'zipper slides',
-    'zipper pull tab',
-    'donut badge',
-    'inner tag',
-    'material look',
-  ];
-
-  const subcategory = await prisma.subcategory.findFirst({
-    where: { name: 'clutch' },
-    select: { id: true },
-  });
-
-  if (subcategory) {
-    clutch.forEach(async (name) => {
-      const data = await prisma.subcategoryInstruction.findFirst({
-        where: { name },
-        select: { id: true },
+    for (const [subcategoryName, subcategoryData] of Object.entries(subcategories)) {
+      let subcategory = await prisma.subcategory.findFirst({
+        where: { name: subcategoryName.toLowerCase() },
       });
 
-      if (!data) {
-        await prisma.subcategoryInstruction.create({
+      if (!subcategory) {
+        subcategory = await prisma.subcategory.create({
           data: {
-            name,
-            subcategory_id: subcategory.id,
+            name: subcategoryName.toLowerCase(),
+            category_id: category.id,
           },
         });
       }
-    });
+
+      for (const instruction of subcategoryData.categoryInstructions) {
+        const existingInstruction = await prisma.subcategoryInstruction.findFirst({
+          where: { name: instruction.toLowerCase(), subcategory_id: subcategory.id },
+        });
+
+        if (!existingInstruction) {
+          await prisma.subcategoryInstruction.create({
+            data: {
+              name: instruction.toLowerCase(),
+              subcategory_id: subcategory.id,
+            },
+          });
+        }
+      }
+    }
   }
 }
 
