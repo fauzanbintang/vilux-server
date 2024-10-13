@@ -22,7 +22,7 @@ export class LegitCheckService {
     private prismaService: PrismaService,
     private readonly fileService: FileService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
-  ) {}
+  ) { }
 
   async upsertLegitCheckBrandCategory(
     clientInfo: UserDto,
@@ -358,6 +358,50 @@ export class LegitCheckService {
       count,
       legitChecks,
     };
+  }
+
+  async getTopBrands(limit: number): Promise<any[]> {
+    this.logger.debug(`Get top ${limit} brands by successful legit checks`);
+
+    const topBrands = await this.prismaService.legitChecks.groupBy({
+      by: ['brand_id'],
+      _count: {
+        brand_id: true,
+      },
+      where: {
+        Order: {
+          some: {
+            payment: {
+              status: 'success',
+            },
+          },
+        },
+      },
+      orderBy: {
+        _count: {
+          brand_id: 'desc',
+        },
+      },
+      take: limit,
+    });
+
+    const brandDetails = await this.prismaService.brand.findMany({
+      where: {
+        id: {
+          in: topBrands.map((brand) => brand.brand_id),
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+      },
+    });
+
+    return topBrands.map((brand) => ({
+      id: brand.brand_id,
+      name: brandDetails.find((b) => b.id === brand.brand_id)?.name,
+      count: brand._count.brand_id,
+    }));
   }
 
   async getDetailLegitCheck(id: string): Promise<any> {
