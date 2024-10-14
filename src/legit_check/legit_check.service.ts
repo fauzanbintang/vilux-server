@@ -201,6 +201,14 @@ export class LegitCheckService {
       where: { id },
       include: {
         LegitCheckImages: true,
+        // add order by
+        /**
+         * orderBy: {
+            subcategory_instruction: {
+              sort_order: 'asc',
+            },
+          },
+         */
       },
     });
 
@@ -294,6 +302,8 @@ export class LegitCheckService {
         legit_status: true,
         code: true,
         watched: true,
+        created_at: true,
+        updated_at: true,
         client: {
           select: {
             id: true,
