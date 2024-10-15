@@ -83,6 +83,11 @@ export class UpdateUserDto extends PartialType(RegisterUserDto) {
     default: 'male',
   })
   gender: Gender;
+  @ApiProperty({
+    type: String,
+    default: 'VLX',
+  })
+  certificate_prefix: string;
 }
 
 export class UpdateUserPasswordDto {

@@ -104,20 +104,21 @@ export class UserController {
     description: 'Get user',
     schema: {
       example: {
-        message: 'Successfully get user',
+        message: "Successfully get user",
         data: {
-          id: '60cd3158-6318-49ba-82a2-5b02d0e1af10',
-          username: 'test',
-          email: 'test@mail.com',
-          full_name: 'Test Test',
-          date_of_birth: '1998-12-31T17:00:00.000Z',
-          gender: 'male',
-          role: 'client',
-          phone_number: '+1234567890',
-          created_at: '2021-01-01T17:00:00.000Z',
+          id: "31b842c7-5416-43fb-b567-de441776c75f",
+          username: "test",
+          email: "test@mail.com",
+          full_name: "Test Test",
+          date_of_birth: "1998-12-31T17:00:00.000Z",
+          gender: "male",
+          role: "client",
+          phone_number: "+1234567890",
+          created_at: "2024-10-07T15:25:26.893Z",
+          certificate_prefix: "VLX",
           referral: "JF839H9Z"
         },
-        errors: null,
+        errors: null
       },
     },
   })
@@ -143,6 +144,7 @@ export class UserController {
           date_of_birth: '1998-12-31T17:00:00.000Z',
           gender: 'male',
           role: 'client',
+          certificat_prefix: 'VLX',
         },
         errors: null,
       },
