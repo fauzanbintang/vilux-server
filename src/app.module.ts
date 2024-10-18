@@ -23,6 +23,7 @@ import { OrderModule } from './order/order.module';
 import { LegitCheckModule } from './legit_check/legit_check.module';
 import { ServiceModule } from './service/service.module';
 import { BannerModule } from './banner/banner.module';
+import { LedgerModule } from './ledger/ledger.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { BannerModule } from './banner/banner.module';
     LegitCheckModule,
     ServiceModule,
     BannerModule,
+    LedgerModule,
   ],
   controllers: [],
   providers: [LogMiddleware, AuthenticationMiddleware],
