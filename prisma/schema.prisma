@@ -278,3 +278,19 @@ model Banner {
 
   @@map("banners")
 }
+
+model Ledger {
+  id               String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  created_at       DateTime @default(now())
+  description      String
+  amount           BigInt
+  is_credit        Boolean
+  transaction_id   String
+  transaction_type String
+  sum_from         BigInt
+  sum_to           BigInt
+  reference_id     String
+  referece_type    String
+
+  @@map("ledgers")
+}
