@@ -77,6 +77,7 @@ export class UserService {
         role: true,
         phone_number: true,
         created_at: true,
+        certificate_prefix: true,
       },
     });
 
@@ -109,6 +110,17 @@ export class UserService {
       throw new HttpException('User not found', 404);
     }
 
+    if (updateUserDto.certificate_prefix && user.role !== 'vip_client') {
+      throw new HttpException(
+        'Only VIP client can change certificate prefix',
+        400,
+      )
+    }
+
+    if (updateUserDto.certificate_prefix.length !== 3) {
+      throw new HttpException('Certificate prefix must be 3 characters', 400);
+    }
+
     const updatedUser = await this.prismaService.user.update({
       where: { id },
       data: updateUserDto,
@@ -121,6 +133,7 @@ export class UserService {
       full_name: updatedUser.full_name,
       date_of_birth: updatedUser.date_of_birth,
       gender: updatedUser.gender,
+      certificate_prefix: updatedUser.certificate_prefix,
     };
   }
 
