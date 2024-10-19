@@ -213,7 +213,8 @@ model LegitChecks {
   file_id          String?            @db.Uuid
   file             File?              @relation(fields: [file_id], references: [id])
   watched          Boolean            @default(false)
-  Order            Order[]
+  status_log       Json?
+  Order            Order?
   LegitCheckImages LegitCheckImages[]
 
   @@map("legit_checks")
@@ -239,7 +240,7 @@ model Order {
   updated_at      DateTime    @default(now()) @updatedAt
   created_at      DateTime    @default(now())
   code            String
-  legit_check_id  String      @db.Uuid
+  legit_check_id  String      @unique @db.Uuid
   legit_check     LegitChecks @relation(fields: [legit_check_id], references: [id])
   service_id      String      @db.Uuid
   service         Services    @relation(fields: [service_id], references: [id])

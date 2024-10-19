@@ -87,9 +87,12 @@ export class LegitCheckController {
     description: 'Get unwatched legit checks',
     schema: {
       example: {
-        message: 'Successfully get unwatched legit checks',
+        message: 'Successfully get unwatched legit checks count',
         data: {
-          count: 4,
+          unwatched: {
+            data_validation: 1,
+            legit_checking: 1,
+          },
         },
         errors: null,
       },
@@ -104,13 +107,11 @@ export class LegitCheckController {
     description: 'Internal Server Error',
   })
   async getUnwatchedLegitChecks(): Promise<ResponseDto<any>> {
-    const count = await this.legitCheckService.getUnwatched();
+    const data = await this.legitCheckService.getUnwatched();
 
     return {
       message: 'Successfully get unwatched legit checks count',
-      data: {
-        count: count,
-      },
+      data,
       errors: null,
     };
   }
