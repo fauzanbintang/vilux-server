@@ -6,20 +6,21 @@ import {
   Param,
   Put,
   Query,
-  UseGuards,
 } from '@nestjs/common';
 import { UserDto } from 'src/dto/response/user.dto';
 import { UserService } from './user.service';
-import { RoleGuard } from 'src/common/roleGuard/role.guard';
-import { Roles } from 'src/common/roleGuard/roles.decorator';
 import { ResponseDto } from 'src/dto/response/response.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { UpdateUserDto, UpdateUserPasswordDto, UserQuery } from 'src/dto/request/auth.dto';
+import {
+  UpdateUserDto,
+  UpdateUserPasswordDto,
+  UserQuery,
+} from 'src/dto/request/auth.dto';
 
 @ApiTags('user')
 @Controller('/api/users')
 export class UserController {
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService) {}
 
   @Get()
   @HttpCode(200)
@@ -44,7 +45,7 @@ export class UserController {
               role: 'client',
               created_at: '2021-01-01T17:00:00.000Z',
             },
-          ]
+          ],
         },
         errors: null,
       },
@@ -52,12 +53,8 @@ export class UserController {
   })
   // @UseGuards(RoleGuard)
   // @Roles(['admin'])
-  async getUsers(
-    @Query() query: UserQuery,
-  ): Promise<ResponseDto<any>> {
-    query.role = Array.isArray(query.role)
-      ? query.role
-      : [query.role];
+  async getUsers(@Query() query: UserQuery): Promise<ResponseDto<any>> {
+    query.role = Array.isArray(query.role) ? query.role : [query.role];
 
     const data = await this.userService.getUsers(query);
     return {
@@ -66,7 +63,45 @@ export class UserController {
         currentPage: +query.page,
         totalPage: Math.ceil(data.count / +query.limit),
         data: data.users,
-      }, errors: null
+      },
+      errors: null,
+    };
+  }
+
+  @Get('count')
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Get user count' })
+  @ApiResponse({
+    status: 200,
+    description: 'Get user count',
+    schema: {
+      example: {
+        message: 'Successfully get user count',
+        data: {
+          count: {
+            client: 2,
+            vip_client: 1,
+          },
+        },
+        errors: null,
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad Request',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+  })
+  async getUserCount(): Promise<ResponseDto<any>> {
+    const data = await this.userService.getUserCount();
+
+    return {
+      message: 'Successfully get user count',
+      data,
+      errors: null,
     };
   }
 
@@ -106,7 +141,7 @@ export class UserController {
       example: {
         message: 'Successfully get user',
         data: {
-          id: '60cd3158-6318-49ba-82a2-5b02d0e1af10',
+          id: '31b842c7-5416-43fb-b567-de441776c75f',
           username: 'test',
           email: 'test@mail.com',
           full_name: 'Test Test',
@@ -114,8 +149,9 @@ export class UserController {
           gender: 'male',
           role: 'client',
           phone_number: '+1234567890',
-          created_at: '2021-01-01T17:00:00.000Z',
-          referral: "JF839H9Z"
+          created_at: '2024-10-07T15:25:26.893Z',
+          certificate_prefix: 'VLX',
+          referral: 'JF839H9Z',
         },
         errors: null,
       },
@@ -143,6 +179,7 @@ export class UserController {
           date_of_birth: '1998-12-31T17:00:00.000Z',
           gender: 'male',
           role: 'client',
+          certificat_prefix: 'VLX',
         },
         errors: null,
       },

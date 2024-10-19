@@ -1,7 +1,12 @@
 import { HttpException, Inject, Injectable, Logger } from '@nestjs/common';
+import { Role } from '@prisma/client';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { PrismaService } from 'src/common/prisma.service';
-import { UpdateUserDto, UpdateUserPasswordDto, UserQuery } from 'src/dto/request/auth.dto';
+import {
+  UpdateUserDto,
+  UpdateUserPasswordDto,
+  UserQuery,
+} from 'src/dto/request/auth.dto';
 import { UserDto } from 'src/dto/response/user.dto';
 import { comparePassword, hashPassword } from 'src/helpers/bcrypt';
 
@@ -10,11 +15,9 @@ export class UserService {
   constructor(
     private prismaService: PrismaService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
-  ) { }
+  ) {}
 
-  async getUsers(
-    query: UserQuery,
-  ): Promise<any> {
+  async getUsers(query: UserQuery): Promise<any> {
     this.logger.debug('Get all users');
 
     const whereClause: any = {};
@@ -23,7 +26,7 @@ export class UserService {
       whereClause.OR = [
         { username: { contains: query.search, mode: 'insensitive' } },
         { email: { contains: query.search, mode: 'insensitive' } },
-        { full_name: { contains: query.search, mode: 'insensitive' } }
+        { full_name: { contains: query.search, mode: 'insensitive' } },
       ];
     }
 
@@ -77,6 +80,7 @@ export class UserService {
         role: true,
         phone_number: true,
         created_at: true,
+        certificate_prefix: true,
       },
     });
 
@@ -86,14 +90,14 @@ export class UserService {
 
     const voucher = await this.prismaService.voucher.findFirst({
       where: {
-        user_id: user.id
+        user_id: user.id,
       },
       select: {
-        code: true
-      }
-    })
+        code: true,
+      },
+    });
 
-    user['referral'] = voucher ? voucher.code : null
+    user['referral'] = voucher ? voucher.code : null;
 
     return user;
   }
@@ -109,6 +113,17 @@ export class UserService {
       throw new HttpException('User not found', 404);
     }
 
+    if (updateUserDto.certificate_prefix && user.role !== 'vip_client') {
+      throw new HttpException(
+        'Only VIP client can change certificate prefix',
+        400,
+      );
+    }
+
+    if (updateUserDto.certificate_prefix.length !== 3) {
+      throw new HttpException('Certificate prefix must be 3 characters', 400);
+    }
+
     const updatedUser = await this.prismaService.user.update({
       where: { id },
       data: updateUserDto,
@@ -121,6 +136,7 @@ export class UserService {
       full_name: updatedUser.full_name,
       date_of_birth: updatedUser.date_of_birth,
       gender: updatedUser.gender,
+      certificate_prefix: updatedUser.certificate_prefix,
     };
   }
 
@@ -153,5 +169,38 @@ export class UserService {
         password: await hashPassword(updateUserPasswordDto.newPassword),
       },
     });
+  }
+
+  async getUserCount() {
+    const counts = await this.prismaService.user.groupBy({
+      by: ['role'],
+      where: {
+        role: {
+          in: [Role.client, Role.vip_client],
+        },
+      },
+      _count: {
+        role: true,
+      },
+    });
+
+    const result = counts.reduce(
+      (acc, count) => {
+        if (count.role === Role.client) {
+          acc.count.client = count._count.role;
+        } else if (count.role === Role.vip_client) {
+          acc.count.vip_client = count._count.role;
+        }
+        return acc;
+      },
+      {
+        count: {
+          client: 0,
+          vip_client: 0,
+        },
+      },
+    );
+
+    return result;
   }
 }

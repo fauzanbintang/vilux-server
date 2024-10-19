@@ -22,7 +22,7 @@ export class LegitCheckService {
     private prismaService: PrismaService,
     private readonly fileService: FileService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
-  ) { }
+  ) {}
 
   async upsertLegitCheckBrandCategory(
     clientInfo: UserDto,
@@ -182,6 +182,7 @@ export class LegitCheckService {
           check_status: flag
             ? LegitCheckStatus.legit_checking
             : LegitCheckStatus.revise_data,
+          watched: false,
         },
       });
 
@@ -201,6 +202,14 @@ export class LegitCheckService {
       where: { id },
       include: {
         LegitCheckImages: true,
+        // add order by
+        /**
+         * orderBy: {
+            subcategory_instruction: {
+              sort_order: 'asc',
+            },
+          },
+         */
       },
     });
 
@@ -294,6 +303,9 @@ export class LegitCheckService {
         legit_status: true,
         code: true,
         watched: true,
+        created_at: true,
+        updated_at: true,
+        status_log: true,
         client: {
           select: {
             id: true,
@@ -370,10 +382,8 @@ export class LegitCheckService {
       },
       where: {
         Order: {
-          some: {
-            payment: {
-              status: 'success',
-            },
+          payment: {
+            status: 'success',
           },
         },
       },
@@ -421,6 +431,7 @@ export class LegitCheckService {
         client_note: true,
         admin_note: true,
         watched: true,
+        status_log: true,
         brand: {
           select: {
             id: true,
@@ -515,18 +526,36 @@ export class LegitCheckService {
   }
 
   async getUnwatched() {
-    const count = await this.prismaService.legitChecks.count({
+    const counts = await this.prismaService.legitChecks.groupBy({
+      by: ['check_status'],
       where: {
         check_status: {
           in: ['data_validation', 'legit_checking'],
         },
         watched: false,
       },
-      select: {
-        id: true,
+      _count: {
+        check_status: true,
       },
     });
 
-    return count;
+    const result = counts.reduce(
+      (acc, count) => {
+        if (count.check_status === 'data_validation') {
+          acc.unwatched.data_validation = count._count.check_status;
+        } else if (count.check_status === 'legit_checking') {
+          acc.unwatched.legit_checking = count._count.check_status;
+        }
+        return acc;
+      },
+      {
+        unwatched: {
+          data_validation: 0,
+          legit_checking: 0,
+        },
+      },
+    );
+
+    return result;
   }
 }
