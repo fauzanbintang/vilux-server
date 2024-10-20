@@ -277,11 +277,9 @@ export class LegitCheckService {
       whereClause = {
         ...whereClause,
         Order: {
-          some: {
-            payment: {
-              status: {
-                in: query.payment_status,
-              },
+          payment: {
+            status: {
+              in: query.payment_status,
             },
           },
         },
