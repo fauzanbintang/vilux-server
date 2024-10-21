@@ -71,6 +71,7 @@ model User {
   created_at         DateTime      @default(now())
   LegitChecks        LegitChecks[]
   Voucher            Voucher[]
+  OTP                OTP[]
 
   @@map("users")
 }
@@ -277,4 +278,14 @@ model Banner {
   file       File?    @relation(fields: [file_id], references: [id])
 
   @@map("banners")
+}
+
+model OTP {
+  id         String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  token      String
+  user_id    String   @db.Uuid
+  user       User     @relation(fields: [user_id], references: [id])
+  created_at DateTime @default(now())
+
+  @@map("otp")
 }

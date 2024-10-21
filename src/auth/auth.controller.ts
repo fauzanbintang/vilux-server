@@ -9,7 +9,7 @@ import { Response } from 'express';
 @ApiTags('auth')
 @Controller('/api/auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) { }
 
   @Post('register')
   @HttpCode(201)
@@ -109,6 +109,50 @@ export class AuthController {
     return {
       message: 'successfully login',
       data: loginRes,
+      errors: null,
+    };
+  }
+
+  @Post('forgot-password')
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Send OTP to email for password reset' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        email: { type: 'string' },
+      },
+      required: ['email'],
+    },
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'OTP sent successfully',
+    schema: {
+      example: {
+        message: 'OTP sent successfully',
+        data: null,
+        errors: null,
+      },
+    },
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Email not found',
+    schema: {
+      example: {
+        message: 'Email not found',
+        data: null,
+        errors: 'User with this email does not exist',
+      },
+    },
+  })
+  async forgotPassword(@Body() email: string): Promise<ResponseDto<void>> {
+    await this.authService.forgotPassword(email);
+
+    return {
+      message: 'OTP sent successfully',
+      data: null,
       errors: null,
     };
   }

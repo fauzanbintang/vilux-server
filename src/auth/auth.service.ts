@@ -9,6 +9,8 @@ import { LoginRes, UserDto } from 'src/dto/response/user.dto';
 import { LoginUserDto, RegisterUserDto } from 'src/dto/request/auth.dto';
 import { AuthValidate } from './auth.validation';
 import { Gender, Role } from '@prisma/client';
+import { MailService } from 'src/mail/mail.service';
+import { CreateMailDto } from 'src/dto/request/mail.dto';
 
 @Injectable()
 export class AuthService {
@@ -17,6 +19,7 @@ export class AuthService {
     private validationService: ValidationService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
     private configService: ConfigService,
+    private mailService: MailService,
   ) { }
 
   async register(registerUserDto: RegisterUserDto): Promise<UserDto> {
@@ -98,5 +101,36 @@ export class AuthService {
       ...user,
       token,
     };
+  }
+
+  async forgotPassword(email: string): Promise<void> {
+    this.logger.debug(`Forgot password for email ${email}`);
+
+    const user = await this.prismaService.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      throw new HttpException('User with this email does not exist', 404);
+    }
+
+    const otpToken = Math.floor(10000 + Math.random() * 90000).toString();
+
+    await this.prismaService.oTP.create({
+      data: {
+        token: otpToken,
+        user_id: user.id,
+      },
+    });
+
+    const mailDto: CreateMailDto = {
+      to: user.email,
+      subject: 'Reset Password OTP',
+      html: `<p>Your OTP code is: <strong>${otpToken}</strong>. Use this to reset your password.</p>`,
+    };
+
+    await this.mailService.sendEmail(mailDto);
+
+    this.logger.debug(`OTP sent to ${email}`);
   }
 }
