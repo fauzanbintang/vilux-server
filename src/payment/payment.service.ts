@@ -176,7 +176,7 @@ export class PaymentService {
           payment.order.id,
           payment.id,
           'payments',
-          BigInt(payment.order?.voucher?.discount),
+          BigInt(payment.order?.voucher?.discount || 0),
           BigInt(payment.service_fee),
         );
       } else if (
