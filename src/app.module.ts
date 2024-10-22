@@ -23,6 +23,8 @@ import { OrderModule } from './order/order.module';
 import { LegitCheckModule } from './legit_check/legit_check.module';
 import { ServiceModule } from './service/service.module';
 import { MailModule } from './mail/mail.module';
+import { BannerModule } from './banner/banner.module';
+import { LedgerModule } from './ledger/ledger.module';
 
 @Module({
   imports: [
@@ -40,6 +42,8 @@ import { MailModule } from './mail/mail.module';
     LegitCheckModule,
     ServiceModule,
     MailModule,
+    BannerModule,
+    LedgerModule,
   ],
   controllers: [],
   providers: [LogMiddleware, AuthenticationMiddleware],
@@ -53,6 +57,7 @@ export class AppModule implements NestModule {
         { path: '/api/auth/login', method: RequestMethod.POST },
         { path: '/api/auth/register', method: RequestMethod.POST },
         { path: '/api/payments/notification', method: RequestMethod.POST },
+        { path: '/api/legit-checks/:id/public', method: RequestMethod.GET },
       )
       .forRoutes('/api/*');
     consumer

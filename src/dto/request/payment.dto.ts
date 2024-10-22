@@ -13,12 +13,6 @@ export class CreatePaymentDto {
     type: String,
     default: '10000',
   })
-  service_fee: string;
-
-  @ApiProperty({
-    type: String,
-    default: '10000',
-  })
   client_amount: string;
 }
 

@@ -1,15 +1,15 @@
-import { Gender, Prisma, PrismaClient, Role } from '@prisma/client';
+import { Gender, PrismaClient, Role } from '@prisma/client';
 import { hashPassword } from './helpers/bcrypt';
-import { DefaultArgs } from '@prisma/client/runtime/library';
+import brands from './seeds/brands.json';
+import categories from './seeds/categories.json';
 
 const prisma = new PrismaClient();
 async function main() {
   await seedUsers();
   await seedBrands();
   await seedCategories();
-  await seedSubcategories();
-  await seedSubcategoryInstructions();
   await seedServices();
+  await seedFiles();
 }
 
 async function seedUsers() {
@@ -55,110 +55,94 @@ async function seedUsers() {
 }
 
 async function seedBrands() {
-  const brands = ['armani', 'diesel', 'calvin klein'];
-  brands.forEach(async (name) => {
-    const brand = await prisma.brand.findFirst({
-      where: { name },
+  for (const brand of brands) {
+    let file;
+    file = await prisma.file.findFirst({
+      where: { url: brand.logoUrl },
       select: { id: true },
     });
 
-    if (!brand) {
+    if (!file) {
+      file = await prisma.file.upsert({
+        where: { file_name: brand.brand },
+        create: {
+          file_name: brand.brand,
+          path: `/${brand.brand}`,
+          url: brand.logoUrl,
+        },
+        update: {
+          file_name: brand.brand,
+          path: `/${brand.brand}`,
+          url: brand.logoUrl,
+        },
+      });
+    }
+
+    const existingBrand = await prisma.brand.findFirst({
+      where: { name: brand.brand },
+      select: { id: true },
+    });
+
+    if (!existingBrand) {
       await prisma.brand.create({
-        data: { name },
-      });
-    }
-  });
-}
-
-async function seedCategories() {
-  const categories = ['bags', 'apparel', 'footwear'];
-  categories.forEach(async (name) => {
-    const category = await prisma.category.findFirst({
-      where: { name },
-      select: { id: true },
-    });
-
-    if (!category) {
-      await prisma.category.create({
-        data: { name },
-      });
-    }
-  });
-}
-
-async function seedSubcategories() {
-  const bags = ['clutch', 'handbag'];
-  const apparel = ['t-shirts', 'hoodie'];
-  const footwear = ['sneakers', 'loafers'];
-
-  for (let i = 0; i < bags.length; i++) {
-    await findAndCreateSubcategory(prisma.subcategory, bags[i], 'bags');
-    await findAndCreateSubcategory(prisma.subcategory, apparel[i], 'apparel');
-    await findAndCreateSubcategory(prisma.subcategory, footwear[i], 'footwear');
-  }
-}
-
-async function findAndCreateSubcategory(
-  subcategoryDelegate: Prisma.SubcategoryDelegate<DefaultArgs>,
-  name: string,
-  categoryName: string,
-) {
-  const data = await subcategoryDelegate.findFirst({
-    where: { name },
-    select: { id: true },
-  });
-
-  if (!data) {
-    const category = await prisma.category.findFirst({
-      where: { name: categoryName },
-      select: { id: true },
-    });
-
-    if (category) {
-      await subcategoryDelegate.create({
         data: {
-          name,
-          category_id: category.id,
+          name: brand.brand,
+          file_id: file.id,
+        },
+      });
+    } else {
+      await prisma.brand.update({
+        where: { id: existingBrand.id },
+        data: {
+          name: brand.brand,
+          file_id: file.id,
         },
       });
     }
   }
 }
 
-async function seedSubcategoryInstructions() {
-  const clutch = [
-    'clutch look',
-    'outer front logo',
-    'serial code tag',
-    'made in tag',
-    'zipper slides',
-    'zipper pull tab',
-    'donut badge',
-    'inner tag',
-    'material look',
-  ];
+async function seedCategories() {
+  for (const [categoryName, subcategories] of Object.entries(categories)) {
+    let category = await prisma.category.findFirst({
+      where: { name: categoryName.toLowerCase() },
+    });
 
-  const subcategory = await prisma.subcategory.findFirst({
-    where: { name: 'clutch' },
-    select: { id: true },
-  });
+    if (!category) {
+      category = await prisma.category.create({
+        data: { name: categoryName.toLowerCase() },
+      });
+    }
 
-  if (subcategory) {
-    clutch.forEach(async (name) => {
-      const data = await prisma.subcategoryInstruction.findFirst({
-        where: { name },
-        select: { id: true },
+    for (const [subcategoryName, subcategoryData] of Object.entries(subcategories)) {
+      let subcategory = await prisma.subcategory.findFirst({
+        where: { name: subcategoryName.toLowerCase() },
       });
 
-      if (!data) {
-        await prisma.subcategoryInstruction.create({
+      if (!subcategory) {
+        subcategory = await prisma.subcategory.create({
           data: {
-            name,
-            subcategory_id: subcategory.id,
+            name: subcategoryName.toLowerCase(),
+            category_id: category.id,
           },
         });
       }
-    });
+
+      for (const instruction of subcategoryData.categoryInstructions) {
+        const existingInstruction = await prisma.subcategoryInstruction.findFirst({
+          where: { name: instruction.toLowerCase(), subcategory_id: subcategory.id },
+        });
+
+        if (!existingInstruction) {
+          await prisma.subcategoryInstruction.create({
+            data: {
+              name: instruction.toLowerCase(),
+              subcategory_id: subcategory.id,
+            },
+          });
+        }
+      }
+    }
   }
 }
 
@@ -190,6 +174,44 @@ async function seedServices() {
       });
     }
   });
+}
+
+async function seedFiles() {
+  const files = [
+    {
+      name: 'fake-frame',
+      url: 'https://ik.imagekit.io/viluxmedia/fake-certificate.png',
+      path: "/fake-certificate.png"
+    },
+    {
+      name: 'authentic-frame',
+      url: 'https://ik.imagekit.io/viluxmedia/real-certificate.png',
+      path: "/real-certificate.png"
+    },
+  ]
+
+  files.forEach(async (data) => {
+    const file = await prisma.file.findFirst({
+      where: { url: data.url },
+      select: { id: true },
+    });
+
+    if (!file) {
+      await prisma.file.upsert({
+        where: { file_name: data.name },
+        create: {
+          file_name: data.name,
+          path: data.path,
+          url: data.url,
+        },
+        update: {
+          file_name: data.name,
+          path: data.path,
+          url: data.url,
+        },
+      });
+    }
+  })
 }
 
 main()

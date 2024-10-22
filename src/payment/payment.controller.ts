@@ -7,8 +7,9 @@ import {
   Delete,
   HttpCode,
   Put,
-  HttpException,
+  Req,
 } from '@nestjs/common';
+import { Request } from 'express';
 import { PaymentService } from './payment.service';
 import {
   CreatePaymentDto,
@@ -16,97 +17,212 @@ import {
 } from 'src/dto/request/payment.dto';
 import { PaymentDto } from 'src/dto/response/payment.dto';
 import { ResponseDto } from 'src/dto/response/response.dto';
-import { ApiTags } from '@nestjs/swagger';
-import { PaymentStatus } from '@prisma/client';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('payment')
 @Controller('api/payments')
 export class PaymentController {
-  constructor(private readonly paymentService: PaymentService) {}
-
-  @Post()
-  @HttpCode(201)
-  async create(
-    @Body() createPaymentDto: CreatePaymentDto,
-  ): Promise<ResponseDto<PaymentDto>> {
-    return await this.paymentService.create(createPaymentDto);
-  }
+  constructor(private readonly paymentService: PaymentService) { }
 
   @Get()
   @HttpCode(200)
+  @ApiOperation({ summary: 'Get all payments' })
+  @ApiResponse({
+    status: 200,
+    description: 'Get all payments',
+    schema: {
+      example: {
+        message: 'Successfully get all payments',
+        data: [
+          {
+            id: 'string',
+            method: 'string',
+            amount: 0,
+            status: 'string',
+            status_log: {
+              success: 'string',
+              failed: 'string',
+              pending: 'string',
+            },
+            external_id: 'string',
+            service_fee: 0,
+            client_amount: 0,
+          },
+        ],
+        errors: null
+      }
+    }
+  })
   async findAll(): Promise<ResponseDto<PaymentDto[]>> {
-    return await this.paymentService.findAll();
+    const payments = await this.paymentService.findAll();
+
+    return {
+      message: 'Successfully get all payments',
+      data: payments,
+      errors: null
+    }
   }
 
   @Post('/notification')
   @HttpCode(200)
+  @ApiOperation({ summary: 'Handle payment notification from midtrans' })
+  @ApiResponse({
+    status: 200,
+    description: 'Handle payment notification from midtrans',
+    schema: {
+      example: {
+        status: 'string'
+      }
+    }
+  })
   async handleNotification(
     @Body() notification: any,
   ): Promise<{ status: string }> {
     return await this.paymentService.handleNotification(notification);
   }
 
-  // @Put('/success/:id')
-  // @HttpCode(200)
-  // async paymentSuccess(
-  //   @Param('id') id: string,
-  // ): Promise<ResponseDto<PaymentDto>> {
-  //   const payment = await this.paymentService.findOne(id);
+  @Post(':order_id')
+  @HttpCode(201)
+  @ApiOperation({ summary: 'Create payment' })
+  @ApiResponse({
+    status: 201,
+    description: 'Created payment',
+    schema: {
+      example: {
+        message: 'Successfully created payment',
+        data: {
+          id: 'string',
+          method: 'string',
+          amount: 0,
+          status: 'string',
+          status_log: {
+            success: 'string',
+            failed: 'string',
+            pending: 'string',
+          },
+          external_id: 'string',
+          service_fee: 0,
+          client_amount: 0,
+        },
+        errors: null
+      }
+    }
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad Request',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+  })
+  async create(
+    @Req() req: Request,
+    @Param('order_id') orderId: string,
+    @Body() createPaymentDto: CreatePaymentDto,
+  ): Promise<ResponseDto<PaymentDto>> {
+    const payment = await this.paymentService.create(createPaymentDto, req.user, orderId);
 
-  //   if (payment.data.status === PaymentStatus.failed) {
-  //     throw new HttpException('Payment already failed', 400);
-  //   }
-
-  //   const updatePaymentDto: UpdatePaymentDto = {
-  //     status: PaymentStatus.success,
-  //     status_log: {
-  //       success: Date.now(),
-  //       failed: null,
-  //       pending: payment.data.status_log['pending'],
-  //     },
-  //   };
-  //   return await this.paymentService.update(id, updatePaymentDto);
-  // }
-
-  // @Put('/fail/:id')
-  // @HttpCode(200)
-  // async paymentFail(@Param('id') id: string): Promise<ResponseDto<PaymentDto>> {
-  //   const payment = await this.paymentService.findOne(id);
-
-  //   if (payment.data.status === PaymentStatus.success) {
-  //     throw new HttpException('Payment already success', 400);
-  //   }
-
-  //   const updatePaymentDto: UpdatePaymentDto = {
-  //     status: PaymentStatus.failed,
-  //     status_log: {
-  //       success: null,
-  //       failed: Date.now(),
-  //       pending: payment.data.status_log['pending'],
-  //     },
-  //   };
-  //   return await this.paymentService.update(id, updatePaymentDto);
-  // }
+    return {
+      message: 'Successfully created payment',
+      data: payment,
+      errors: null
+    }
+  }
 
   @Get(':id')
   @HttpCode(200)
+  @ApiOperation({ summary: 'Get payment detail' })
+  @ApiResponse({
+    status: 200,
+    description: 'Get payment detail',
+    schema: {
+      example: {
+        message: 'Successfully get payment detail',
+        data: {
+          id: 'string',
+          method: 'string',
+          amount: 0,
+          status: 'string',
+          status_log: {
+            success: 'string',
+            failed: 'string',
+            pending: 'string',
+          },
+          external_id: 'string',
+          service_fee: 0,
+          client_amount: 0,
+        },
+        errors: null
+      }
+    }
+  })
   async findOne(@Param('id') id: string): Promise<ResponseDto<PaymentDto>> {
-    return await this.paymentService.findOne(id);
+    const payment = await this.paymentService.findOne(id);
+
+    return {
+      message: 'Successfully get payment detail',
+      data: payment,
+      errors: null
+    }
   }
 
   @Put(':id')
   @HttpCode(200)
+  @ApiOperation({ summary: 'Update payment' })
+  @ApiResponse({
+    status: 200,
+    description: 'Update payment',
+    schema: {
+      example: {
+        message: 'Successfully update payment',
+        data: {
+          id: 'string',
+          method: 'string',
+          amount: 0,
+          status: 'string',
+          status_log: {
+            success: 'string',
+            failed: 'string',
+            pending: 'string',
+          },
+          external_id: 'string',
+          service_fee: 0,
+          client_amount: 0,
+        },
+        errors: null
+      }
+    }
+  })
   async update(
     @Param('id') id: string,
     @Body() updatePaymentDto: UpdatePaymentDto,
   ): Promise<ResponseDto<PaymentDto>> {
-    return await this.paymentService.update(id, updatePaymentDto);
+    const payment = await this.paymentService.update(id, updatePaymentDto);
+
+    return {
+      message: 'Successfully update payment',
+      data: payment,
+      errors: null
+    }
   }
 
   @Delete(':id')
   @HttpCode(200)
+  @ApiOperation({ summary: 'Delete payment' })
+  @ApiResponse({
+    status: 200,
+    description: 'Delete payment',
+    schema: {
+      example: {
+        message: 'Successfully delete a payment',
+        data: null,
+        errors: null
+      }
+    }
+  })
   async remove(@Param('id') id: string): Promise<ResponseDto<string>> {
     await this.paymentService.remove(id);
-    return { message: 'successfully delete a payment' };
+    return { message: 'Successfully delete a payment', data: null, errors: null };
   }
 }

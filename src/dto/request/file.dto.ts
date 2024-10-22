@@ -9,6 +9,24 @@ export class FileUploadDto {
   file: any;
 }
 
+export class CreateCertificateDto {
+  @ApiProperty({
+    type: String,
+    default: '00000000-0000-0000-0000-000000000000',
+  })
+  frameId: string;
+  @ApiProperty({
+    type: String,
+    default: '00000000-0000-0000-0000-000000000000',
+  })
+  contentId: string;
+  @ApiProperty({
+    type: String,
+    default: 'VLX12345',
+  })
+  code: string;
+}
+
 export class FilesUploadDto {
   @ApiProperty({
     type: 'array',

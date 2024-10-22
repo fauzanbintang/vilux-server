@@ -4,6 +4,7 @@ import {
   Get,
   HttpCode,
   Param,
+  Patch,
   Post,
   Put,
   Query,
@@ -74,6 +75,79 @@ export class LegitCheckController {
     return {
       message: 'Successfully upsert legit check',
       data: legitCheck,
+      errors: null,
+    };
+  }
+
+  @Get('unwatched')
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Get unwatched legit checks' })
+  @ApiResponse({
+    status: 200,
+    description: 'Get unwatched legit checks',
+    schema: {
+      example: {
+        message: 'Successfully get unwatched legit checks count',
+        data: {
+          unwatched: {
+            data_validation: 1,
+            legit_checking: 1,
+          },
+        },
+        errors: null,
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad Request',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+  })
+  async getUnwatchedLegitChecks(): Promise<ResponseDto<any>> {
+    const data = await this.legitCheckService.getUnwatched();
+
+    return {
+      message: 'Successfully get unwatched legit checks count',
+      data,
+      errors: null,
+    };
+  }
+
+  @Get('top-brands')
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Get top brands by successful legit checks' })
+  @ApiResponse({
+    status: 200,
+    description: 'Get top brands by successful legit checks',
+    schema: {
+      example: {
+        message: 'Successfully retrieved top brands',
+        data: [
+          { id: 'brand1-id', name: 'Brand 1', count: 15 },
+          { id: 'brand2-id', name: 'Brand 2', count: 12 },
+          { id: 'brand3-id', name: 'Brand 3', count: 10 },
+        ],
+        errors: null,
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad Request',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+  })
+  async getTopBrands(@Query('limit') limit: string): Promise<ResponseDto<any>> {
+    const brands = await this.legitCheckService.getTopBrands(Number(limit));
+
+    return {
+      message: 'Successfully retrieved top brands',
+      data: brands,
       errors: null,
     };
   }
@@ -201,7 +275,7 @@ export class LegitCheckController {
           client_note: 'This is client note',
           admin_note: 'This is admin note',
           cover_id: '3fa84aac-954c-409f-s890-188bc7a1a12y',
-          certificate_id: null,
+          certificate_id: '3fa84aac-954c-409w-s8sa-188b1121dy',
         },
         errors: null,
       },
@@ -216,12 +290,14 @@ export class LegitCheckController {
     description: 'Internal Server Error',
   })
   async updateLegitCheckCompleted(
+    @Req() req: Request,
     @Param('id') id: string,
     @Body() legitCheckCompletedDto: LegitCheckCompletedDto,
   ): Promise<ResponseDto<LegitCheckDto>> {
     const legitCheck = await this.legitCheckService.updateLegitCheckCompleted(
       id,
       legitCheckCompletedDto,
+      req.user,
     );
 
     return {
@@ -282,6 +358,13 @@ export class LegitCheckController {
     query.check_status = Array.isArray(query.check_status)
       ? query.check_status
       : [query.check_status];
+
+    if (query.payment_status) {
+      query.payment_status = Array.isArray(query.payment_status)
+        ? query.payment_status
+        : [query.payment_status];
+    }
+
     const data = await this.legitCheckService.getPaginatedLegitChecks(query);
 
     return {
@@ -350,6 +433,99 @@ export class LegitCheckController {
     return {
       message: 'Successfully get detail legit check',
       data,
+      errors: null,
+    };
+  }
+
+  @Get(':id/public')
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Get detail legit check' })
+  @ApiResponse({
+    status: 200,
+    description: 'Get detail legit check',
+    schema: {
+      example: {
+        message: 'Successfully get detail legit check',
+        data: {
+          message: 'Successfully get detail legit check',
+          data: {
+            id: '4d44f0df-5721-4902-a584-53d52f338e71',
+            product_name: null,
+            check_status: 'brand_category',
+            legit_status: null,
+            code: 'NL01J82W951B',
+            updated_at: '2024-09-18T15:33:42.061Z',
+            client_note: null,
+            admin_note: null,
+            brand: {
+              id: '98af5a95-0889-41d7-805e-b488e975de5e',
+              name: 'Nike',
+              file: null,
+            },
+            category: {
+              id: '131d4edb-e004-4cd5-bf11-fde5de0acf39',
+              name: 'sneakers',
+            },
+            Order: [],
+            LegitCheckImages: [],
+            certificate: null,
+          },
+          errors: null,
+        },
+        errors: null,
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad Request',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+  })
+  async getDetailLegitCheckPublic(
+    @Param('id') id: string,
+  ): Promise<ResponseDto<any>> {
+    const data = await this.legitCheckService.getDetailLegitCheck(id);
+
+    return {
+      message: 'Successfully get detail legit check',
+      data,
+      errors: null,
+    };
+  }
+
+  @Patch(':id/watch')
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Update legit check watch' })
+  @ApiResponse({
+    status: 200,
+    description: 'Update legit check watch',
+    schema: {
+      example: {
+        message: 'Successfully update legit check watch',
+        data: null,
+        errors: null,
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad Request',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+  })
+  async patchWatch(
+    @Param('id') id: string,
+  ): Promise<ResponseDto<LegitCheckDto>> {
+    await this.legitCheckService.patchWatch(id);
+
+    return {
+      message: 'Successfully update legit check watch',
+      data: null,
       errors: null,
     };
   }

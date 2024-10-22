@@ -43,10 +43,20 @@ export class UserDto {
   })
   phone_number?: string;
   @ApiProperty({
+    type: String,
+    default: 'VLX',
+  })
+  certificate_prefix?: string;
+  @ApiProperty({
     type: Date,
     default: new Date('01-01-1999'),
   })
   created_at?: Date;
+  @ApiProperty({
+    type: String,
+    default: 'JF839H0S'
+  })
+  referral?: string;
   @ApiProperty({
     type: String,
     default: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJle...',

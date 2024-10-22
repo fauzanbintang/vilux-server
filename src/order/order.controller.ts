@@ -12,7 +12,7 @@ import {
 import { Request } from 'express';
 import { OrderService } from './order.service';
 import { CreateOrderDto, UpdateOrderDto } from 'src/dto/request/order.dto';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ResponseDto } from 'src/dto/response/response.dto';
 import { OrderDto } from 'src/dto/response/order.dto';
 
@@ -24,7 +24,6 @@ export class OrderController {
   @Post()
   @HttpCode(201)
   @ApiOperation({ summary: 'Create a new order' })
-  @ApiBody({ type: CreateOrderDto })
   @ApiResponse({
     status: 201,
     description: 'The order has been successfully created.',
@@ -34,9 +33,10 @@ export class OrderController {
         data: {
           id: '00000000-0000-0000-0000-000000000000',
           code: 'OD12345',
-          payment_id: null,
           legit_check_id: '00000000-0000-0000-0000-000000000000',
+          service_id: '00000000-0000-0000-0000-000000000000',
           voucher_id: '00000000-0000-0000-0000-000000000000',
+          payment_id: null,
           original_amount: '10000',
         },
         errors: null,
@@ -45,11 +45,11 @@ export class OrderController {
   })
   @ApiResponse({
     status: 400,
-    description: 'Bad request. Validation errors.',
+    description: 'Bad Request',
   })
   @ApiResponse({
-    status: 401,
-    description: 'Unauthorized. Authentication required.',
+    status: 500,
+    description: 'Internal Server Error',
   })
   async create(
     @Req() req: Request,
@@ -67,13 +67,25 @@ export class OrderController {
   @Get()
   @HttpCode(200)
   async findAll(): Promise<ResponseDto<OrderDto[]>> {
-    return await this.orderService.findAll();
+    let data = await this.orderService.findAll();
+
+    return {
+      message: 'Successfully get all orders',
+      data,
+      errors: null,
+    };
   }
 
   @Get(':id')
   @HttpCode(200)
   async findOne(@Param('id') id: string): Promise<ResponseDto<OrderDto>> {
-    return await this.orderService.findOne(id);
+    let data = await this.orderService.findOne(id);
+
+    return {
+      message: 'Successfully get an order',
+      data,
+      errors: null,
+    };
   }
 
   @Put(':id')
@@ -82,13 +94,24 @@ export class OrderController {
     @Param('id') id: string,
     @Body() updateOrderDto: UpdateOrderDto,
   ): Promise<ResponseDto<OrderDto>> {
-    return await this.orderService.update(id, updateOrderDto);
+    let data = await this.orderService.update(id, updateOrderDto);
+
+    return {
+      message: 'Successfully update an order',
+      data,
+      errors: null,
+    };
   }
 
   @Delete(':id')
   @HttpCode(200)
   async remove(@Param('id') id: string): Promise<ResponseDto<string>> {
     await this.orderService.remove(id);
-    return { message: 'successfully delete an order' };
+
+    return {
+      message: 'Successfully delete an order',
+      data: null,
+      errors: null,
+    };
   }
 }

@@ -1,6 +1,6 @@
 import { HttpException, Inject, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { PaymentStatus } from '@prisma/client';
+import { LegitCheckStatus, PaymentStatus, Role } from '@prisma/client';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { v4 as uuidv4 } from 'uuid';
 import { PrismaService } from 'src/common/prisma.service';
@@ -8,6 +8,8 @@ import {
   CreatePaymentDto,
   UpdatePaymentDto,
 } from 'src/dto/request/payment.dto';
+import { UserDto } from 'src/dto/response/user.dto';
+import { LedgerConst } from 'src/assets/constants';
 const midtransClient = require('midtrans-client');
 
 @Injectable()
@@ -26,7 +28,11 @@ export class PaymentService {
     });
   }
 
-  async create(createPaymentDto: CreatePaymentDto) {
+  async create(
+    createPaymentDto: CreatePaymentDto,
+    clientInfo: UserDto,
+    orderId: string,
+  ) {
     this.logger.debug(`Create payment ${JSON.stringify(createPaymentDto)}`);
 
     const secret = this.configService.get('MIDTRANS_SERVER_KEY');
@@ -44,9 +50,14 @@ export class PaymentService {
         'bni_va',
         'permata_va',
         'gopay',
-        'dana',
+        'qris',
         'echannel',
       ],
+      customer_details: {
+        first_name: clientInfo.full_name,
+        email: clientInfo.email,
+        phone: clientInfo.phone_number ? clientInfo.phone_number : '0123456789',
+      },
     };
 
     const midtrans = await fetch(
@@ -69,35 +80,68 @@ export class PaymentService {
 
     const response = await midtrans.json();
 
+    const order = await this.prismaService.order.findUnique({
+      where: { id: orderId },
+      include: {
+        voucher: true,
+      },
+    });
+
+    if (!order) {
+      throw new HttpException('Order not found', 404);
+    }
+
+    if (Number(order.original_amount) != Number(createPaymentDto.amount)) {
+      throw new HttpException('Invalid amount', 400);
+    }
+
+    let clientAmount = Number(order.original_amount);
+
+    if (order.voucher?.discount) {
+      clientAmount -= clientAmount * (order.voucher.discount / 100);
+    }
+
+    if (Number(createPaymentDto.client_amount) != clientAmount) {
+      throw new HttpException('Invalid client_amount', 400);
+    }
+
     const payment = await this.prismaService.payment.create({
       data: {
+        service_fee: '0',
         method: response,
         amount: createPaymentDto.amount,
         status: PaymentStatus.pending,
         status_log: { success: null, failed: null, pending: Date.now() },
         external_id: response.order_id,
-        service_fee: createPaymentDto.service_fee,
         client_amount: createPaymentDto.client_amount,
       },
     });
-    return { data: payment };
+
+    if (payment) {
+      await this.prismaService.order.update({
+        where: { id: orderId },
+        data: {
+          payment_id: payment.id,
+        },
+      });
+    }
+
+    return payment;
   }
 
   async handleNotification(notificationJson: any) {
+    this.logger.debug(
+      `Notification received: ${JSON.stringify(notificationJson)}`,
+    );
+
     const paymentGatewayFees = {
-      bca_va: '1000',
-      bri_va: '2000',
-      bni_va: '3000',
-      mandiri_va: '4000',
-      permata_va: '5000',
-      gopay: '6000',
-      dana: '7000',
+      virtualAccount: 4000,
+      qris: 0.007,
     };
 
     try {
       const statusResponse =
         await this.apiClient.transaction.notification(notificationJson);
-
       const orderId = statusResponse.order_id.split('-').slice(0, -1).join('-');
       const transactionStatus = statusResponse.transaction_status;
       const fraudStatus = statusResponse.fraud_status;
@@ -108,8 +152,12 @@ export class PaymentService {
 
       const payment = await this.prismaService.payment.findUnique({
         where: { external_id: orderId },
+        include: {
+          order: {
+            include: { voucher: true },
+          },
+        },
       });
-      console.log(payment, 'AFASFASF');
 
       if (!payment) {
         throw new HttpException('Payment not found', 404);
@@ -119,6 +167,18 @@ export class PaymentService {
 
       if (transactionStatus === 'settlement') {
         newStatus = PaymentStatus.success;
+        await this.prismaService.legitChecks.update({
+          where: { id: payment.order.legit_check_id },
+          data: { check_status: LegitCheckStatus.data_validation },
+        });
+        await this.createLedger(
+          BigInt(payment.client_amount),
+          payment.order.id,
+          payment.id,
+          'payments',
+          BigInt(payment.order?.voucher?.discount || 0),
+          BigInt(payment.service_fee),
+        );
       } else if (
         transactionStatus === 'cancel' ||
         transactionStatus === 'deny' ||
@@ -131,27 +191,44 @@ export class PaymentService {
         throw new HttpException('Invalid transaction status', 400);
       }
 
-      let serviceFee: string;
-      if (statusResponse.payment_type === 'echannel') {
-        serviceFee = paymentGatewayFees['mandiri_va'];
-      } else if (statusResponse.permata_va_number) {
-        serviceFee = paymentGatewayFees['permata_va'];
-      } else if (statusResponse.va_numbers[0].bank === 'bca') {
-        serviceFee = paymentGatewayFees['bca_va'];
-      } else if (statusResponse.va_numbers[0].bank === 'bni') {
-        serviceFee = paymentGatewayFees['bni_va'];
-      } else if (statusResponse.va_numbers[0].bank === 'bri') {
-        serviceFee = paymentGatewayFees['bri_va'];
-      } else if (statusResponse.acquirer) {
-        serviceFee = paymentGatewayFees['gopay'];
+      let paymentMethod = Object.assign({}, payment.method);
+      let serviceFee: any;
+      if (
+        statusResponse.payment_type === 'echannel' ||
+        statusResponse.permata_va_number ||
+        (statusResponse.va_numbers && statusResponse.va_numbers[0].bank)
+      ) {
+        if (statusResponse.payment_type === 'echannel') {
+          paymentMethod['biller_code'] = statusResponse.biller_code;
+          paymentMethod['bill_key'] = statusResponse.bill_key;
+        } else {
+          paymentMethod['va_number'] =
+            statusResponse.permata_va_number ||
+            statusResponse.va_numbers[0].va_number;
+        }
+        paymentMethod['bank'] =
+          statusResponse.payment_type == 'echannel'
+            ? 'mandiri'
+            : statusResponse.permata_va_number
+              ? 'permata'
+              : statusResponse.va_numbers[0].bank;
+        paymentMethod['payment_type'] = 'bank_transfer';
+        serviceFee = paymentGatewayFees.virtualAccount;
+      } else if (statusResponse.payment_type === 'qris') {
+        serviceFee = Number(payment.client_amount) * paymentGatewayFees.qris;
+        paymentMethod['payment_type'] = 'qris';
+        paymentMethod['platform'] = statusResponse.issuer;
       } else {
-        serviceFee = paymentGatewayFees['dana'];
+        throw new HttpException('Invalid payment type', 400);
       }
+      paymentMethod['expiry_time'] = statusResponse.expiry_time;
+      paymentMethod['order_id'] = statusResponse.order_id;
 
       await this.prismaService.payment.update({
         where: { external_id: orderId },
         data: {
           status: newStatus,
+          method: paymentMethod,
           status_log: {
             success:
               newStatus === PaymentStatus.success
@@ -166,7 +243,7 @@ export class PaymentService {
                 ? Date.now()
                 : payment.status_log['pending'],
           },
-          service_fee: serviceFee,
+          service_fee: JSON.stringify(serviceFee),
         },
       });
 
@@ -192,7 +269,7 @@ export class PaymentService {
         client_amount: true,
       },
     });
-    return { data: payments };
+    return payments;
   }
 
   async findOne(id: string) {
@@ -206,7 +283,7 @@ export class PaymentService {
       throw new HttpException('Payment not found', 404);
     }
 
-    return { data: payment };
+    return payment;
   }
 
   async update(id: string, updatePaymentDto: UpdatePaymentDto) {
@@ -224,7 +301,7 @@ export class PaymentService {
       where: { id },
       data: updatePaymentDto,
     });
-    return { data: updatedPayment };
+    return updatedPayment;
   }
 
   async remove(id: string) {
@@ -241,5 +318,125 @@ export class PaymentService {
     await this.prismaService.payment.delete({
       where: { id },
     });
+  }
+
+  async createLedger(
+    serviceAmount: bigint,
+    transactionId: string,
+    referenceId: string,
+    referenceType: string,
+    voucherAmount: bigint,
+    PGFee: bigint,
+  ) {
+    class CreateLedgerRes {
+      id: string;
+      created_at: Date;
+      description: string;
+      amount: bigint;
+      is_credit: boolean;
+      transaction_id: string;
+      transaction_type: string;
+      sum_from: bigint;
+      sum_to: bigint;
+      reference_id: string;
+      referece_type: string;
+    }
+    try {
+      await this.prismaService.$transaction(async (tx) => {
+        // + service fee -> order
+        let viluxMargin: CreateLedgerRes;
+        let viluxOrder: CreateLedgerRes = await tx.ledger.create({
+          data: {
+            description: LedgerConst.LegitCheckService,
+            amount: serviceAmount, // minus voucher. ex: service = 100, voucher = 25, then amount will be 75
+            is_credit: true,
+            transaction_id: transactionId, // order id
+            transaction_type: LedgerConst.Order, // orders
+            sum_from: 0,
+            sum_to: serviceAmount,
+            reference_id: referenceId, // payment id
+            referece_type: referenceType, // payments
+          },
+        });
+        if (voucherAmount && voucherAmount > 0) {
+          // + vlx voucher discount -> order
+          viluxOrder = await tx.ledger.create({
+            data: {
+              description: LedgerConst.Voucher,
+              amount: voucherAmount,
+              is_credit: true,
+              transaction_id: transactionId, // order id
+              transaction_type: LedgerConst.Order, // orders
+              sum_from: viluxOrder.sum_to,
+              sum_to: viluxOrder.sum_to + voucherAmount,
+              reference_id: referenceId, // payment id
+              referece_type: referenceType, // payments
+            },
+          });
+          // - vlx voucher discount -> margin
+          viluxMargin = await tx.ledger.create({
+            data: {
+              description: LedgerConst.Voucher,
+              amount: voucherAmount,
+              is_credit: false,
+              transaction_id: transactionId, // order id
+              transaction_type: LedgerConst.Margin, // margins
+              sum_from: 0,
+              sum_to: -voucherAmount,
+              reference_id: referenceId, // payment id
+              referece_type: referenceType, // payments
+            },
+          });
+        }
+        // - payment gateway fee -> margin
+        viluxMargin = await tx.ledger.create({
+          data: {
+            description: LedgerConst.PaymentGatewayFee,
+            amount: PGFee,
+            is_credit: false,
+            transaction_id: transactionId, // order id
+            transaction_type: LedgerConst.Margin,
+            sum_from: viluxMargin.sum_to,
+            sum_to: viluxMargin.sum_to - PGFee,
+            reference_id: referenceId, // payment id
+            referece_type: referenceType, // payments
+          },
+        });
+        // - vlx margin -> order
+        let orderAmount = viluxOrder.sum_to;
+        viluxOrder = await tx.ledger.create({
+          data: {
+            description: LedgerConst.ViluxMargin,
+            amount: viluxOrder.sum_to,
+            is_credit: false,
+            transaction_id: transactionId, // order id
+            transaction_type: LedgerConst.Order,
+            sum_from: viluxOrder.sum_to,
+            sum_to: viluxOrder.sum_to - viluxOrder.sum_to,
+            reference_id: referenceId, // payment id
+            referece_type: referenceType, // payments
+          },
+        });
+        // + vlx margin -> margin
+        viluxMargin = await tx.ledger.create({
+          data: {
+            description: LedgerConst.ViluxMargin,
+            amount: orderAmount,
+            is_credit: true,
+            transaction_id: transactionId, // order id
+            transaction_type: LedgerConst.Margin,
+            sum_from: viluxMargin.sum_to,
+            sum_to: viluxMargin.sum_to + orderAmount,
+            reference_id: referenceId, // payment id
+            referece_type: referenceType, // payments
+          },
+        });
+      });
+    } catch (err) {
+      throw new HttpException(
+        JSON.stringify(err),
+        err.getStatus() ? err.getStatus() : 500,
+      );
+    }
   }
 }

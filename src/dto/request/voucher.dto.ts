@@ -1,36 +1,42 @@
-import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { VoucherType } from '@prisma/client';
+import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
+import { Voucher, VoucherType } from '@prisma/client';
 
-export class CreateVoucherDto {
+export class CreateVoucherPromotionDto {
   @ApiProperty({
     type: String,
-    default: 'test',
+    default: 'New Member',
   })
   name: string;
 
   @ApiProperty({
-    type: String,
-    default: 'test',
-  })
-  code: string;
-
-  @ApiProperty({
-    enum: VoucherType,
-    default: VoucherType.promotion,
-  })
-  voucher_type: VoucherType;
-
-  @ApiProperty({
-    type: String,
-    default: '10000',
-  })
-  discount: string;
-
-  @ApiProperty({
     type: Number,
-    default: 200,
+    default: 20,
   })
-  quota_usage: number;
+  discount: number;
+
+  @ApiProperty({
+    type: Date,
+    default: new Date('01-01-1999'),
+  })
+  started_at: Date;
+
+  @ApiProperty({
+    type: Date,
+    default: new Date('01-01-1999'),
+  })
+  expired_at: Date;
+}
+
+export class UpdateVoucherPromotionDto extends PartialType(
+  CreateVoucherPromotionDto,
+) {}
+
+export class CreateVoucherReferralDto {
+  @ApiProperty({
+    type: String,
+    default: 'New Member',
+  })
+  name: string;
 
   @ApiProperty({
     type: Date,
@@ -44,11 +50,28 @@ export class CreateVoucherDto {
   })
   expired_at: Date;
 
-  @ApiProperty({
-    type: Boolean,
-    default: false,
+  @ApiPropertyOptional({
+    type: String,
+    default: 'test@mail.com',
   })
-  active_status: boolean;
+  email?: string;
+
+  @ApiProperty({
+    type: String,
+    default: 'JF839H0S',
+  })
+  code: string;
 }
 
-export class UpdateVoucherDto extends PartialType(CreateVoucherDto) {}
+export class UpdateVoucherReferralDto extends PartialType(
+  CreateVoucherReferralDto,
+) {}
+
+export class GetVouchersnQuery {
+  @ApiProperty({
+    enum: VoucherType,
+    isArray: true,
+    default: [VoucherType.promotion],
+  })
+  voucher_type: VoucherType[];
+}

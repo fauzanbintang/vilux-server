@@ -56,19 +56,21 @@ enum LegitStatus {
 }
 
 model User {
-  id             String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  username       String        @unique @db.VarChar(100)
-  email          String        @unique @db.VarChar(100)
-  password       String        @db.VarChar(100)
-  role           Role          @default(client)
-  full_name      String        @db.VarChar(100)
-  date_of_birth  DateTime
-  gender         Gender
-  phone_number   String?
-  verified_email Boolean       @default(false)
-  updated_at     DateTime      @default(now()) @updatedAt
-  created_at     DateTime      @default(now())
-  LegitChecks    LegitChecks[]
+  id                 String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  username           String        @unique @db.VarChar(100)
+  email              String        @unique @db.VarChar(100)
+  password           String        @db.VarChar(100)
+  role               Role          @default(client)
+  full_name          String        @db.VarChar(100)
+  date_of_birth      DateTime
+  gender             Gender
+  certificate_prefix String        @default("VLX") @db.VarChar(3)
+  phone_number       String?       @unique
+  verified_email     Boolean       @default(false)
+  updated_at         DateTime      @default(now()) @updatedAt
+  created_at         DateTime      @default(now())
+  LegitChecks        LegitChecks[]
+  Voucher            Voucher[]
 
   @@map("users")
 }
@@ -76,7 +78,7 @@ model User {
 model File {
   id                                 String                   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   path                               String
-  file_name                          String
+  file_name                          String                   @unique
   url                                String
   updated_at                         DateTime                 @default(now()) @updatedAt
   created_at                         DateTime                 @default(now())
@@ -90,6 +92,7 @@ model File {
   LegitChecks                        LegitChecks[]
   LegitCheckImages                   LegitCheckImages[]
   Services                           Services[]
+  Banner                             Banner[]
 
   @@map("files")
 }
@@ -107,7 +110,7 @@ model Brand {
 }
 
 model Payment {
-  id            String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id            String        @id @unique @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   updated_at    DateTime      @default(now()) @updatedAt
   created_at    DateTime      @default(now())
   method        Json
@@ -117,24 +120,24 @@ model Payment {
   external_id   String        @unique
   service_fee   String
   client_amount String
-  Order         Order[]
+  order         Order?        @relation()
 
   @@map("payments")
 }
 
 model Voucher {
-  id            String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  updated_at    DateTime    @default(now()) @updatedAt
-  created_at    DateTime    @default(now())
-  name          String
-  code          String
-  voucher_type  VoucherType
-  discount      String
-  quota_usage   Int
-  started_at    DateTime
-  expired_at    DateTime
-  active_status Boolean     @default(false)
-  Order         Order[]
+  id           String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  updated_at   DateTime    @default(now()) @updatedAt
+  created_at   DateTime    @default(now())
+  name         String
+  voucher_type VoucherType
+  started_at   DateTime
+  expired_at   DateTime
+  discount     Int?
+  code         String?
+  user_id      String?     @db.Uuid
+  user         User?       @relation(fields: [user_id], references: [id])
+  Order        Order[]
 
   @@map("vouchers")
 }
@@ -174,6 +177,7 @@ model SubcategoryInstruction {
   name             String
   subcategory_id   String             @db.Uuid
   subcategory      Subcategory        @relation(fields: [subcategory_id], references: [id])
+  sort_order       Int                @default(0)
   icon_id          String?            @db.Uuid
   icon             File?              @relation(name: "icon_file", fields: [icon_id], references: [id])
   example_image_id String?            @db.Uuid
@@ -208,7 +212,9 @@ model LegitChecks {
   certificate      File?              @relation(name: "certificate_file", fields: [certificate_id], references: [id])
   file_id          String?            @db.Uuid
   file             File?              @relation(fields: [file_id], references: [id])
-  Order            Order[]
+  watched          Boolean            @default(false)
+  status_log       Json?
+  Order            Order?
   LegitCheckImages LegitCheckImages[]
 
   @@map("legit_checks")
@@ -234,15 +240,15 @@ model Order {
   updated_at      DateTime    @default(now()) @updatedAt
   created_at      DateTime    @default(now())
   code            String
-  legit_check_id  String      @db.Uuid
+  legit_check_id  String      @unique @db.Uuid
   legit_check     LegitChecks @relation(fields: [legit_check_id], references: [id])
-  original_amount String
+  service_id      String      @db.Uuid
+  service         Services    @relation(fields: [service_id], references: [id])
+  original_amount BigInt
   voucher_id      String?     @db.Uuid
   voucher         Voucher?    @relation(fields: [voucher_id], references: [id])
-  payment_id      String?     @db.Uuid
+  payment_id      String?     @unique @db.Uuid
   payment         Payment?    @relation(fields: [payment_id], references: [id])
-  service_id      String?     @db.Uuid
-  service         Services?   @relation(fields: [service_id], references: [id])
 
   @@map("orders")
 }
@@ -253,11 +259,39 @@ model LegitCheckImages {
   created_at                 DateTime                @default(now())
   legit_check_id             String                  @db.Uuid
   legit_check                LegitChecks             @relation(fields: [legit_check_id], references: [id])
-  file_id                    String                  @db.Uuid
-  file                       File                    @relation(fields: [file_id], references: [id])
+  file_id                    String?                 @db.Uuid
+  file                       File?                   @relation(fields: [file_id], references: [id])
   subcategory_instruction_id String?                 @db.Uuid
   subcategory_instruction    SubcategoryInstruction? @relation(fields: [subcategory_instruction_id], references: [id])
   status                     Boolean?
 
   @@map("legit_check_images")
+}
+
+model Banner {
+  id         String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  updated_at DateTime @default(now()) @updatedAt
+  created_at DateTime @default(now())
+  name       String
+  link       String?
+  file_id    String?  @db.Uuid
+  file       File?    @relation(fields: [file_id], references: [id])
+
+  @@map("banners")
+}
+
+model Ledger {
+  id               String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  created_at       DateTime @default(now())
+  description      String
+  amount           BigInt
+  is_credit        Boolean
+  transaction_id   String
+  transaction_type String
+  sum_from         BigInt
+  sum_to           BigInt
+  reference_id     String
+  referece_type    String
+
+  @@map("ledgers")
 }

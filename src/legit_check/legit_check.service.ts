@@ -2,6 +2,7 @@ import { HttpException, Inject, Injectable, Logger } from '@nestjs/common';
 import { LegitCheckStatus, Role } from '@prisma/client';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { PrismaService } from 'src/common/prisma.service';
+import { CreateCertificateDto } from 'src/dto/request/file.dto';
 import {
   LegitCheckBrandCategoryDto,
   LegitCheckCompletedDto,
@@ -9,14 +10,17 @@ import {
   LegitCheckPaginationQuery,
   LegitCheckValidateDataDto,
 } from 'src/dto/request/legit_check.dto';
+import { FileDto } from 'src/dto/response/file.dto';
 import { LegitCheckDto } from 'src/dto/response/legit_check.dto';
 import { UserDto } from 'src/dto/response/user.dto';
+import { FileService } from 'src/file/file.service';
 import { generateCode } from 'src/helpers/order_code_generator';
 
 @Injectable()
 export class LegitCheckService {
   constructor(
     private prismaService: PrismaService,
+    private readonly fileService: FileService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
   ) {}
 
@@ -85,7 +89,10 @@ export class LegitCheckService {
       // for now, additional legitCheckImage will always create new
       const legitCheckImage =
         await this.prismaService.legitCheckImages.findFirst({
-          where: { subcategory_instruction_id: v.subcategory_instruction_id },
+          where: {
+            legit_check_id: id,
+            subcategory_instruction_id: v.subcategory_instruction_id,
+          },
           select: { id: true },
         });
 
@@ -142,8 +149,12 @@ export class LegitCheckService {
       `Update legit check: validate data ${JSON.stringify(legitCheckValidateDataDto)}`,
     );
 
+    let flag: boolean = true;
     await Promise.all(
       legitCheckValidateDataDto.legit_check_images.map(async (v) => {
+        if (v.status == false) {
+          flag = false;
+        }
         return this.prismaService.legitCheckImages.update({
           where: { id: v.legit_check_image_id },
           data: {
@@ -155,22 +166,23 @@ export class LegitCheckService {
 
     const legitCheckImages = await this.prismaService.legitCheckImages.findMany(
       {
-        where: { legit_check_id: id },
+        where: { legit_check_id: id, status: null },
       },
     );
 
-    legitCheckImages.forEach((e) => {
-      if (e.status == null) {
-        throw new HttpException('legit check image not found', 404);
-      }
-    });
+    if (legitCheckImages.length > 0) {
+      throw new HttpException('please input status for all the images', 400);
+    }
 
     let updatedLegitCheck: LegitCheckDto =
       await this.prismaService.legitChecks.update({
         where: { id },
         data: {
           admin_note: legitCheckValidateDataDto.admin_note,
-          check_status: LegitCheckStatus.data_validation,
+          check_status: flag
+            ? LegitCheckStatus.legit_checking
+            : LegitCheckStatus.revise_data,
+          watched: false,
         },
       });
 
@@ -180,6 +192,7 @@ export class LegitCheckService {
   async updateLegitCheckCompleted(
     id: string,
     legitCheckCompletedDto: LegitCheckCompletedDto,
+    clientInfo: UserDto,
   ): Promise<LegitCheckDto> {
     this.logger.debug(
       `Update legit check: completed ${JSON.stringify(legitCheckCompletedDto)}`,
@@ -189,6 +202,14 @@ export class LegitCheckService {
       where: { id },
       include: {
         LegitCheckImages: true,
+        // add order by
+        /**
+         * orderBy: {
+            subcategory_instruction: {
+              sort_order: 'asc',
+            },
+          },
+         */
       },
     });
 
@@ -196,20 +217,34 @@ export class LegitCheckService {
       throw new HttpException('legit check not found', 404);
     }
 
-    legitCheck.LegitCheckImages.forEach((e) => {
-      if (e.status == null || e.status === false) {
-        throw new HttpException('legit check image not found', 404);
-      }
-    });
+    let dataCertificate: CreateCertificateDto = {
+      frameId: '',
+      contentId: legitCheck.LegitCheckImages[0].file_id,
+      code: generateCode(clientInfo.certificate_prefix).slice(0, -5),
+    };
+    let certificate: FileDto;
+    if (legitCheckCompletedDto.legit_status == 'authentic') {
+      const frame = await this.fileService.findByFileName('authentic-frame');
+      dataCertificate.frameId = frame.id;
+    } else if (legitCheckCompletedDto.legit_status == 'fake') {
+      const frame = await this.fileService.findByFileName('fake-frame');
+      dataCertificate.frameId = frame.id;
+    }
+
+    // create voucher referral if legit check is unidentified
+    if (legitCheck.legit_status !== 'unidentified') {
+      certificate = await this.fileService.mergeImages(dataCertificate);
+    }
 
     let updatedLegitCheck: LegitCheckDto =
       await this.prismaService.legitChecks.update({
         where: { id },
         data: {
-          cover_id: legitCheckCompletedDto.cover_id,
+          certificate_code: dataCertificate.code,
+          certificate_id: certificate ? certificate.id : null,
           legit_status: legitCheckCompletedDto.legit_status,
           admin_note: legitCheckCompletedDto.admin_note,
-          check_status: LegitCheckStatus.legit_checking,
+          check_status: LegitCheckStatus.completed,
         },
       });
 
@@ -223,30 +258,52 @@ export class LegitCheckService {
       `Get paginated legit check with query: ${JSON.stringify(query)}`,
     );
 
-    const count = await this.prismaService.legitChecks.count({
-      where: {
-        check_status: {
-          in: query.check_status,
-        },
-        client_id: query.user_id,
+    let whereClause: any = {
+      check_status: {
+        in: query.check_status,
       },
+      client_id: query.user_id,
+      Order: {},
+    };
+
+    if (query.search) {
+      whereClause.OR = [
+        { code: { contains: query.search, mode: 'insensitive' } },
+        { product_name: { contains: query.search, mode: 'insensitive' } },
+      ];
+    }
+
+    if (query.payment_status && query.payment_status.length >= 1) {
+      whereClause = {
+        ...whereClause,
+        Order: {
+          payment: {
+            status: {
+              in: query.payment_status,
+            },
+          },
+        },
+      };
+    }
+
+    const count = await this.prismaService.legitChecks.count({
+      where: whereClause,
     });
 
     const legitChecks = await this.prismaService.legitChecks.findMany({
       skip: (+query.page - 1) * +query.limit,
       take: +query.limit,
-      where: {
-        check_status: {
-          in: query.check_status,
-        },
-        client_id: query.user_id,
-      },
+      where: whereClause,
       select: {
         id: true,
         product_name: true,
         check_status: true,
         legit_status: true,
         code: true,
+        watched: true,
+        created_at: true,
+        updated_at: true,
+        status_log: true,
         client: {
           select: {
             id: true,
@@ -275,7 +332,13 @@ export class LegitCheckService {
               select: {
                 id: true,
                 name: true,
+                sort_order: true,
               },
+            },
+          },
+          orderBy: {
+            subcategory_instruction: {
+              sort_order: 'asc',
             },
           },
         },
@@ -289,6 +352,13 @@ export class LegitCheckService {
                 name: true,
               },
             },
+            payment: {
+              select: {
+                status: true,
+                client_amount: true,
+                method: true,
+              },
+            },
           },
         },
       },
@@ -298,6 +368,48 @@ export class LegitCheckService {
       count,
       legitChecks,
     };
+  }
+
+  async getTopBrands(limit: number): Promise<any[]> {
+    this.logger.debug(`Get top ${limit} brands by successful legit checks`);
+
+    const topBrands = await this.prismaService.legitChecks.groupBy({
+      by: ['brand_id'],
+      _count: {
+        brand_id: true,
+      },
+      where: {
+        Order: {
+          payment: {
+            status: 'success',
+          },
+        },
+      },
+      orderBy: {
+        _count: {
+          brand_id: 'desc',
+        },
+      },
+      take: limit,
+    });
+
+    const brandDetails = await this.prismaService.brand.findMany({
+      where: {
+        id: {
+          in: topBrands.map((brand) => brand.brand_id),
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+      },
+    });
+
+    return topBrands.map((brand) => ({
+      id: brand.brand_id,
+      name: brandDetails.find((b) => b.id === brand.brand_id)?.name,
+      count: brand._count.brand_id,
+    }));
   }
 
   async getDetailLegitCheck(id: string): Promise<any> {
@@ -316,6 +428,8 @@ export class LegitCheckService {
         updated_at: true, // confirm again to Ryan
         client_note: true,
         admin_note: true,
+        watched: true,
+        status_log: true,
         brand: {
           select: {
             id: true,
@@ -344,6 +458,13 @@ export class LegitCheckService {
               select: {
                 id: true,
                 name: true,
+              },
+            },
+            payment: {
+              select: {
+                status: true,
+                client_amount: true,
+                method: true,
               },
             },
           },
@@ -380,5 +501,59 @@ export class LegitCheckService {
     });
 
     return legitCheck;
+  }
+
+  async patchWatch(id: string) {
+    const legitCheck = await this.prismaService.legitChecks.findUnique({
+      where: { id },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!legitCheck) {
+      throw new HttpException('legitCheck not found', 404);
+    }
+
+    await this.prismaService.legitChecks.update({
+      where: { id },
+      data: {
+        watched: true,
+      },
+    });
+  }
+
+  async getUnwatched() {
+    const counts = await this.prismaService.legitChecks.groupBy({
+      by: ['check_status'],
+      where: {
+        check_status: {
+          in: ['data_validation', 'legit_checking'],
+        },
+        watched: false,
+      },
+      _count: {
+        check_status: true,
+      },
+    });
+
+    const result = counts.reduce(
+      (acc, count) => {
+        if (count.check_status === 'data_validation') {
+          acc.unwatched.data_validation = count._count.check_status;
+        } else if (count.check_status === 'legit_checking') {
+          acc.unwatched.legit_checking = count._count.check_status;
+        }
+        return acc;
+      },
+      {
+        unwatched: {
+          data_validation: 0,
+          legit_checking: 0,
+        },
+      },
+    );
+
+    return result;
   }
 }

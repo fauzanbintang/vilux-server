@@ -1,4 +1,4 @@
-import { ApiProperty, PartialType } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
 import { Gender, Role } from '@prisma/client';
 
 export class RegisterUserDto {
@@ -83,6 +83,11 @@ export class UpdateUserDto extends PartialType(RegisterUserDto) {
     default: 'male',
   })
   gender: Gender;
+  @ApiProperty({
+    type: String,
+    default: 'VLX',
+  })
+  certificate_prefix: string;
 }
 
 export class UpdateUserPasswordDto {
@@ -96,4 +101,31 @@ export class UpdateUserPasswordDto {
     default: 'Pass123!',
   })
   newPassword: string;
+}
+
+export class UserQuery {
+  @ApiProperty({
+    type: String,
+    default: '1',
+  })
+  page?: string;
+
+  @ApiProperty({
+    type: String,
+    default: '10',
+  })
+  limit?: string;
+
+  @ApiProperty({
+    enum: Role,
+    isArray: true,
+    default: [Role.vip_client],
+  })
+  role?: Role[];
+
+  @ApiPropertyOptional({
+    type: String,
+    default: 'test',
+  })
+  search?: string;
 }

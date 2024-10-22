@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { VoucherType } from '@prisma/client';
 
 export class VoucherDto {
@@ -10,33 +10,15 @@ export class VoucherDto {
 
   @ApiProperty({
     type: String,
-    default: 'test',
+    default: 'New Member',
   })
   name: string;
-
-  @ApiProperty({
-    type: String,
-    default: 'test',
-  })
-  code: string;
 
   @ApiProperty({
     enum: VoucherType,
     default: VoucherType.promotion,
   })
   voucher_type: VoucherType;
-
-  @ApiProperty({
-    type: String,
-    default: '10000',
-  })
-  discount: string;
-
-  @ApiProperty({
-    type: Number,
-    default: 200,
-  })
-  quota_usage: number;
 
   @ApiProperty({
     type: Date,
@@ -50,9 +32,21 @@ export class VoucherDto {
   })
   expired_at: Date;
 
-  @ApiProperty({
-    type: Boolean,
-    default: false,
+  @ApiPropertyOptional({
+    type: Number,
+    default: 20,
   })
-  active_status: boolean;
+  discount?: number;
+
+  @ApiPropertyOptional({
+    type: String,
+    default: '00000000-0000-0000-0000-000000000000',
+  })
+  user_id?: string;
+
+  @ApiPropertyOptional({
+    type: String,
+    default: 'JF839H0S',
+  })
+  code?: string;
 }
