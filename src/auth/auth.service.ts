@@ -17,7 +17,7 @@ export class AuthService {
     private validationService: ValidationService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
     private configService: ConfigService,
-  ) { }
+  ) {}
 
   async register(registerUserDto: RegisterUserDto): Promise<UserDto> {
     this.logger.debug(`Register new user ${JSON.stringify(registerUserDto)}`);
@@ -93,6 +93,22 @@ export class AuthService {
     const token = generateToken(user, this.configService);
 
     delete user.password;
+
+    const fmc_token = await this.prismaService.fCMToken.findFirst({
+      select: { id: true },
+      where: {
+        user_id: user.id,
+        token: loginUserDto.fcm_token,
+      },
+    });
+    if (!fmc_token) {
+      await this.prismaService.fCMToken.create({
+        data: {
+          token: loginUserDto.fcm_token,
+          user_id: user.id,
+        },
+      });
+    }
 
     return {
       ...user,

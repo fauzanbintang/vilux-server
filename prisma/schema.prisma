@@ -71,6 +71,7 @@ model User {
   created_at         DateTime      @default(now())
   LegitChecks        LegitChecks[]
   Voucher            Voucher[]
+  FCMToken           FCMToken[]
 
   @@map("users")
 }
@@ -294,4 +295,14 @@ model Ledger {
   referece_type    String
 
   @@map("ledgers")
+}
+
+model FCMToken {
+  id         String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  created_at DateTime @default(now())
+  token      String
+  user_id    String   @db.Uuid
+  user       User     @relation(fields: [user_id], references: [id])
+
+  @@map("fcm_token")
 }
