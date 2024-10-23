@@ -22,6 +22,7 @@ import { SubcategoryInstructionModule } from './subcategory_instruction/subcateg
 import { OrderModule } from './order/order.module';
 import { LegitCheckModule } from './legit_check/legit_check.module';
 import { ServiceModule } from './service/service.module';
+import { MailModule } from './mail/mail.module';
 import { BannerModule } from './banner/banner.module';
 import { LedgerModule } from './ledger/ledger.module';
 
@@ -40,6 +41,7 @@ import { LedgerModule } from './ledger/ledger.module';
     OrderModule,
     LegitCheckModule,
     ServiceModule,
+    MailModule,
     BannerModule,
     LedgerModule,
   ],
