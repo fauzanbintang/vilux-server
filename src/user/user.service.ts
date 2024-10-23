@@ -203,4 +203,21 @@ export class UserService {
 
     return result;
   }
+
+  async removeOwnAccount(id: string) {
+    const user = await this.prismaService.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!user) {
+      throw new HttpException('user not found', 404);
+    }
+
+    await this.prismaService.user.delete({
+      where: { id },
+    });
+  }
 }

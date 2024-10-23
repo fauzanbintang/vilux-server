@@ -1,12 +1,15 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   Param,
   Put,
   Query,
+  Req,
 } from '@nestjs/common';
+import { Request } from 'express';
 import { UserDto } from 'src/dto/response/user.dto';
 import { UserService } from './user.service';
 import { ResponseDto } from 'src/dto/response/response.dto';
@@ -191,5 +194,41 @@ export class UserController {
   ): Promise<ResponseDto<UserDto>> {
     const user = await this.userService.update(id, updateUserDto);
     return { message: 'Successfully update user', data: user, errors: null };
+  }
+
+
+  @Delete('own-account')
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Delete own account' })
+  @ApiResponse({
+    status: 200,
+    description: 'Delete own account',
+    schema: {
+      example: {
+        message: 'Successfully delete own account',
+        data: null,
+        errors: null,
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad Request',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+  })
+  async remove(
+    @Req() req: Request,
+  ): Promise<ResponseDto<string>> {
+    req.user
+    await this.userService.removeOwnAccount(req.user.id);
+
+    return {
+      message: 'Successfully delete own account',
+      data: null,
+      errors: null,
+    };
   }
 }
