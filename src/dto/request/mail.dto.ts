@@ -16,5 +16,3 @@ export class CreateMailDto {
   })
   html: string;
 }
-
-export class UpdateMailDto extends PartialType(CreateMailDto) { }
