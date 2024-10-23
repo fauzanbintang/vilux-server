@@ -5,7 +5,7 @@ import {
   RequestMethod,
 } from '@nestjs/common';
 import * as admin from 'firebase-admin';
-import serviceAccount from '../vilux-5d942-firebase-adminsdk-kxug3-f407f6aa3d.json';
+import serviceAccount from './vilux-5d942-firebase-adminsdk-kxug3-f407f6aa3d.json';
 import { UserModule } from './user/user.module';
 import { CommonModule } from './common/common.module';
 import { LogMiddleware } from './middlewares/log.middleware';
