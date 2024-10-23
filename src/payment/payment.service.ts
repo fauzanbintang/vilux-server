@@ -396,8 +396,8 @@ export class PaymentService {
             is_credit: false,
             transaction_id: transactionId, // order id
             transaction_type: LedgerConst.Margin,
-            sum_from: viluxMargin.sum_to,
-            sum_to: viluxMargin.sum_to - PGFee,
+            sum_from: viluxMargin?.sum_to || 0,
+            sum_to: (viluxMargin?.sum_to || BigInt(0)) - PGFee,
             reference_id: referenceId, // payment id
             referece_type: referenceType, // payments
           },
@@ -433,10 +433,19 @@ export class PaymentService {
         });
       });
     } catch (err) {
-      throw new HttpException(
-        JSON.stringify(err),
-        err.getStatus() ? err.getStatus() : 500,
-      );
+      console.log(err, "EROOOOOR");
+
+      if (err instanceof HttpException) {
+        throw new HttpException(
+          JSON.stringify(err.message),
+          err.getStatus(),
+        );
+      } else {
+        throw new HttpException(
+          'Internal Server Error',
+          500,
+        );
+      }
     }
   }
 }
