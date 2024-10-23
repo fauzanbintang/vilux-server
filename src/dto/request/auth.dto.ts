@@ -50,11 +50,17 @@ export class LoginUserDto {
     default: 'test@mail.com',
   })
   email: string;
+
   @ApiProperty({
     type: String,
     default: 'Pass123!',
   })
   password: string;
+
+  @ApiProperty({
+    type: String,
+  })
+  fcm_token: string;
 }
 
 export class UpdateUserDto extends PartialType(RegisterUserDto) {

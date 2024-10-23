@@ -55,3 +55,6 @@ pids
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 vilux.pem
+
+# Firebase
+vilux-5d942-firebase-adminsdk-kxug3-f407f6aa3d.json
