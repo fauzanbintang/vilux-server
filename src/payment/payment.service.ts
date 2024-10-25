@@ -9,7 +9,12 @@ import {
   UpdatePaymentDto,
 } from 'src/dto/request/payment.dto';
 import { UserDto } from 'src/dto/response/user.dto';
-import { LedgerConst } from 'src/assets/constants';
+import { LedgerConst, NotificationConst } from 'src/assets/constants';
+import {
+  sendNotificationToMultipleTokens,
+  tokenToArrayString,
+} from 'src/helpers/firebase-messaging';
+import { MultipleNotificationDto } from 'src/dto/request/notification.dto';
 const midtransClient = require('midtrans-client');
 
 @Injectable()
@@ -125,6 +130,8 @@ export class PaymentService {
         },
       });
     }
+
+    await this.sendNotification(clientInfo.id);
 
     return payment;
   }
@@ -433,19 +440,44 @@ export class PaymentService {
         });
       });
     } catch (err) {
-      console.log(err, "EROOOOOR");
-
       if (err instanceof HttpException) {
-        throw new HttpException(
-          JSON.stringify(err.message),
-          err.getStatus(),
-        );
+        throw new HttpException(JSON.stringify(err.message), err.getStatus());
       } else {
-        throw new HttpException(
-          'Internal Server Error',
-          500,
-        );
+        throw new HttpException('Internal Server Error', 500);
       }
     }
+  }
+
+  async sendNotification(userId: string) {
+    const userTokens = await this.prismaService.fCMToken.findMany({
+      select: {
+        token: true,
+      },
+      where: {
+        user_id: userId,
+      },
+    });
+    const adminTokens = await this.prismaService.fCMToken.findMany({
+      select: {
+        token: true,
+      },
+      where: {
+        role: Role.admin,
+      },
+    });
+
+    const notifDataUser: MultipleNotificationDto = {
+      tokens: tokenToArrayString(userTokens),
+      title: NotificationConst.SuccessPaymentUser.title,
+      body: NotificationConst.SuccessPaymentUser.body,
+    };
+    const notifDataAdmin: MultipleNotificationDto = {
+      tokens: tokenToArrayString(adminTokens),
+      title: NotificationConst.SuccessPaymentAdmin.title,
+      body: NotificationConst.SuccessPaymentAdmin.body,
+    };
+
+    sendNotificationToMultipleTokens(notifDataUser);
+    sendNotificationToMultipleTokens(notifDataAdmin);
   }
 }
