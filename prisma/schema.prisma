@@ -302,6 +302,7 @@ model FCMToken {
   created_at DateTime @default(now())
   token      String
   user_id    String   @db.Uuid
+  role       Role     @default(client)
   user       User     @relation(fields: [user_id], references: [id])
 
   @@map("fcm_token")
