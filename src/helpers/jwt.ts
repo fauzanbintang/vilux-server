@@ -10,7 +10,7 @@ export const generateToken = (
   });
 };
 
-export const generateTokenForgot = (
+export const generateTokenMail = (
   payload: any,
   configService: ConfigService,
 ): string => {

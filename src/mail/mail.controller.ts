@@ -25,4 +25,22 @@ export class MailController {
     async forgotPassword(@Body() createMailDto: CreateMailDto) {
         return await this.mailService.forgotPassword(createMailDto.email);
     }
+
+    @Post('verify-email')
+    @HttpCode(201)
+    @ApiOperation({ summary: 'Send email for verify email' })
+    @ApiResponse({
+        status: 201,
+        description: 'Email sent successfully',
+        schema: {
+            example: {
+                message: 'Email sent successfully',
+                data: { token: 'token' },
+                errors: null,
+            }
+        }
+    })
+    async verifyEmail(@Body() createMailDto: CreateMailDto) {
+        return await this.mailService.verifyEmail(createMailDto.email);
+    }
 }

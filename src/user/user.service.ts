@@ -158,7 +158,6 @@ export class UserService {
     const user = await this.prismaService.user.findUnique({
       where: { email },
     });
-console.log(user, updateUserForgotPasswordDto,"SAFAS");
 
     if (!user) {
       throw new HttpException('User not found', 404);
@@ -234,6 +233,30 @@ console.log(user, updateUserForgotPasswordDto,"SAFAS");
     );
 
     return result;
+  }
+
+  async verifyEmail(token: string) {
+    const { email } = verifyToken(token, this.configService);
+
+    if (!email) {
+      throw new HttpException('Invalid token', 400);
+    }
+
+    this.logger.debug(`Verify email for user ${email}`);
+    const user = await this.prismaService.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      throw new HttpException('User not found', 404);
+    }
+
+    await this.prismaService.user.update({
+      where: { email },
+      data: {
+        verified_email: true,
+      },
+    });
   }
 
   async removeOwnAccount(id: string) {
