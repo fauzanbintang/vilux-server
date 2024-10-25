@@ -172,11 +172,32 @@ export class PaymentService {
 
       let newStatus: PaymentStatus;
 
+      const currentLegitCheck = await this.prismaService.legitChecks.findUnique(
+        {
+          select: { status_log: true },
+          where: {
+            id: payment.order.legit_check_id,
+          },
+        },
+      );
+
+      const currentStatusLog =
+        typeof currentLegitCheck?.status_log === 'object' &&
+        currentLegitCheck?.status_log !== null
+          ? (currentLegitCheck.status_log as Record<string, string>)
+          : {};
+
       if (transactionStatus === 'settlement') {
         newStatus = PaymentStatus.success;
         await this.prismaService.legitChecks.update({
           where: { id: payment.order.legit_check_id },
-          data: { check_status: LegitCheckStatus.data_validation },
+          data: {
+            check_status: LegitCheckStatus.data_validation,
+            status_log: {
+              ...currentStatusLog,
+              [LegitCheckStatus.data_validation]: Date.now(),
+            },
+          },
         });
         await this.createLedger(
           BigInt(payment.client_amount),
