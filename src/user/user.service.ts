@@ -1,21 +1,25 @@
 import { HttpException, Inject, Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Role } from '@prisma/client';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { PrismaService } from 'src/common/prisma.service';
 import {
   UpdateUserDto,
+  UpdateUserForgotPasswordDto,
   UpdateUserPasswordDto,
   UserQuery,
 } from 'src/dto/request/auth.dto';
 import { UserDto } from 'src/dto/response/user.dto';
 import { comparePassword, hashPassword } from 'src/helpers/bcrypt';
+import { verifyToken } from 'src/helpers/jwt';
 
 @Injectable()
 export class UserService {
   constructor(
     private prismaService: PrismaService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
-  ) {}
+    private configService: ConfigService,
+  ) { }
 
   async getUsers(query: UserQuery): Promise<any> {
     this.logger.debug('Get all users');
@@ -138,6 +142,34 @@ export class UserService {
       gender: updatedUser.gender,
       certificate_prefix: updatedUser.certificate_prefix,
     };
+  }
+
+  async forgotPassword(
+    token: string,
+    updateUserForgotPasswordDto: UpdateUserForgotPasswordDto,
+  ) {
+    const { email } = verifyToken(token, this.configService);
+
+    if (!email) {
+      throw new HttpException('Invalid token', 400);
+    }
+
+    this.logger.debug(`Change password for user ${email}`);
+    const user = await this.prismaService.user.findUnique({
+      where: { email },
+    });
+console.log(user, updateUserForgotPasswordDto,"SAFAS");
+
+    if (!user) {
+      throw new HttpException('User not found', 404);
+    }
+
+    await this.prismaService.user.update({
+      where: { email },
+      data: {
+        password: await hashPassword(updateUserForgotPasswordDto.newPassword),
+      },
+    });
   }
 
   async changePassword(

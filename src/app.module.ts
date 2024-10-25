@@ -5,7 +5,7 @@ import {
   RequestMethod,
 } from '@nestjs/common';
 import * as admin from 'firebase-admin';
-import serviceAccount from '../vilux-5d942-firebase-adminsdk-kxug3-f407f6aa3d.json';
+import serviceAccount from './vilux-5d942-firebase-adminsdk-kxug3-f407f6aa3d.json';
 import { UserModule } from './user/user.module';
 import { CommonModule } from './common/common.module';
 import { LogMiddleware } from './middlewares/log.middleware';
@@ -65,7 +65,8 @@ export class AppModule implements NestModule {
         { path: '/api/auth/register', method: RequestMethod.POST },
         { path: '/api/payments/notification', method: RequestMethod.POST },
         { path: '/api/legit-checks/:id/public', method: RequestMethod.GET },
-        { path: '/api/change-password/:id', method: RequestMethod.PUT },
+        { path: '/api/users/forgot-password/:token', method: RequestMethod.PUT },
+        { path: '/api/mails/forgot-password', method: RequestMethod.POST },
       )
       .forRoutes('/api/*');
     consumer

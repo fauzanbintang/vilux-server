@@ -8,17 +8,21 @@ import { CreateMailDto } from 'src/dto/request/mail.dto';
 export class MailController {
     constructor(private readonly mailService: MailService) { }
 
-    @Post('send')
+    @Post('forgot-password')
     @HttpCode(201)
-    @ApiOperation({ summary: 'Send an email' })
-    async sendEmail(
-        @Body() createMailDto: CreateMailDto
-    ) {
-        try {
-            await this.mailService.sendEmail(createMailDto);
-            return { message: `Email successfully sent to ${createMailDto.to}` };
-        } catch (error) {
-            return { error: 'Failed to send email', details: error.message };
+    @ApiOperation({ summary: 'Send email for forgot password' })
+    @ApiResponse({
+        status: 201,
+        description: 'Email sent successfully',
+        schema: {
+            example: {
+                message: 'Email sent successfully',
+                data: { token: 'token' },
+                errors: null,
+            }
         }
+    })
+    async forgotPassword(@Body() createMailDto: CreateMailDto) {
+        return await this.mailService.forgotPassword(createMailDto.email);
     }
 }

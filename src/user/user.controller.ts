@@ -16,6 +16,7 @@ import { ResponseDto } from 'src/dto/response/response.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
   UpdateUserDto,
+  UpdateUserForgotPasswordDto,
   UpdateUserPasswordDto,
   UserQuery,
 } from 'src/dto/request/auth.dto';
@@ -127,6 +128,32 @@ export class UserController {
     @Body() updateUserPasswordDto: UpdateUserPasswordDto,
   ): Promise<ResponseDto<UserDto>> {
     await this.userService.changePassword(id, updateUserPasswordDto);
+    return {
+      message: 'Successfully change password',
+      data: null,
+      errors: null,
+    };
+  }
+  
+  @Put('forgot-password/:token')
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Change password for user' })
+  @ApiResponse({
+    status: 200,
+    description: 'Change password for user',
+    schema: {
+      example: {
+        message: 'Successfully change password',
+        data: null,
+        errors: null,
+      },
+    },
+  })
+  async forgotPassword(
+    @Param('token') token: string,
+    @Body() updateUserForgotPasswordDto: UpdateUserForgotPasswordDto,
+  ): Promise<ResponseDto<UserDto>> {
+    await this.userService.forgotPassword(token, updateUserForgotPasswordDto);
     return {
       message: 'Successfully change password',
       data: null,
