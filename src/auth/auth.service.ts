@@ -106,6 +106,7 @@ export class AuthService {
         data: {
           token: loginUserDto.fcm_token,
           user_id: user.id,
+          role: user.role
         },
       });
     }
