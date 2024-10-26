@@ -137,7 +137,7 @@ model Voucher {
   discount     Int?
   code         String?
   user_id      String?     @db.Uuid
-  user         User?       @relation(fields: [user_id], references: [id])
+  user         User?       @relation(fields: [user_id], references: [id], onDelete: SetNull)
   Order        Order[]
 
   @@map("vouchers")
@@ -192,8 +192,8 @@ model LegitChecks {
   id               String             @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   updated_at       DateTime           @default(now()) @updatedAt
   created_at       DateTime           @default(now())
-  client_id        String             @db.Uuid
-  client           User               @relation(fields: [client_id], references: [id])
+  client_id        String?            @db.Uuid
+  client           User?              @relation(fields: [client_id], references: [id], onDelete: SetNull)
   code             String
   brand_id         String             @db.Uuid
   brand            Brand              @relation(fields: [brand_id], references: [id])
@@ -301,9 +301,9 @@ model FCMToken {
   id         String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   created_at DateTime @default(now())
   token      String
-  user_id    String   @db.Uuid
   role       Role     @default(client)
-  user       User     @relation(fields: [user_id], references: [id])
+  user_id    String   @db.Uuid
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@map("fcm_token")
 }
