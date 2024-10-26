@@ -16,8 +16,14 @@ export class ErrorFilter implements ExceptionFilter {
         errors: exception.issues,
       });
     } else if (exception instanceof HttpException) {
+      const exceptionResponse = exception.getResponse();
+
       return response.status(exception.getStatus()).json({
-        errors: exception.message,
+        message: exception.message,
+        data:
+          typeof exceptionResponse === 'object' && 'data' in exceptionResponse
+            ? exceptionResponse['data']
+            : null,
       });
     } else {
       return response.status(500).json({
