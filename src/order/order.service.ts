@@ -4,7 +4,7 @@ import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { CreateOrderDto, UpdateOrderDto } from 'src/dto/request/order.dto';
 import { generateCode } from 'src/helpers/order_code_generator';
 import { UserDto } from 'src/dto/response/user.dto';
-import { LegitCheckStatus, Prisma, Role } from '@prisma/client';
+import { LegitCheckStatus, Prisma, Role, VoucherType } from '@prisma/client';
 import { ServiceDto } from 'src/dto/response/service.dto';
 import { VoucherDto } from 'src/dto/response/voucher.dto';
 
@@ -15,9 +15,40 @@ export class OrderService {
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
   ) {}
   async create(clientInfo: UserDto, createOrderDto: CreateOrderDto) {
+    // TODO(BINTANG): SHOULD BE USING TRX
     this.logger.debug(`Create order ${JSON.stringify(createOrderDto)}`);
 
     try {
+      let voucher: VoucherDto;
+      if (createOrderDto.voucher_id && createOrderDto.voucher_id.length > 0) {
+        const now = new Date(Date.now());
+
+        voucher = await this.prismaService.voucher.findUnique({
+          where: { id: createOrderDto.voucher_id },
+        });
+        if (now < voucher.started_at || now > voucher.expired_at) {
+          throw new HttpException('Voucher not valid', 400);
+        }
+
+        let voucherUsageQuery: { [key: string]: any } = {
+          voucher_id: createOrderDto.voucher_id,
+        };
+        if (voucher.voucher_type === VoucherType.promotion) {
+          voucherUsageQuery.user_id = clientInfo.id;
+        }
+        const voucherUsage = await this.prismaService.voucherUsage.findFirst({
+          select: {
+            id: true,
+            user_id: true,
+            voucher_id: true,
+          },
+          where: voucherUsageQuery,
+        });
+        if (voucherUsage) {
+          throw new HttpException('Voucher already used', 400);
+        }
+      }
+
       let service = await this.prismaService.services.findUnique({
         where: { id: createOrderDto.service_id },
       });
@@ -27,20 +58,6 @@ export class OrderService {
         normal_price: service.normal_price.toString(),
         vip_price: service.vip_price.toString(),
       };
-
-      // TODO: add validation for refund (one time only)
-      // TODO: add validation for one user one time only
-      let voucher: VoucherDto;
-      if (createOrderDto.voucher_id && createOrderDto.voucher_id.length > 0) {
-        voucher = await this.prismaService.voucher.findUnique({
-          where: { id: createOrderDto.voucher_id },
-        });
-
-        const now = new Date(Date.now());
-        if (now < voucher.started_at || now > voucher.expired_at) {
-          throw new HttpException('Voucher not valid', 400);
-        }
-      }
 
       const original_amount = countTotalOriginalAmount(
         clientInfo.role,
@@ -53,7 +70,7 @@ export class OrderService {
           legit_check_id: createOrderDto.legit_check_id,
           service_id: createOrderDto.service_id,
           original_amount: original_amount,
-          voucher_id: createOrderDto.voucher_id,
+          voucher_id: createOrderDto.voucher_id || null,
         },
       });
 
@@ -64,11 +81,18 @@ export class OrderService {
         },
       });
 
+      await this.prismaService.voucherUsage.create({
+        data: {
+          voucher_id: createOrderDto.voucher_id,
+          user_id: clientInfo.id,
+        },
+      });
+
       return { ...order, original_amount: order.original_amount.toString() };
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
-          throw new HttpException("order already created", 400);
+          throw new HttpException('Order already created', 400);
         }
       }
       throw new HttpException(error.message, 500);
