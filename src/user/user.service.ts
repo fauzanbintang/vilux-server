@@ -124,9 +124,32 @@ export class UserService {
       throw new HttpException('Certificate prefix must be 3 characters', 400);
     }
 
+    if (updateUserDto.referral_code && updateUserDto.referral_code.length > 0) {
+      const voucherUsage = await this.prismaService.voucherUsage.findFirst({
+        select: {
+          id: true,
+          voucher_id: true,
+        },
+        where: {
+          voucher_id: updateUserDto.referral_code,
+        },
+      });
+
+      if (voucherUsage) {
+        throw new HttpException('Referral code already used', 400);
+      }
+    }
+
     const updatedUser = await this.prismaService.user.update({
       where: { id },
       data: updateUserDto,
+    });
+
+    await this.prismaService.voucherUsage.create({
+      data: {
+        voucher_id: updateUserDto.referral_code,
+        user_id: id,
+      },
     });
 
     return {
