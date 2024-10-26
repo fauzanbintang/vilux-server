@@ -211,10 +211,11 @@ export class UserService {
         id: true,
       },
     });
-
     if (!user) {
       throw new HttpException('user not found', 404);
     }
+
+    console.log(user, 'ini user');
 
     await this.prismaService.user.delete({
       where: { id },

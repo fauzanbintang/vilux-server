@@ -196,7 +196,6 @@ export class UserController {
     return { message: 'Successfully update user', data: user, errors: null };
   }
 
-
   @Delete('own-account')
   @HttpCode(200)
   @ApiOperation({ summary: 'Delete own account' })
@@ -219,10 +218,7 @@ export class UserController {
     status: 500,
     description: 'Internal Server Error',
   })
-  async remove(
-    @Req() req: Request,
-  ): Promise<ResponseDto<string>> {
-    req.user
+  async remove(@Req() req: Request): Promise<ResponseDto<string>> {
     await this.userService.removeOwnAccount(req.user.id);
 
     return {
