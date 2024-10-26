@@ -29,8 +29,6 @@ export class MailService {
 
   private async getHtmlTemplate(templatePath: string, replacements: Record<string, string>): Promise<string> {
     try {
-      console.log(templatePath, "ASFSFAS");
-
       const template = await fs.promises.readFile(templatePath, 'utf8');
       return template.replace(/{{\s*(\w+)\s*}}/g, (_, key) => replacements[key] || '');
     } catch (err) {
@@ -51,7 +49,7 @@ export class MailService {
     }
 
     const token = generateTokenMail({ email }, this.configService);
-    const resetLink = `${this.configService.get('FRONTEND_URL')}/reset-password?token=${token}`;
+    const resetLink = `${this.configService.get('FRONTEND_DOMAIN')}/mobile/forgot-password?token=${token}`;
     const year = new Date().getFullYear().toString();
 
     const html = await this.getHtmlTemplate(
@@ -93,7 +91,7 @@ export class MailService {
     }
 
     const token = generateTokenMail({ email }, this.configService);
-    const verificationLink = `${this.configService.get('FRONTEND_URL')}/verify-email?token=${token}`;
+    const verificationLink = `${this.configService.get('FRONTEND_DOMAIN')}/mobile/verify-email?token=${token}`;
     const year = new Date().getFullYear().toString();
 
     const html = await this.getHtmlTemplate(
