@@ -22,7 +22,7 @@ export class LegitCheckService {
     private prismaService: PrismaService,
     private readonly fileService: FileService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
-  ) {}
+  ) { }
 
   async upsertLegitCheckBrandCategory(
     clientInfo: UserDto,
@@ -402,12 +402,18 @@ export class LegitCheckService {
       select: {
         id: true,
         name: true,
+        file: {
+          select: {
+            url: true,
+          },
+        }
       },
     });
 
     return topBrands.map((brand) => ({
       id: brand.brand_id,
       name: brandDetails.find((b) => b.id === brand.brand_id)?.name,
+      logoUrl: brandDetails.find((b) => b.id === brand.brand_id)?.file.url,
       count: brand._count.brand_id,
     }));
   }
