@@ -119,6 +119,14 @@ export class UpdateUserPasswordDto {
   newPassword: string;
 }
 
+export class UpdateUserForgotPasswordDto {
+  @ApiProperty({
+    type: String,
+    default: 'Pass123!',
+  })
+  newPassword: string;
+}
+
 export class UserQuery {
   @ApiProperty({
     type: String,

@@ -26,7 +26,7 @@ import { ResponseDto } from 'src/dto/response/response.dto';
 @ApiTags('legit-check')
 @Controller('api/legit-checks')
 export class LegitCheckController {
-  constructor(private readonly legitCheckService: LegitCheckService) {}
+  constructor(private readonly legitCheckService: LegitCheckService) { }
 
   @Post('brand-category')
   @HttpCode(201)
@@ -148,6 +148,76 @@ export class LegitCheckController {
     return {
       message: 'Successfully retrieved top brands',
       data: brands,
+      errors: null,
+    };
+  }
+
+  @Get('returned-checks')
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Get returned legit checks' })
+  @ApiResponse({
+    status: 200,
+    description: 'Get returned legit checks',
+    schema: {
+      example: {
+        message: 'Successfully get returned legit checks',
+        data: {
+          returned: 100
+        },
+        errors: null,
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad Request',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+  })
+  async getReturnedChecks(
+    @Req() req: Request
+  ): Promise<ResponseDto<any>> {
+    const returned = await this.legitCheckService.getReturnedChecks(req.user);
+
+    return {
+      message: 'Successfully get returned legit checks',
+      data: returned,
+      errors: null,
+    };
+  }
+
+  @Get('completed-checks')
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Get completed legit checks' })
+  @ApiResponse({
+    status: 200,
+    description: 'Get completed legit checks',
+    schema: {
+      example: {
+        message: 'Successfully get completed legit checks',
+        data: {
+          completed: 100
+        },
+        errors: null,
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad Request',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+  })
+  async getCompletedChecks(): Promise<ResponseDto<any>> {
+    const completed = await this.legitCheckService.getCompletedChecks();
+
+    return {
+      message: 'Successfully get completed legit checks',
+      data: completed,
       errors: null,
     };
   }
