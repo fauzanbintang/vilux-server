@@ -562,4 +562,59 @@ export class LegitCheckService {
 
     return result;
   }
+
+  async getReturnedChecks(
+    clientInfo: UserDto,
+  ) {
+    const counts = await this.prismaService.legitChecks.groupBy({
+      by: ['check_status'],
+      where: {
+        check_status: {
+          in: ['revise_data'],
+        },
+        client_id: clientInfo.id,
+      },
+      _count: {
+        check_status: true,
+      },
+    });
+
+    const result = counts.reduce(
+      (acc, count) => {
+        acc.returned = count._count.check_status;
+        return acc;
+      },
+      {
+        returned: 0,
+      },
+    );
+
+    return result;
+  }
+
+  async getCompletedChecks() {
+    const counts = await this.prismaService.legitChecks.groupBy({
+      by: ['check_status'],
+      where: {
+        check_status: {
+          in: ['completed'],
+        },
+      },
+      _count: {
+        check_status: true,
+      },
+    });
+
+    const result = counts.reduce(
+      (acc, count) => {
+        acc.completed = count._count.check_status;
+        return acc;
+      },
+      {
+        completed: 0,
+      },
+    );
+
+    return result;
+  }
 }
