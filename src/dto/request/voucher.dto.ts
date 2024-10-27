@@ -67,6 +67,11 @@ export class UpdateVoucherReferralDto extends PartialType(
   CreateVoucherReferralDto,
 ) {}
 
+export enum ActiveFinished {
+  active = 'active',
+  finished = 'finished',
+}
+
 export class GetVouchersnQuery {
   @ApiProperty({
     enum: VoucherType,
@@ -74,4 +79,11 @@ export class GetVouchersnQuery {
     default: [VoucherType.promotion],
   })
   voucher_type: VoucherType[];
+
+  @ApiProperty({
+    enum: ActiveFinished,
+    isArray: true,
+    default: [ActiveFinished.active],
+  })
+  active_finished: ActiveFinished[];
 }

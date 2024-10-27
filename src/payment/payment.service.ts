@@ -89,6 +89,7 @@ export class PaymentService {
       where: { id: orderId },
       include: {
         voucher: true,
+        payment: true,
       },
     });
 
@@ -108,6 +109,16 @@ export class PaymentService {
 
     if (Number(createPaymentDto.client_amount) != clientAmount) {
       throw new HttpException('Invalid client_amount', 400);
+    }
+
+    if (order.payment_id) {
+      throw new HttpException(
+        {
+          message: 'Payment already created',
+          data: order.payment,
+        },
+        400,
+      );
     }
 
     const payment = await this.prismaService.payment.create({

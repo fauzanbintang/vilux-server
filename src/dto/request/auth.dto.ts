@@ -69,31 +69,41 @@ export class UpdateUserDto extends PartialType(RegisterUserDto) {
     default: 'test',
   })
   username: string;
+
   @ApiProperty({
     type: String,
     default: 'test@mail.com',
   })
   email: string;
+
   @ApiProperty({
     type: String,
     default: 'Test Test',
   })
   full_name: string;
+
   @ApiProperty({
     type: Date,
     default: new Date('01-01-1999'),
   })
   date_of_birth: Date;
+
   @ApiProperty({
     enum: Gender,
     default: 'male',
   })
   gender: Gender;
+
   @ApiProperty({
     type: String,
     default: 'VLX',
   })
   certificate_prefix: string;
+
+  @ApiPropertyOptional({
+    type: String,
+  })
+  referral_code: string;
 }
 
 export class UpdateUserPasswordDto {
