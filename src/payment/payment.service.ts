@@ -55,6 +55,7 @@ export class PaymentService {
         'bni_va',
         'permata_va',
         'gopay',
+        'shopeepay',
         'qris',
         'echannel',
       ],
@@ -155,6 +156,7 @@ export class PaymentService {
     const paymentGatewayFees = {
       virtualAccount: 4000,
       qris: 0.007,
+      'e-wallet': 0.02,
     };
 
     try {
@@ -194,7 +196,7 @@ export class PaymentService {
 
       const currentStatusLog =
         typeof currentLegitCheck?.status_log === 'object' &&
-        currentLegitCheck?.status_log !== null
+          currentLegitCheck?.status_log !== null
           ? (currentLegitCheck.status_log as Record<string, string>)
           : {};
 
@@ -253,6 +255,12 @@ export class PaymentService {
               : statusResponse.va_numbers[0].bank;
         paymentMethod['payment_type'] = 'bank_transfer';
         serviceFee = paymentGatewayFees.virtualAccount;
+      } else if (statusResponse.payment_type === 'shopeepay') {
+        serviceFee = Number(payment.client_amount) * paymentGatewayFees['e-wallet'];
+        paymentMethod['payment_type'] = 'shopeepay';
+      } else if (statusResponse.payment_type === 'gopay') {
+        serviceFee = Number(payment.client_amount) * paymentGatewayFees['e-wallet'];
+        paymentMethod['payment_type'] = 'gopay';
       } else if (statusResponse.payment_type === 'qris') {
         serviceFee = Number(payment.client_amount) * paymentGatewayFees.qris;
         paymentMethod['payment_type'] = 'qris';
