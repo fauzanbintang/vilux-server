@@ -49,6 +49,15 @@ export class VoucherService {
       },
     });
 
+    if (user) {
+      await this.prismaService.voucherUsage.create({
+        data: {
+          voucher_id: voucher.id,
+          user_id: user.id,
+        },
+      });
+    }
+
     return voucher;
   }
 
