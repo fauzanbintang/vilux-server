@@ -3,16 +3,7 @@ import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
 export class CreateMailDto {
   @ApiProperty({
     type: String,
+    default: 'test@mail.com',
   })
-  to: string;
-
-  @ApiProperty({
-    type: String,
-  })
-  subject: string;
-
-  @ApiProperty({
-    type: String,
-  })
-  html: string;
+  email: string;
 }

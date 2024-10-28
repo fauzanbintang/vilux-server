@@ -3,6 +3,7 @@ import { VoucherType } from '@prisma/client';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { PrismaService } from 'src/common/prisma.service';
 import {
+  ActiveFinished,
   CreateVoucherPromotionDto,
   CreateVoucherReferralDto,
   GetVouchersnQuery,
@@ -15,7 +16,7 @@ export class VoucherService {
   constructor(
     private prismaService: PrismaService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
-  ) { }
+  ) {}
 
   async create(
     createVoucherDto: CreateVoucherReferralDto | CreateVoucherPromotionDto,
@@ -37,7 +38,7 @@ export class VoucherService {
       if (!user) {
         throw new HttpException('User not found', 404);
       }
-      delete createVoucherDto.email
+      delete createVoucherDto.email;
     }
 
     const voucher = await this.prismaService.voucher.create({
@@ -48,11 +49,45 @@ export class VoucherService {
       },
     });
 
+    if (user) {
+      await this.prismaService.voucherUsage.create({
+        data: {
+          voucher_id: voucher.id,
+          user_id: user.id,
+        },
+      });
+    }
+
     return voucher;
   }
 
   async findAll(query: GetVouchersnQuery) {
     this.logger.debug('Get all vouchers');
+
+    const now = new Date(Date.now());
+    let voucherQuery: { [key: string]: any } = {
+      voucher_type: {
+        in: query.voucher_type,
+      },
+    };
+    if (query.active_finished.includes(ActiveFinished.active)) {
+      voucherQuery.started_at = {
+        lte: now,
+      };
+      voucherQuery.expired_at = {
+        gt: now,
+      };
+    }
+    if (query.active_finished.includes(ActiveFinished.finished)) {
+      if (voucherQuery.started_at) {
+        voucherQuery.started_at = {};
+        voucherQuery.expired_at = {};
+      } else {
+        voucherQuery.expired_at = {
+          lte: now,
+        };
+      }
+    }
 
     const vouchers = await this.prismaService.voucher.findMany({
       select: {
@@ -65,11 +100,7 @@ export class VoucherService {
         code: true,
         user_id: true,
       },
-      where: {
-        voucher_type: {
-          in: query.voucher_type,
-        },
-      },
+      where: voucherQuery,
     });
 
     return vouchers;

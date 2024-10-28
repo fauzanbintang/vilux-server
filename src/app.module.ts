@@ -65,7 +65,10 @@ export class AppModule implements NestModule {
         { path: '/api/auth/register', method: RequestMethod.POST },
         { path: '/api/payments/notification', method: RequestMethod.POST },
         { path: '/api/legit-checks/:id/public', method: RequestMethod.GET },
-        { path: '/api/change-password/:id', method: RequestMethod.PUT },
+        { path: '/api/users/forgot-password/:token', method: RequestMethod.PUT },
+        { path: '/api/users/verify-email/:token', method: RequestMethod.PUT },
+        { path: '/api/mails/forgot-password', method: RequestMethod.POST },
+        { path: '/api/mails/verify-email', method: RequestMethod.POST },
       )
       .forRoutes('/api/*');
     consumer

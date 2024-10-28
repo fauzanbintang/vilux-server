@@ -22,7 +22,7 @@ export class LegitCheckService {
     private prismaService: PrismaService,
     private readonly fileService: FileService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
-  ) {}
+  ) { }
 
   async upsertLegitCheckBrandCategory(
     clientInfo: UserDto,
@@ -402,12 +402,18 @@ export class LegitCheckService {
       select: {
         id: true,
         name: true,
+        file: {
+          select: {
+            url: true,
+          },
+        }
       },
     });
 
     return topBrands.map((brand) => ({
       id: brand.brand_id,
       name: brandDetails.find((b) => b.id === brand.brand_id)?.name,
+      logoUrl: brandDetails.find((b) => b.id === brand.brand_id)?.file.url,
       count: brand._count.brand_id,
     }));
   }
@@ -551,6 +557,61 @@ export class LegitCheckService {
           data_validation: 0,
           legit_checking: 0,
         },
+      },
+    );
+
+    return result;
+  }
+
+  async getReturnedChecks(
+    clientInfo: UserDto,
+  ) {
+    const counts = await this.prismaService.legitChecks.groupBy({
+      by: ['check_status'],
+      where: {
+        check_status: {
+          in: ['revise_data'],
+        },
+        client_id: clientInfo.id,
+      },
+      _count: {
+        check_status: true,
+      },
+    });
+
+    const result = counts.reduce(
+      (acc, count) => {
+        acc.returned = count._count.check_status;
+        return acc;
+      },
+      {
+        returned: 0,
+      },
+    );
+
+    return result;
+  }
+
+  async getCompletedChecks() {
+    const counts = await this.prismaService.legitChecks.groupBy({
+      by: ['check_status'],
+      where: {
+        check_status: {
+          in: ['completed'],
+        },
+      },
+      _count: {
+        check_status: true,
+      },
+    });
+
+    const result = counts.reduce(
+      (acc, count) => {
+        acc.completed = count._count.check_status;
+        return acc;
+      },
+      {
+        completed: 0,
       },
     );
 

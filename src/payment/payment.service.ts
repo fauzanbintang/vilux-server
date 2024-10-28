@@ -9,7 +9,12 @@ import {
   UpdatePaymentDto,
 } from 'src/dto/request/payment.dto';
 import { UserDto } from 'src/dto/response/user.dto';
-import { LedgerConst } from 'src/assets/constants';
+import { LedgerConst, NotificationConst } from 'src/assets/constants';
+import {
+  sendNotificationToMultipleTokens,
+  tokenToArrayString,
+} from 'src/helpers/firebase-messaging';
+import { MultipleNotificationDto } from 'src/dto/request/notification.dto';
 const midtransClient = require('midtrans-client');
 
 @Injectable()
@@ -84,6 +89,7 @@ export class PaymentService {
       where: { id: orderId },
       include: {
         voucher: true,
+        payment: true,
       },
     });
 
@@ -103,6 +109,16 @@ export class PaymentService {
 
     if (Number(createPaymentDto.client_amount) != clientAmount) {
       throw new HttpException('Invalid client_amount', 400);
+    }
+
+    if (order.payment_id) {
+      throw new HttpException(
+        {
+          message: 'Payment already created',
+          data: order.payment,
+        },
+        400,
+      );
     }
 
     const payment = await this.prismaService.payment.create({
@@ -125,6 +141,8 @@ export class PaymentService {
         },
       });
     }
+
+    await this.sendNotification(clientInfo.id);
 
     return payment;
   }
@@ -165,11 +183,32 @@ export class PaymentService {
 
       let newStatus: PaymentStatus;
 
+      const currentLegitCheck = await this.prismaService.legitChecks.findUnique(
+        {
+          select: { status_log: true },
+          where: {
+            id: payment.order.legit_check_id,
+          },
+        },
+      );
+
+      const currentStatusLog =
+        typeof currentLegitCheck?.status_log === 'object' &&
+        currentLegitCheck?.status_log !== null
+          ? (currentLegitCheck.status_log as Record<string, string>)
+          : {};
+
       if (transactionStatus === 'settlement') {
         newStatus = PaymentStatus.success;
         await this.prismaService.legitChecks.update({
           where: { id: payment.order.legit_check_id },
-          data: { check_status: LegitCheckStatus.data_validation },
+          data: {
+            check_status: LegitCheckStatus.data_validation,
+            status_log: {
+              ...currentStatusLog,
+              [LegitCheckStatus.data_validation]: Date.now(),
+            },
+          },
         });
         await this.createLedger(
           BigInt(payment.client_amount),
@@ -433,19 +472,44 @@ export class PaymentService {
         });
       });
     } catch (err) {
-      console.log(err, "EROOOOOR");
-
       if (err instanceof HttpException) {
-        throw new HttpException(
-          JSON.stringify(err.message),
-          err.getStatus(),
-        );
+        throw new HttpException(JSON.stringify(err.message), err.getStatus());
       } else {
-        throw new HttpException(
-          'Internal Server Error',
-          500,
-        );
+        throw new HttpException('Internal Server Error', 500);
       }
     }
+  }
+
+  async sendNotification(userId: string) {
+    const userTokens = await this.prismaService.fCMToken.findMany({
+      select: {
+        token: true,
+      },
+      where: {
+        user_id: userId,
+      },
+    });
+    const adminTokens = await this.prismaService.fCMToken.findMany({
+      select: {
+        token: true,
+      },
+      where: {
+        role: Role.admin,
+      },
+    });
+
+    const notifDataUser: MultipleNotificationDto = {
+      tokens: tokenToArrayString(userTokens),
+      title: NotificationConst.SuccessPaymentUser.title,
+      body: NotificationConst.SuccessPaymentUser.body,
+    };
+    const notifDataAdmin: MultipleNotificationDto = {
+      tokens: tokenToArrayString(adminTokens),
+      title: NotificationConst.SuccessPaymentAdmin.title,
+      body: NotificationConst.SuccessPaymentAdmin.body,
+    };
+
+    sendNotificationToMultipleTokens(notifDataUser);
+    sendNotificationToMultipleTokens(notifDataAdmin);
   }
 }

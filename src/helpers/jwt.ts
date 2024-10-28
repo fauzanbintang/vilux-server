@@ -10,6 +10,15 @@ export const generateToken = (
   });
 };
 
+export const generateTokenMail = (
+  payload: any,
+  configService: ConfigService,
+): string => {
+  return jwt.sign(payload, configService.get('JWT_SECRET'), {
+    expiresIn: '1h',
+  });
+};
+
 export const verifyToken = (
   token: string,
   configService: ConfigService,

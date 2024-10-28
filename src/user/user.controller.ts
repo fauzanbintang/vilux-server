@@ -16,6 +16,7 @@ import { ResponseDto } from 'src/dto/response/response.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
   UpdateUserDto,
+  UpdateUserForgotPasswordDto,
   UpdateUserPasswordDto,
   UserQuery,
 } from 'src/dto/request/auth.dto';
@@ -23,7 +24,7 @@ import {
 @ApiTags('user')
 @Controller('/api/users')
 export class UserController {
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService) { }
 
   @Get()
   @HttpCode(200)
@@ -134,6 +135,57 @@ export class UserController {
     };
   }
 
+  @Put('forgot-password/:token')
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Change password for user' })
+  @ApiResponse({
+    status: 200,
+    description: 'Change password for user',
+    schema: {
+      example: {
+        message: 'Successfully change password',
+        data: null,
+        errors: null,
+      },
+    },
+  })
+  async forgotPassword(
+    @Param('token') token: string,
+    @Body() updateUserForgotPasswordDto: UpdateUserForgotPasswordDto,
+  ): Promise<ResponseDto<UserDto>> {
+    await this.userService.forgotPassword(token, updateUserForgotPasswordDto);
+    return {
+      message: 'Successfully change password',
+      data: null,
+      errors: null,
+    };
+  }
+
+  @Put('verify-email/:token')
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Verify email for user' })
+  @ApiResponse({
+    status: 200,
+    description: 'Verify email for user',
+    schema: {
+      example: {
+        message: 'Successfully verify email',
+        data: null,
+        errors: null,
+      },
+    },
+  })
+  async verifyEmail(
+    @Param('token') token: string,
+  ): Promise<ResponseDto<UserDto>> {
+    await this.userService.verifyEmail(token);
+    return {
+      message: 'Successfully verify email',
+      data: null,
+      errors: null,
+    };
+  }
+
   @Get(':id')
   @HttpCode(200)
   @ApiOperation({ summary: 'Get user' })
@@ -196,7 +248,6 @@ export class UserController {
     return { message: 'Successfully update user', data: user, errors: null };
   }
 
-
   @Delete('own-account')
   @HttpCode(200)
   @ApiOperation({ summary: 'Delete own account' })
@@ -219,10 +270,7 @@ export class UserController {
     status: 500,
     description: 'Internal Server Error',
   })
-  async remove(
-    @Req() req: Request,
-  ): Promise<ResponseDto<string>> {
-    req.user
+  async remove(@Req() req: Request): Promise<ResponseDto<string>> {
     await this.userService.removeOwnAccount(req.user.id);
 
     return {

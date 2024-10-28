@@ -56,22 +56,23 @@ enum LegitStatus {
 }
 
 model User {
-  id                 String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  username           String        @unique @db.VarChar(100)
-  email              String        @unique @db.VarChar(100)
-  password           String        @db.VarChar(100)
-  role               Role          @default(client)
-  full_name          String        @db.VarChar(100)
+  id                 String         @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  username           String         @unique @db.VarChar(100)
+  email              String         @unique @db.VarChar(100)
+  password           String         @db.VarChar(100)
+  role               Role           @default(client)
+  full_name          String         @db.VarChar(100)
   date_of_birth      DateTime
   gender             Gender
-  certificate_prefix String        @default("VLX") @db.VarChar(3)
-  phone_number       String?       @unique
-  verified_email     Boolean       @default(false)
-  updated_at         DateTime      @default(now()) @updatedAt
-  created_at         DateTime      @default(now())
+  certificate_prefix String         @default("VLX") @db.VarChar(3)
+  phone_number       String?        @unique
+  verified_email     Boolean        @default(false)
+  updated_at         DateTime       @default(now()) @updatedAt
+  created_at         DateTime       @default(now())
   LegitChecks        LegitChecks[]
   Voucher            Voucher[]
   FCMToken           FCMToken[]
+  VoucherUsage       VoucherUsage[]
 
   @@map("users")
 }
@@ -127,18 +128,19 @@ model Payment {
 }
 
 model Voucher {
-  id           String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  updated_at   DateTime    @default(now()) @updatedAt
-  created_at   DateTime    @default(now())
+  id           String         @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  updated_at   DateTime       @default(now()) @updatedAt
+  created_at   DateTime       @default(now())
   name         String
   voucher_type VoucherType
   started_at   DateTime
   expired_at   DateTime
   discount     Int?
   code         String?
-  user_id      String?     @db.Uuid
-  user         User?       @relation(fields: [user_id], references: [id])
+  user_id      String?        @db.Uuid
+  user         User?          @relation(fields: [user_id], references: [id], onDelete: SetNull)
   Order        Order[]
+  VoucherUsage VoucherUsage[]
 
   @@map("vouchers")
 }
@@ -192,8 +194,8 @@ model LegitChecks {
   id               String             @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   updated_at       DateTime           @default(now()) @updatedAt
   created_at       DateTime           @default(now())
-  client_id        String             @db.Uuid
-  client           User               @relation(fields: [client_id], references: [id])
+  client_id        String?            @db.Uuid
+  client           User?              @relation(fields: [client_id], references: [id], onDelete: SetNull)
   code             String
   brand_id         String             @db.Uuid
   brand            Brand              @relation(fields: [brand_id], references: [id])
@@ -301,8 +303,20 @@ model FCMToken {
   id         String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   created_at DateTime @default(now())
   token      String
+  role       Role     @default(client)
   user_id    String   @db.Uuid
-  user       User     @relation(fields: [user_id], references: [id])
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@map("fcm_token")
+}
+
+model VoucherUsage {
+  id         String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  created_at DateTime @default(now())
+  voucher_id String?  @db.Uuid
+  voucher    Voucher? @relation(fields: [voucher_id], references: [id], onDelete: Cascade)
+  user_id    String?  @db.Uuid
+  user       User?    @relation(fields: [user_id], references: [id], onDelete: SetNull)
+
+  @@map("voucher_usage")
 }
