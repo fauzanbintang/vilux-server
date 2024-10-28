@@ -413,7 +413,7 @@ export class LegitCheckService {
     return topBrands.map((brand) => ({
       id: brand.brand_id,
       name: brandDetails.find((b) => b.id === brand.brand_id)?.name,
-      logoUrl: brandDetails.find((b) => b.id === brand.brand_id)?.file.url,
+      logoUrl: brandDetails.find((b) => b.id === brand.brand_id)?.file?.url,
       count: brand._count.brand_id,
     }));
   }
