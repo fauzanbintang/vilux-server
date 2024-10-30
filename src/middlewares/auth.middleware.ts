@@ -6,12 +6,11 @@ import { Request, Response, NextFunction } from 'express';
 
 @Injectable()
 export class AuthenticationMiddleware
-  implements NestMiddleware<Request, Response>
-{
+  implements NestMiddleware<Request, Response> {
   constructor(
     private prismaService: PrismaService,
     private configService: ConfigService,
-  ) {}
+  ) { }
 
   async use(req: Request, res: Response, next: NextFunction) {
     const cookies = req.cookies;
@@ -27,9 +26,15 @@ export class AuthenticationMiddleware
     let payload;
     try {
       payload = verifyToken(token, this.configService);
+
+      if (payload.verified_email === false) {
+        throw new HttpException('Email not verified', 401);
+      }
     } catch (err) {
       if (err.message === 'jwt expired') {
         throw new HttpException('Token has expired', 401);
+      } else if (err.message === 'Email not verified') {
+        throw new HttpException('Email not verified', 401);
       } else {
         throw new HttpException('Invalid token', 401);
       }
@@ -54,7 +59,7 @@ export class AuthenticationMiddleware
 
 @Injectable()
 export class IsOwnerMiddleware implements NestMiddleware<Request, Response> {
-  constructor(private prismaService: PrismaService) {}
+  constructor(private prismaService: PrismaService) { }
 
   async use(req: Request, res: Response, next: NextFunction) {
     const loggedInUser = req.user;

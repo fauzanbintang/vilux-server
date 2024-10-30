@@ -81,6 +81,10 @@ export class AuthService {
       throw new HttpException('email or password is incorrect', 401);
     }
 
+    if (user.verified_email === false) {
+      throw new HttpException('email is not verified', 401);
+    }
+
     const isMatch = await comparePassword(
       validatedLogin.password,
       user.password,
