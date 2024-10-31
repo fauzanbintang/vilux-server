@@ -1,305 +1,661 @@
 {
     "BAGS": {
+        "icon": "https://ik.imagekit.io/viluxmedia/icon-svg/2-02.png?updatedAt=1729739249760",
         "Clutch": {
-            "categoryInstructions": [
-                "Clutch Look",
-                "Outer Front Logo",
-                "Serial Code Tag",
-                "Made in Tag",
-                "Zipper Slides",
-                "Zipper Pull Tab",
-                "Donut Badge",
-                "Inner Tag",
-                "Materials Look"
-            ]
+            "categoryInstructions": {
+                "Clutch Look": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/clutch-icon/1-01.png?updatedAt=1729739569203",
+                    "example": "https://ik.imagekit.io/viluxmedia/pe-clutch/WhatsApp%20Image%202024-09-20%20at%2011.41.11.jpeg?updatedAt=1730113441981"
+                },
+                "Outer Front Logo": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/clutch-icon/1-02.png?updatedAt=1729739557287",
+                    "example": "https://ik.imagekit.io/viluxmedia/pe-clutch/WhatsApp%20Image%202024-09-20%20at%2011.41.11%20(1).jpeg?updatedAt=1730113441993"
+                },
+                "Serial Code Tag": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/clutch-icon/1-03.png?updatedAt=1729739539692",
+                    "example": "https://ik.imagekit.io/viluxmedia/pe-clutch/WhatsApp%20Image%202024-09-20%20at%2011.41.14%20(1).jpeg?updatedAt=1730113441627"
+                },
+                "Made in Tag": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/clutch-icon/1-04.png?updatedAt=1729739550303",
+                    "example": "https://ik.imagekit.io/viluxmedia/pe-clutch/WhatsApp%20Image%202024-09-20%20at%2011.41.13%20(2).jpeg?updatedAt=1730113441824"
+                },
+                "Zipper Slides": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/clutch-icon/1-05.png?updatedAt=1729739543204",
+                    "example": "https://ik.imagekit.io/viluxmedia/pe-clutch/WhatsApp%20Image%202024-09-20%20at%2011.41.13.jpeg?updatedAt=1730113441845"
+                },
+                "Zipper Pull Tab": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/clutch-icon/1-06.png?updatedAt=1729739553819",
+                    "example": "https://ik.imagekit.io/viluxmedia/pe-clutch/WhatsApp%20Image%202024-09-20%20at%2011.41.12%20(3).jpeg?updatedAt=1730113441587"
+                },
+                "Donut Badge": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/clutch-icon/1-07.png?updatedAt=1729739565635",
+                    "example": "https://ik.imagekit.io/viluxmedia/pe-clutch/WhatsApp%20Image%202024-09-20%20at%2011.41.12%20(2).jpeg?updatedAt=1730113441845"
+                },
+                "Inner Tag": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/clutch-icon/1-08.png?updatedAt=1729739562097",
+                    "example": "https://ik.imagekit.io/viluxmedia/pe-clutch/WhatsApp%20Image%202024-09-20%20at%2011.41.13%20(1).jpeg?updatedAt=1730113444682"
+                },
+                "Materials Look": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/clutch-icon/1-09.png?updatedAt=1729739546748",
+                    "example": "https://ik.imagekit.io/viluxmedia/pe-clutch/WhatsApp%20Image%202024-09-20%20at%2011.41.12%20(1).jpeg?updatedAt=1730113442166"
+                }
+            }
         },
         "Handbag": {
-            "categoryInstructions": [
-                "Handbag Look",
-                "Materials Look",
-                "Zipper Slides",
-                "Logo Emboss Outside",
-                "Logo Emboss Inside",
-                "Inside Bag",
-                "Zipper Pull Tab",
-                "Feet Look",
-                "Inside Logo Tag",
-                "Serial Code Tag",
-                "Dust Bag",
-                "Certificate",
-                "Lock and Key"
-            ]
+            "categoryInstructions": {
+                "Handbag Look": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/handbag-icon/1-10.png?updatedAt=1729740411058",
+                    "example": "https://ik.imagekit.io/viluxmedia/handbag-icon/WhatsApp%20Image%202024-09-23%20at%2009.28.46.jpeg?updatedAt=1730367770386"
+                },
+                "Materials Look": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/handbag-icon/1-11.png?updatedAt=1729740411570",
+                    "example": "https://ik.imagekit.io/viluxmedia/handbag-icon/WhatsApp%20Image%202024-09-23%20at%2009.28.47%20(1).jpeg?updatedAt=1730367770059"
+                },
+                "Zipper Slides": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/handbag-icon/1-12.png?updatedAt=1729740411133",
+                    "example": "https://ik.imagekit.io/viluxmedia/handbag-icon/WhatsApp%20Image%202024-09-23%20at%2009.28.48.jpeg?updatedAt=1730367770416"
+                },
+                "Logo Emboss Outside": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/handbag-icon/1-13.png?updatedAt=1729740411386",
+                    "example": "https://ik.imagekit.io/viluxmedia/handbag-icon/WhatsApp%20Image%202024-09-23%20at%2009.28.47.jpeg?updatedAt=1730367770067"
+                },
+                "Logo Emboss Inside": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/handbag-icon/1-14.png?updatedAt=1729740411045",
+                    "example": "https://ik.imagekit.io/viluxmedia/handbag-icon/WhatsApp%20Image%202024-09-23%20at%2009.28.48%20(1).jpeg?updatedAt=1730367770368"
+                },
+                "Inside Bag": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/handbag-icon/1-15.png?updatedAt=1729740411065",
+                    "example": "https://ik.imagekit.io/viluxmedia/handbag-icon/IMG-20241026-WA0006.jpg?updatedAt=1730367849272"
+                },
+                "Zipper Pull Tab": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/handbag-icon/1-16.png?updatedAt=1729740411504",
+                    "example": "https://ik.imagekit.io/viluxmedia/handbag-icon/WhatsApp%20Image%202024-09-23%20at%2009.28.47%20(2).jpeg?updatedAt=1730367770423"
+                },
+                "Feet Look": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/handbag-icon/1-17.png?updatedAt=1729740411411",
+                    "example": ""
+                },
+                "Inside Logo Tag": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/handbag-icon/1-18.png?updatedAt=1729740411249",
+                    "example": "https://ik.imagekit.io/viluxmedia/handbag-icon/WhatsApp%20Image%202024-09-23%20at%2009.28.49.jpeg?updatedAt=1730367770346"
+                },
+                "Serial Code Tag": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/handbag-icon/1-19.png?updatedAt=1729740411169",
+                    "example": "https://ik.imagekit.io/viluxmedia/handbag-icon/WhatsApp%20Image%202024-09-23%20at%2009.28.48%20(2).jpeg?updatedAt=1730367770388"
+                },
+                "Dust Bag": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/handbag-icon/1-20.png?updatedAt=1729740413958",
+                    "example": "https://ik.imagekit.io/viluxmedia/handbag-icon/IMG-20241026-WA0005.DB.jpg?updatedAt=1730367953223"
+                },
+                "Certificate": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/handbag-icon/1-21.png?updatedAt=1729740414016",
+                    "example": "https://ik.imagekit.io/viluxmedia/handbag-icon/IMG-20241026-WA0009.jpg?updatedAt=1730367986938"
+                },
+                "Lock and Key": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/handbag-icon/1-22.png?updatedAt=1729740414131",
+                    "example": "https://ik.imagekit.io/viluxmedia/handbag-icon/Screenshot%202024-09-25%20at%2013.19.12.png?updatedAt=1730367770115"
+                }
+            }
         },
         "Backpack": {
-            "categoryInstructions": [
-                "Backpack Front Look",
-                "Backpack Back Look",
-                "Zipper Bag",
-                "Zipper Back",
-                "Front Logo Bag",
-                "Inner Label Tag",
-                "Strap",
-                "Dustbag",
-                "Materials Look"
-            ]
+            "categoryInstructions": {
+                "Backpack Front Look": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/backpack-icon/1-23.png?updatedAt=1729740790254",
+                    "example": "https://ik.imagekit.io/viluxmedia/backpack-icon/IMG-20241026-WA0008.jpg?updatedAt=1730368114869"
+                },
+                "Backpack Back Look": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/backpack-icon/1-24.png?updatedAt=1729740790383",
+                    "example": "https://ik.imagekit.io/viluxmedia/backpack-icon/IMG-20241026-WA0025.jpg?updatedAt=1730368114905"
+                },
+                "Zipper Bag": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/backpack-icon/1-25.png?updatedAt=1729740790527",
+                    "example": "https://ik.imagekit.io/viluxmedia/backpack-icon/IMG-20241026-WA0010.jpg?updatedAt=1730368114637"
+                },
+                "Zipper Back": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/backpack-icon/1-26.png?updatedAt=1729740790553",
+                    "example": "https://ik.imagekit.io/viluxmedia/backpack-icon/IMG-20241026-WA0024.jpg?updatedAt=1730368114788"
+                },
+                "Front Logo Bag": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/backpack-icon/1-27.png?updatedAt=1729740790735",
+                    "example": "https://ik.imagekit.io/viluxmedia/backpack-icon/IMG-20241026-WA0023.jpg?updatedAt=1730368114962"
+                },
+                "Inner Label Tag": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/backpack-icon/1-28.png?updatedAt=1729740790170",
+                    "example": "https://ik.imagekit.io/viluxmedia/backpack-icon/IMG-20241026-WA0011.jpg?updatedAt=1730368114926"
+                },
+                "Strap": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/backpack-icon/1-29.png?updatedAt=1729740790469",
+                    "example": "https://ik.imagekit.io/viluxmedia/backpack-icon/IMG-20241026-WA0022.jpg?updatedAt=1730368114802"
+                },
+                "Dustbag": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/backpack-icon/1-30.png?updatedAt=1729740790463",
+                    "example": "https://ik.imagekit.io/viluxmedia/backpack-icon/IMG-20241026-WA0021.jpg?updatedAt=1730368114655"
+                },
+                "Materials Look": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/backpack-icon/1-31.png?updatedAt=1729740790245",
+                    "example": "https://ik.imagekit.io/viluxmedia/backpack-icon/IMG-20241030-WA0044.jpg?updatedAt=1730368115047"
+                }
+            }
         },
         "Waistbag": {
-            "categoryInstructions": [
-                "Waistbag Look",
-                "Zipper",
-                "Tag Front",
-                "Zipper Back",
-                "Side Bag Strap",
-                "Strap Front",
-                "Strap Back",
-                "Dust Bag",
-                "Materials Look"
-            ]
+            "categoryInstructions": {
+                "Waistbag Look": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/waistbag-icon/1-32.png?updatedAt=1729740929801",
+                    "example": "https://ik.imagekit.io/viluxmedia/waistbag-icon/IMG-20241026-WA0020.jpg?updatedAt=1730368279517"
+                },
+                "Zipper": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/waistbag-icon/1-33.png?updatedAt=1729740929498",
+                    "example": "https://ik.imagekit.io/viluxmedia/waistbag-icon/IMG-20241026-WA0012.jpg?updatedAt=1730368279465"
+                },
+                "Tag Front": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/waistbag-icon/1-34.png?updatedAt=1729740929573",
+                    "example": "https://ik.imagekit.io/viluxmedia/waistbag-icon/IMG-20241026-WA0019.jpg?updatedAt=1730368279662"
+                },
+                "Zipper Back": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/waistbag-icon/1-35.png?updatedAt=1729740929886",
+                    "example": "https://ik.imagekit.io/viluxmedia/waistbag-icon/IMG-20241026-WA0013.jpg?updatedAt=1730368279653"
+                },
+                "Side Bag Strap": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/waistbag-icon/1-32.png?updatedAt=1729740929801",
+                    "example": "https://ik.imagekit.io/viluxmedia/waistbag-icon/IMG-20241026-WA0014.jpg?updatedAt=1730368279443"
+                },
+                "Strap Front": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/waistbag-icon/1-36.png?updatedAt=1729740929833",
+                    "example": "https://ik.imagekit.io/viluxmedia/waistbag-icon/IMG-20241026-WA0018.jpg?updatedAt=1730368279677"
+                },
+                "Strap Back": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/waistbag-icon/1-37.png?updatedAt=1729740929814",
+                    "example": "https://ik.imagekit.io/viluxmedia/waistbag-icon/IMG-20241026-WA0017.jpg?updatedAt=1730368279658"
+                },
+                "Dust Bag": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/waistbag-icon/1-38.png?updatedAt=1729740929896",
+                    "example": "https://ik.imagekit.io/viluxmedia/waistbag-icon/IMG-20241026-WA0016.jpg?updatedAt=1730368279429"
+                },
+                "Materials Look": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/waistbag-icon/1-39.png?updatedAt=1729740930138",
+                    "example": "https://ik.imagekit.io/viluxmedia/waistbag-icon/IMG-20241030-WA0047.jpg?updatedAt=1730368279720"
+                }
+            }
         },
         "Wallet": {
-            "categoryInstructions": [
-                "Wallet Front Look",
-                "Wallet Back Look",
-                "Wallet Surface Look",
-                "Front Emboss",
-                "Inside Emboss",
-                "Materials Look",
-                "Zipper Pull Tab",
-                "Code Emboss"
-            ]
+            "categoryInstructions": {
+                "Wallet Front Look": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/wallet-icon/1-40.png?updatedAt=1729741199040",
+                    "example": "WhatsApp Image 2024-09-20 at 11.41.28.jpeg"
+                },
+                "Wallet Back Look": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/wallet-icon/1-41.png?updatedAt=1729741198752",
+                    "example": "WhatsApp Image 2024-09-20 at 11.41.28 (1).jpeg"
+                },
+                "Wallet Surface Look": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/wallet-icon/1-42.png?updatedAt=1729741198982",
+                    "example": "WhatsApp Image 2024-09-20 at 11.41.29 (2).jpeg"
+                },
+                "Front Emboss": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/wallet-icon/1-43.png?updatedAt=1729741199218",
+                    "example": "WhatsApp Image 2024-09-20 at 11.41.29.jpeg"
+                },
+                "Inside Emboss": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/wallet-icon/1-44.png?updatedAt=1729741198954",
+                    "example": "WhatsApp Image 2024-09-20 at 11.41.29 (3).jpeg"
+                },
+                "Materials Look": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/wallet-icon/1-45.png?updatedAt=1729741198668",
+                    "example": "WhatsApp Image 2024-09-20 at 11.41.43 (1).jpeg"
+                },
+                "Zipper Pull Tab": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/wallet-icon/1-46.png?updatedAt=1729741198795",
+                    "example": "WhatsApp Image 2024-09-20 at 11.41.43.jpeg"
+                },
+                "Code Emboss": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/wallet-icon/1-47.png?updatedAt=1729741198678",
+                    "example": "WhatsApp Image 2024-09-20 at 11.41.43 (2).jpeg"
+                }
+            }
         },
         "Tote bag": {
-            "categoryInstructions": []
+            "categoryInstructions": {}
         },
         "Luggage": {
-            "categoryInstructions": []
+            "categoryInstructions": {}
         },
         "Card holder": {
-            "categoryInstructions": [
-                "Wallet Front Look",
-                "Wallet Back Look",
-                "Wallet Surface Look",
-                "Front Emboss",
-                "Inside Emboss",
-                "Materials Look"
-            ]
+            "categoryInstructions": {
+                "Wallet Front Look": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/cardholder-icon/1-50.png?updatedAt=1729741439839"
+                },
+                "Wallet Back Look": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/cardholder-icon/1-51.png?updatedAt=1729741439587"
+                },
+                "Wallet Surface Look": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/cardholder-icon/1-52.png?updatedAt=1729741439608"
+                },
+                "Front Emboss": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/cardholder-icon/1-53.png?updatedAt=1729741439683"
+                },
+                "Inside Emboss": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/cardholder-icon/1-54.png?updatedAt=1729741439837"
+                },
+                "Materials Look": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/cardholder-icon/1-55.png?updatedAt=1729741439785"
+                }
+            }
         }
     },
     "APPAREL": {
+        "icon": "https://ik.imagekit.io/viluxmedia/icon-svg/2-01.png?updatedAt=1729739250057",
         "T-shirts": {
-            "categoryInstructions": [
-                "T-Shirt Look Front",
-                "T-Shirt Look Back",
-                "Neck and Size Tag Front",
-                "Neck and Size Tag Back",
-                "Wash Tag",
-                "Wash Tag Pages",
-                "Embroidery",
-                "Side Tag",
-                "Price Tag",
-                "Packaging"
-            ]
+            "categoryInstructions": {
+                "T-Shirt Look Front": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/tshirt-icon/1-56.png?updatedAt=1729743240667",
+                    "example": "WhatsApp Image 2024-09-20 at 11.42.31.jpeg"
+                },
+                "T-Shirt Look Back": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/tshirt-icon/1-57.png?updatedAt=1729743240697"
+                },
+                "Neck and Size Tag Front": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/tshirt-icon/1-58.png?updatedAt=1729743240829",
+                    "example": "WhatsApp Image 2024-09-20 at 11.42.31 (1).jpeg"
+                },
+                "Neck and Size Tag Back": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/tshirt-icon/1-59.png?updatedAt=1729743240574",
+                    "example": "WhatsApp Image 2024-09-20 at 11.42.32.jpeg"
+                },
+                "Wash Tag": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/tshirt-icon/1-60.png?updatedAt=1729743240791",
+                    "example": "WhatsApp Image 2024-09-20 at 11.42.33 (1).jpeg"
+                },
+                "Wash Tag Pages": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/tshirt-icon/1-61.png?updatedAt=1729743241002",
+                    "example": "WhatsApp Image 2024-09-20 at 11.42.33 (2).jpeg"
+                },
+                "Embroidery": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/tshirt-icon/1-62.png?updatedAt=1729743240802",
+                    "example": "WhatsApp Image 2024-09-20 at 11.42.32 (1).jpeg"
+                },
+                "Side Tag": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/tshirt-icon/1-63.png?updatedAt=1729743240881",
+                    "example": "WhatsApp Image 2024-09-20 at 11.42.33.jpeg"
+                },
+                "Price Tag": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/tshirt-icon/1-64.png?updatedAt=1729743240833"
+                },
+                "Packaging": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/tshirt-icon/1-65.png?updatedAt=1729743240893"
+                }
+            }
         },
         "Hoodie": {
-            "categoryInstructions": [
-                "Outer Look",
-                "Hood",
-                "Wash Tag",
-                "Wash Tag Pages",
-                "Neck and Size Tag Front",
-                "Neck and Size Tag Back",
-                "Hand Tag Front",
-                "Hand Tag Back",
-                "Price Tag",
-                "Packaging"
-            ]
+            "categoryInstructions": {
+                "Outer Look": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/pe-hoodie/icon_2-01.png?updatedAt=1730280717003"
+                },
+                "Hood": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/pe-hoodie/icon_2-02.png?updatedAt=1730280716904"
+                },
+                "Wash Tag": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/pe-hoodie/icon_2-03.png?updatedAt=1730280716822"
+                },
+                "Wash Tag Pages": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/pe-hoodie/icon_2-04.png?updatedAt=1730280716697"
+                },
+                "Neck and Size Tag Front": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/pe-hoodie/icon_2-05.png?updatedAt=1730280716744"
+                },
+                "Neck and Size Tag Back": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/pe-hoodie/icon_2-06.png?updatedAt=1730280716865"
+                },
+                "Hand Tag Front": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/pe-hoodie/icon_2-07.png?updatedAt=1730280716804"
+                },
+                "Hand Tag Back": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/pe-hoodie/icon_2-08.png?updatedAt=1730280716848"
+                },
+                "Price Tag": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/pe-hoodie/icon_2-09.png?updatedAt=1730280716862"
+                },
+                "Packaging": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/pe-hoodie/icon_2-10.png?updatedAt=1730280716775"
+                }
+            }
         },
         "Jacket": {
-            "categoryInstructions": [
-                "Outer Look",
-                "Wash Tag",
-                "Wash Tag Pages",
-                "Neck and Size Tag Front",
-                "Neck and Size Tag Back",
-                "Hand Tag Front",
-                "Hand Tag Back",
-                "Price Tag",
-                "Packaging"
-            ]
+            "categoryInstructions": {
+                "Outer Look": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/icon-jacket/icon_2-11.png?updatedAt=1730280870638"
+                },
+                "Wash Tag": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/icon-jacket/icon_2-12.png?updatedAt=1730280870661"
+                },
+                "Wash Tag Pages": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/icon-jacket/icon_2-13.png?updatedAt=1730280870594"
+                },
+                "Neck and Size Tag Front": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/icon-jacket/icon_2-14.png?updatedAt=1730280870641"
+                },
+                "Neck and Size Tag Back": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/icon-jacket/icon_2-15.png?updatedAt=1730280870873"
+                },
+                "Hand Tag Front": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/icon-jacket/icon_2-16.png?updatedAt=1730280870815"
+                },
+                "Hand Tag Back": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/icon-jacket/icon_2-17.png?updatedAt=1730280870741"
+                },
+                "Price Tag": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/icon-jacket/icon_2-18.png?updatedAt=1730280870639"
+                },
+                "Packaging": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/icon-jacket/icon_2-19.png?updatedAt=1730280870987"
+                }
+            }
         },
         "Shirts": {
-            "categoryInstructions": [
-                "Outer Look Front",
-                "Outer Look Back",
-                "Neck and Size Tag Front",
-                "Neck and Size Tag Back",
-                "Wash Tag",
-                "Wash Tag Pages",
-                "Embroidery",
-                "Size Tag",
-                "Made in Tag",
-                "Price Tag",
-                "Packaging"
-            ]
+            "categoryInstructions": {
+                "Outer Look Front": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/shirt/icon_2-20.png?updatedAt=1730280967549"
+                },
+                "Outer Look Back": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/shirt/icon_2-21.png?updatedAt=1730280967767"
+                },
+                "Neck and Size Tag Front": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/shirt/icon_2-22.png?updatedAt=1730280967457"
+                },
+                "Neck and Size Tag Back": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/shirt/icon_2-23.png?updatedAt=1730280967454"
+                },
+                "Wash Tag": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/shirt/icon_2-24.png?updatedAt=1730280967500"
+                },
+                "Wash Tag Pages": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/shirt/icon_2-25.png?updatedAt=1730280967535"
+                },
+                "Embroidery": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/shirt/icon_2-26.png?updatedAt=1730280967759"
+                },
+                "Size Tag": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/shirt/icon_2-27.png?updatedAt=1730280967505"
+                },
+                "Made in Tag": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/shirt/icon_2-28.png?updatedAt=1730280967531"
+                },
+                "Price Tag": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/shirt/icon_2-29.png?updatedAt=1730280967543"
+                },
+                "Packaging": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/shirt/icon_2-30.png?updatedAt=1730280970471"
+                }
+            }
         },
         "Pants": {
-            "categoryInstructions": [
-                "Pants Look Front",
-                "Pants Look Back",
-                "Waist Tag Front",
-                "Waist Tag Back",
-                "Size Tag",
-                "Made in Tag",
-                "Wash Tag",
-                "Wash Tag Pages"
-            ]
+            "categoryInstructions": {
+                "Pants Look Front": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/pants/icon_2-31.png?updatedAt=1730281163947",
+                    "example": "WhatsApp Image 2024-09-24 at 14.52.40.jpeg"
+                },
+                "Pants Look Back": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/pants/icon_2-32.png?updatedAt=1730281164905"
+                },
+                "Waist Tag Front": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/pants/icon_2-33.png?updatedAt=1730281164712",
+                    "example": "WhatsApp Image 2024-09-24 at 14.52.41.jpeg"
+                },
+                "Waist Tag Back": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/pants/icon_2-34.png?updatedAt=1730281164670",
+                    "example": "WhatsApp Image 2024-09-24 at 14.52.41 (1).jpeg"
+                },
+                "Size Tag": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/pants/icon_2-35.png?updatedAt=1730281164706",
+                    "example": "WhatsApp Image 2024-09-24 at 14.52.42.jpeg"
+                },
+                "Made in Tag": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/pants/icon_2-36.png?updatedAt=1730281164660",
+                    "example": "WhatsApp Image 2024-09-24 at 14.52.41.jpeg"
+                },
+                "Wash Tag": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/pants/icon_2-37.png?updatedAt=1730281164689",
+                    "example": "WhatsApp Image 2024-09-24 at 14.52.42 (1).jpeg"
+                },
+                "Wash Tag Pages": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/pants/icon_2-37.png?updatedAt=1730281164689",
+                    "example": "WhatsApp Image 2024-09-24 at 14.52.42 (2).jpeg"
+                }
+            }
         }
     },
     "FOOTWEAR": {
+        "icon": "https://ik.imagekit.io/viluxmedia/icon-svg/2-03.png?updatedAt=1729739249696",
         "Sneakers": {
-            "categoryInstructions": [
-                "Outer Shoes",
-                "Shoes Soles",
-                "Size Tag Right",
-                "Size Tag Left",
-                "Stitching Left",
-                "Stitching Right",
-                "Insole Front",
-                "Insole Back",
-                "Tongue Front Label Left",
-                "Tongue Front Label Right",
-                "Tongue Back Label Left",
-                "Tongue Back Label Right",
-                "Shoebox Size Label",
-                "Shoebox Side Label",
-                "Shoe Box Label",
-                "Shoe Tree"
-            ]
+            "categoryInstructions": {
+                "Outer Shoes": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/pe-sneakers/icon_2-39.png?updatedAt=1730279582860",
+                    "example": "WhatsApp Image 2024-09-23 at 09.28.44.jpeg"
+                },
+                "Shoes Soles": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/pe-sneakers/icon_2-40.png?updatedAt=1730279582861",
+                    "example": "WhatsApp Image 2024-09-23 at 09.28.45 (3).jpeg"
+                },
+                "Size Tag Right": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/pe-sneakers/icon_2-41.png?updatedAt=1730279582713",
+                    "example": "WhatsApp Image 2024-09-23 at 09.28.46 (1).jpeg"
+                },
+                "Size Tag Left": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/pe-sneakers/icon_2-42.png?updatedAt=1730279582437",
+                    "example": "WhatsApp Image 2024-09-23 at 09.28.46 (1).jpeg"
+                },
+                "Stitching Left": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/pe-sneakers/icon_2-43.png?updatedAt=1730279582514",
+                    "example": "WhatsApp Image 2024-09-23 at 09.28.45 (2).jpeg"
+                },
+                "Stitching Right": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/pe-sneakers/icon_2-44.png?updatedAt=1730279582506",
+                    "example": "WhatsApp Image 2024-09-23 at 09.28.45 (1).jpeg"
+                },
+                "Insole Front": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/pe-sneakers/icon_2-45.png?updatedAt=1730279582704",
+                    "example": "WhatsApp Image 2024-09-23 at 09.28.44 (2).jpeg"
+                },
+                "Insole Back": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/pe-sneakers/icon_2-46.png?updatedAt=1730279582143",
+                    "example": "WhatsApp Image 2024-09-23 at 09.28.45.jpeg"
+                },
+                "Tongue Front Label Left": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/pe-sneakers/icon_2-47.png?updatedAt=1730279581920"
+                },
+                "Tongue Front Label Right": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/pe-sneakers/icon_2-48.png?updatedAt=1730279581963"
+                },
+                "Tongue Back Label Left": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/pe-sneakers/icon_2-49.png?updatedAt=1730279585078",
+                    "example": "WhatsApp Image 2024-09-23 at 09.28.44 (1).jpeg"
+                },
+                "Tongue Back Label Right": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/pe-sneakers/icon_2-50.png?updatedAt=1730279585110",
+                    "example": "WhatsApp Image 2024-09-23 at 09.28.44 (1).jpeg"
+                },
+                "Shoebox Size Label": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/pe-sneakers/icon_2-52.png?updatedAt=1730279585801"
+                },
+                "Shoebox Side Label": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/pe-sneakers/icon_2-51.png?updatedAt=1730279585270"
+                },
+                "Shoe Box Label": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/pe-sneakers/icon_2-51.png?updatedAt=1730279585270"
+                }
+            }
         },
         "Loafers": {
-            "categoryInstructions": [
-                "Outer Loafer",
-                "Tongue Back Code",
-                "Stitching Left",
-                "Stitching Right",
-                "Insoles Front",
-                "Bag Detail",
-                "Loafers Logo Detail",
-                "Shoe Box Label"
-            ]
+            "categoryInstructions": {
+                "Outer Loafer": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/loafers/icon_2-53.png?updatedAt=1730281277219"
+                },
+                "Tongue Back Code": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/loafers/icon_2-54.png?updatedAt=1730281277094"
+                },
+                "Stitching Left": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/loafers/icon_2-55.png?updatedAt=1730281277375"
+                },
+                "Stitching Right": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/loafers/icon_2-56.png?updatedAt=1730281277331"
+                },
+                "Insoles Front": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/loafers/icon_2-57.png?updatedAt=1730281277071"
+                },
+                "Loafers Logo Detail": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/loafers/icon_2-58.png?updatedAt=1730281277210"
+                },
+                "Shoe Box Label": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/loafers/icon_2-59.png?updatedAt=1730281277061"
+                }
+            }
         },
         "Slides": {
-            "categoryInstructions": [
-                "Outer Slides",
-                "Outsole Slides",
-                "Outsole Left",
-                "Outsole Right",
-                "Insole Right",
-                "Insole Left",
-                "Size Tag Left",
-                "Size Tag Right",
-                "Heet Lift",
-                "Logo Tag",
-                "Made in Tag",
-                "Packaging"
-            ]
+            "categoryInstructions": {
+                "Outer Slides": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/slide/icon_2-60.png?updatedAt=1730281413051"
+                },
+                "Outsole Slides": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/slide/icon_2-61.png?updatedAt=1730281413131"
+                },
+                "Outsole Left": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/slide/icon_2-62.png?updatedAt=1730281413090"
+                },
+                "Outsole Right": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/slide/icon_2-63.png?updatedAt=1730281413155"
+                },
+                "Insole Right": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/slide/icon_2-64.png?updatedAt=1730281413297"
+                },
+                "Insole Left": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/slide/icon_2-65.png?updatedAt=1730281413010"
+                },
+                "Size Tag Left": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/slide/icon_2-66.png?updatedAt=1730281413236"
+                },
+                "Size Tag Right": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/slide/icon_2-67.png?updatedAt=1730281413164"
+                },
+                "Heet Lift": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/slide/icon_2-68.png?updatedAt=1730281413026"
+                },
+                "Logo Tag": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/slide/icon_2-69.png?updatedAt=1730281413201"
+                },
+                "Made in Tag": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/slide/icon_2-70.png?updatedAt=1730281416016"
+                },
+                "Packaging": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/slide/icon_2-71.png?updatedAt=1730281416262"
+                }
+            }
         },
         "High Heels": {
-            "categoryInstructions": [
-                "Outer Heels",
-                "Size Tag",
-                "Insole Heels Front",
-                "Logo Heels",
-                "Bag Detail"
-            ]
+            "categoryInstructions": {
+                "Outer Heels": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/heels/icon_2-72.png?updatedAt=1730281562739"
+                },
+                "Size Tag": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/heels/icon_2-73.png?updatedAt=1730281562395"
+                },
+                "Insole Heels Front": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/heels/icon_2-74.png?updatedAt=1730281563968"
+                },
+                "Logo Heels": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/heels/icon_2-75.png?updatedAt=1730281564164"
+                },
+                "Bag Detail": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/heels/icon_2-76.png?updatedAt=1730281564083"
+                }
+            }
         },
         "Boots": {
-            "categoryInstructions": [
-                "Outer Boots",
-                "Size Tag Right",
-                "Size Tag Left",
-                "Stitching Left",
-                "Stitching Right",
-                "Insole Front",
-                "Insole Back",
-                "Shoe Box Label"
-            ]
+            "categoryInstructions": {
+                "Outer Boots": {},
+                "Size Tag Right": {},
+                "Size Tag Left": {},
+                "Stitching Left": {},
+                "Stitching Right": {},
+                "Insole Front": {},
+                "Insole Back": {},
+                "Shoe Box Label": {}
+            }
         }
     },
     "ACCESSORIES": {
+        "icon": "https://ik.imagekit.io/viluxmedia/icon-svg/2-04.png?updatedAt=1729739249647",
         "Belt": {
-            "categoryInstructions": [
-                "Belt Buckle Logo Front",
-                "Belt Buckle Logo Back",
-                "Belt Loop Back",
-                "Belt Strap Emboss"
-            ]
+            "categoryInstructions": {
+                "Belt Buckle Logo Front": {},
+                "Belt Buckle Logo Back": {},
+                "Belt Loop Back": {},
+                "Belt Strap Emboss": {}
+            }
         },
         "Hat": {
-            "categoryInstructions": [
-                "Hat Front Look",
-                "Hat Side Look",
-                "Hat Inside Look",
-                "Logo Tag",
-                "Size Tag Front",
-                "Size Tag Back",
-                "Wash Tag",
-                "Wash Tag Page",
-                "Price Tag",
-                "Paper Tag",
-                "Materials Look"
-            ]
+            "categoryInstructions": {
+                "Hat Front Look": {},
+                "Hat Side Look": {},
+                "Hat Inside Look": {},
+                "Logo Tag": {},
+                "Size Tag Front": {},
+                "Size Tag Back": {},
+                "Wash Tag": {},
+                "Wash Tag Page": {},
+                "Price Tag": {},
+                "Paper Tag": {},
+                "Materials Look": {}
+            }
         },
         "Glasses": {
-            "categoryInstructions": [
-                "Glasses Front Look",
-                "Glasses Back Look",
-                "Temples Code",
-                "Temples Logo",
-                "Temples Tip",
-                "Logo Emboss",
-                "Bridge",
-                "Hinges Left",
-                "Hinges Right",
-                "Cloth",
-                "Certificate Card",
-                "Glasses Box",
-                "Inside Box"
-            ]
+            "categoryInstructions": {
+                "Glasses Front Look": {},
+                "Glasses Back Look": {},
+                "Temples Code": {},
+                "Temples Logo": {},
+                "Temples Tip": {},
+                "Logo Emboss": {},
+                "Bridge": {},
+                "Hinges Left": {},
+                "Hinges Right": {},
+                "Cloth": {},
+                "Certificate Card": {},
+                "Glasses Box": {},
+                "Inside Box": {}
+            }
         },
         "Bracelet": {
-            "categoryInstructions": [
-                "Bracelet Front Look",
-                "Bracelet Top Look",
-                "Front Strap",
-                "Made in Emboss",
-                "Logo Emboss",
-                "Clasp Detail",
-                "Materials Look"
-            ]
+            "categoryInstructions": {
+                "Bracelet Front Look": {},
+                "Bracelet Top Look": {},
+                "Front Strap": {},
+                "Made in Emboss": {},
+                "Logo Emboss": {},
+                "Clasp Detail": {},
+                "Materials Look": {}
+            }
         },
         "Necklace": {
-            "categoryInstructions": [
-                "Necklace Look",
-                "Pendant Front Look",
-                "Pendant Back Look",
-                "Clasp Detail",
-                "Chain Code"
-            ]
+            "categoryInstructions": {
+                "Necklace Look": {},
+                "Pendant Front Look": {},
+                "Pendant Back Look": {},
+                "Clasp Detail": {},
+                "Chain Code": {}
+            }
         },
         "Ring": {
-            "categoryInstructions": [
-                "Ring Look",
-                "Head Detail",
-                "Materials Look",
-                "Shank Logo",
-                "Logo Engraving",
-                "Made in Engraving",
-                "Serial Code Engraving"
-            ]
+            "categoryInstructions": {
+                "Ring Look": {},
+                "Head Detail": {},
+                "Materials Look": {},
+                "Shank Logo": {},
+                "Logo Engraving": {},
+                "Made in Engraving": {},
+                "Serial Code Engraving": {}
+            }
         },
         "Scarf": {
-            "categoryInstructions": []
+            "categoryInstructions": {}
         }
     }
 }
