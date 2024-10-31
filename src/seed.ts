@@ -3,6 +3,18 @@ import { hashPassword } from './helpers/bcrypt';
 import brands from './seeds/brands.json';
 import categories from './seeds/categories.json';
 
+interface CategoryInstructions {
+  [key: string]: {
+    icon: string;
+    example: string;
+  };
+}
+
+interface SubcategoryData {
+  icon: string;
+  categoryInstructions: CategoryInstructions;
+}
+
 const prisma = new PrismaClient();
 async function main() {
   await seedUsers();
@@ -103,20 +115,59 @@ async function seedBrands() {
 }
 
 async function seedCategories() {
-  for (const [categoryName, subcategories] of Object.entries(categories)) {
+  for (const [categoryName, categoryData] of Object.entries(categories)) {
+    let categoryFile;
+    categoryFile = await prisma.file.findFirst({
+      where: { url: categoryData.icon },
+      select: { id: true },
+    });
+
+    if (!categoryFile) {
+      categoryFile = await prisma.file.create({
+        data: {
+          file_name: categoryName,
+          path: `/${categoryName}`,
+          url: categoryData.icon,
+        },
+      });
+    }
+
     let category = await prisma.category.findFirst({
       where: { name: categoryName.toLowerCase() },
     });
 
     if (!category) {
       category = await prisma.category.create({
-        data: { name: categoryName.toLowerCase() },
+        data: {
+          name: categoryName.toLowerCase(),
+          file_id: categoryFile.id,
+        },
       });
     }
 
-    for (const [subcategoryName, subcategoryData] of Object.entries(subcategories)) {
+    for (const [subcategoryName, subcategoryData] of Object.entries(categoryData)) {
+      if (subcategoryName === 'icon') continue;
+
+      const subcategoryDataTyped = subcategoryData as SubcategoryData;
+
+      // let subcategoryFile;
+      // subcategoryFile = await prisma.file.findFirst({
+      //   where: { url: subcategoryData.icon },
+      //   select: { id: true },
+      // });
+
+      // if (!subcategoryFile) {
+      //   subcategoryFile = await prisma.file.create({
+      //     data: {
+      //       file_name: subcategoryName,
+      //       path: `/${subcategoryName}`,
+      //       url: subcategoryData.icon,
+      //     },
+      //   });
+      // }
+
       let subcategory = await prisma.subcategory.findFirst({
-        where: { name: subcategoryName.toLowerCase() },
+        where: { name: subcategoryName.toLowerCase(), category_id: category.id },
       });
 
       if (!subcategory) {
@@ -124,20 +175,59 @@ async function seedCategories() {
           data: {
             name: subcategoryName.toLowerCase(),
             category_id: category.id,
+            // file_id: subcategoryFile.id,
           },
         });
       }
 
-      for (const instruction of subcategoryData.categoryInstructions) {
+      const instructions = subcategoryDataTyped.categoryInstructions || {};
+      let sortOrder = 1;
+
+      for (const [instructionName, instructionData] of Object.entries(instructions)) {
         const existingInstruction = await prisma.subcategoryInstruction.findFirst({
-          where: { name: instruction.toLowerCase(), subcategory_id: subcategory.id },
+          where: { name: instructionName.toLowerCase(), subcategory_id: subcategory.id },
         });
+
+        let instructionIconFile;
+        instructionIconFile = await prisma.file.findFirst({
+          where: { url: instructionData?.icon },
+          select: { id: true },
+        });
+
+        let instructionExampleImageFile;
+        instructionExampleImageFile = await prisma.file.findFirst({
+          where: { url: instructionData?.example },
+          select: { id: true },
+        });
+
+        if (!instructionIconFile) {
+          instructionIconFile = await prisma.file.create({
+            data: {
+              file_name: `${subcategoryName.toLowerCase()}-${instructionName}-icon`,
+              path: `/${instructionName}-icon`,
+              url: instructionData?.icon,
+            },
+          });
+        }
+
+        if (!instructionExampleImageFile) {
+          instructionExampleImageFile = await prisma.file.create({
+            data: {
+              file_name: `${subcategoryName.toLowerCase()}-${instructionName}-example`,
+              path: `/${instructionName}-example`,
+              url: instructionData?.example,
+            },
+          });
+        }
 
         if (!existingInstruction) {
           await prisma.subcategoryInstruction.create({
             data: {
-              name: instruction.toLowerCase(),
+              name: instructionName.toLowerCase(),
               subcategory_id: subcategory.id,
+              sort_order: sortOrder++,
+              icon_id: instructionIconFile?.id,
+              example_image_id: instructionExampleImageFile?.id,
             },
           });
         }
