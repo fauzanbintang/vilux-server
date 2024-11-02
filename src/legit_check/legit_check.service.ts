@@ -1,6 +1,7 @@
 import { HttpException, Inject, Injectable, Logger } from '@nestjs/common';
 import { LegitCheckStatus, Role } from '@prisma/client';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { NotificationConst } from 'src/assets/constants';
 import { PrismaService } from 'src/common/prisma.service';
 import { CreateCertificateDto } from 'src/dto/request/file.dto';
 import {
@@ -10,10 +11,15 @@ import {
   LegitCheckPaginationQuery,
   LegitCheckValidateDataDto,
 } from 'src/dto/request/legit_check.dto';
+import { MultipleNotificationDto } from 'src/dto/request/notification.dto';
 import { FileDto } from 'src/dto/response/file.dto';
 import { LegitCheckDto } from 'src/dto/response/legit_check.dto';
 import { UserDto } from 'src/dto/response/user.dto';
 import { FileService } from 'src/file/file.service';
+import {
+  sendNotificationToMultipleTokens,
+  tokenToArrayString,
+} from 'src/helpers/firebase-messaging';
 import { generateCode } from 'src/helpers/order_code_generator';
 
 @Injectable()
@@ -22,7 +28,7 @@ export class LegitCheckService {
     private prismaService: PrismaService,
     private readonly fileService: FileService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
-  ) { }
+  ) {}
 
   async upsertLegitCheckBrandCategory(
     clientInfo: UserDto,
@@ -186,6 +192,34 @@ export class LegitCheckService {
         },
       });
 
+    const legitCheck = await this.prismaService.legitChecks.findUnique({
+      where: { id: id },
+      select: {
+        id: true,
+        client_id: true,
+        Order: {
+          select: {
+            id: true,
+            code: true,
+          },
+        },
+      },
+    });
+
+    if (flag) {
+      await this.sendApprovedDataNotif(
+        legitCheck.client_id,
+        legitCheck.Order.code,
+        id,
+      );
+    } else {
+      await this.sendRejectedDataNotif(
+        legitCheck.client_id,
+        legitCheck.Order.code,
+        id,
+      );
+    }
+
     return updatedLegitCheck;
   }
 
@@ -201,15 +235,16 @@ export class LegitCheckService {
     const legitCheck = await this.prismaService.legitChecks.findUnique({
       where: { id },
       include: {
-        LegitCheckImages: true,
-        // add order by
-        /**
-         * orderBy: {
+        LegitCheckImages: {
+          orderBy: {
             subcategory_instruction: {
               sort_order: 'asc',
             },
           },
-         */
+        },
+        Order: {
+          select: { id: true },
+        },
       },
     });
 
@@ -231,9 +266,18 @@ export class LegitCheckService {
       dataCertificate.frameId = frame.id;
     }
 
-    // create voucher referral if legit check is unidentified
     if (legitCheck.legit_status !== 'unidentified') {
       certificate = await this.fileService.mergeImages(dataCertificate);
+      await this.sendSuccessLegitCheckNotif(
+        clientInfo.id,
+        legitCheck.Order.id,
+        id,
+      );
+    }
+
+    // create voucher referral if legit check is unidentified
+    if (legitCheck.legit_status == 'unidentified') {
+      this.sendUnidentifiedLegitCheckNotif(clientInfo.id);
     }
 
     let updatedLegitCheck: LegitCheckDto =
@@ -350,6 +394,7 @@ export class LegitCheckService {
               select: {
                 id: true,
                 name: true,
+                working_hours: true,
               },
             },
             payment: {
@@ -406,7 +451,7 @@ export class LegitCheckService {
           select: {
             url: true,
           },
-        }
+        },
       },
     });
 
@@ -464,6 +509,7 @@ export class LegitCheckService {
               select: {
                 id: true,
                 name: true,
+                working_hours: true,
               },
             },
             payment: {
@@ -563,9 +609,7 @@ export class LegitCheckService {
     return result;
   }
 
-  async getReturnedChecks(
-    clientInfo: UserDto,
-  ) {
+  async getReturnedChecks(clientInfo: UserDto) {
     const counts = await this.prismaService.legitChecks.groupBy({
       by: ['check_status'],
       where: {
@@ -616,5 +660,105 @@ export class LegitCheckService {
     );
 
     return result;
+  }
+
+  async sendApprovedDataNotif(
+    userId: string,
+    orderCode: string,
+    legitCheckId: string,
+  ) {
+    const userTokens = await this.prismaService.fCMToken.findMany({
+      select: {
+        token: true,
+      },
+      where: {
+        user_id: userId,
+      },
+    });
+
+    const notifDataUser: MultipleNotificationDto = {
+      tokens: tokenToArrayString(userTokens),
+      title: NotificationConst.ApprovedDataValidation.title,
+      body: NotificationConst.ApprovedDataValidation.body,
+      data: {
+        order_code: orderCode,
+        legit_check_id: legitCheckId,
+      },
+    };
+
+    await sendNotificationToMultipleTokens(notifDataUser);
+  }
+
+  async sendRejectedDataNotif(
+    userId: string,
+    orderCode: string,
+    legitCheckId: string,
+  ) {
+    const userTokens = await this.prismaService.fCMToken.findMany({
+      select: {
+        token: true,
+      },
+      where: {
+        user_id: userId,
+      },
+    });
+
+    const notifDataUser: MultipleNotificationDto = {
+      tokens: tokenToArrayString(userTokens),
+      title: NotificationConst.RejectedDataValidation.title,
+      body: NotificationConst.RejectedDataValidation.body,
+      data: {
+        order_code: orderCode,
+        legit_check_id: legitCheckId,
+      },
+    };
+
+    await sendNotificationToMultipleTokens(notifDataUser);
+  }
+
+  async sendSuccessLegitCheckNotif(
+    userId: string,
+    orderCode: string,
+    legitCheckId: string,
+  ) {
+    const userTokens = await this.prismaService.fCMToken.findMany({
+      select: {
+        token: true,
+      },
+      where: {
+        user_id: userId,
+      },
+    });
+
+    const notifDataUser: MultipleNotificationDto = {
+      tokens: tokenToArrayString(userTokens),
+      title: NotificationConst.DoneLegitCheck.title,
+      body: NotificationConst.DoneLegitCheck.body,
+      data: {
+        order_code: orderCode,
+        legit_check_id: legitCheckId,
+      },
+    };
+
+    await sendNotificationToMultipleTokens(notifDataUser);
+  }
+
+  async sendUnidentifiedLegitCheckNotif(userId: string) {
+    const userTokens = await this.prismaService.fCMToken.findMany({
+      select: {
+        token: true,
+      },
+      where: {
+        user_id: userId,
+      },
+    });
+
+    const notifDataUser: MultipleNotificationDto = {
+      tokens: tokenToArrayString(userTokens),
+      title: NotificationConst.UnidentifiedLegitCheck.title,
+      body: NotificationConst.UnidentifiedLegitCheck.body,
+    };
+
+    await sendNotificationToMultipleTokens(notifDataUser);
   }
 }

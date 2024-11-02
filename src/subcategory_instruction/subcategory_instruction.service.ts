@@ -13,7 +13,7 @@ export class SubcategoryInstructionService {
   constructor(
     private prismaService: PrismaService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
-  ) {}
+  ) { }
 
   async create(
     createSubcategoryInstructionDto: CreateSubcategoryInstructionDto,
@@ -68,6 +68,9 @@ export class SubcategoryInstructionService {
               url: true,
             },
           },
+        },
+        orderBy: {
+          sort_order: 'asc',
         },
       });
 

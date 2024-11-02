@@ -5,6 +5,7 @@ export const sendNotificationToMultipleTokens = async ({
   tokens,
   title,
   body,
+  data,
   icon,
 }: MultipleNotificationDto) => {
   const message = {
@@ -13,6 +14,7 @@ export const sendNotificationToMultipleTokens = async ({
       body,
       icon,
     },
+    data: data || {},
     tokens,
   };
 

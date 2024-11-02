@@ -3,6 +3,18 @@ import { hashPassword } from './helpers/bcrypt';
 import brands from './seeds/brands.json';
 import categories from './seeds/categories.json';
 
+interface CategoryInstructions {
+  [key: string]: {
+    icon: string;
+    example: string;
+  };
+}
+
+interface SubcategoryData {
+  icon: string;
+  categoryInstructions: CategoryInstructions;
+}
+
 const prisma = new PrismaClient();
 async function main() {
   await seedUsers();
@@ -24,6 +36,7 @@ async function seedUsers() {
       full_name: 'Admin Vilux',
       date_of_birth: new Date(),
       gender: Gender.female,
+      verified_email: true
     },
   });
   await prisma.user.upsert({
@@ -37,6 +50,7 @@ async function seedUsers() {
       full_name: 'Client Vilux',
       date_of_birth: new Date(),
       gender: Gender.female,
+      verified_email: true
     },
   });
   await prisma.user.upsert({
@@ -50,33 +64,26 @@ async function seedUsers() {
       full_name: 'VIP Client Vilux',
       date_of_birth: new Date(),
       gender: Gender.male,
+      verified_email: true
     },
   });
 }
 
 async function seedBrands() {
   for (const brand of brands) {
-    let file;
-    file = await prisma.file.findFirst({
-      where: { url: brand.logoUrl },
-      select: { id: true },
+    let file = await prisma.file.upsert({
+      where: { file_name: brand.brand },
+      create: {
+        file_name: brand.brand,
+        path: `/${brand.brand}`,
+        url: brand.logoUrl,
+      },
+      update: {
+        file_name: brand.brand,
+        path: `/${brand.brand}`,
+        url: brand.logoUrl,
+      },
     });
-
-    if (!file) {
-      file = await prisma.file.upsert({
-        where: { file_name: brand.brand },
-        create: {
-          file_name: brand.brand,
-          path: `/${brand.brand}`,
-          url: brand.logoUrl,
-        },
-        update: {
-          file_name: brand.brand,
-          path: `/${brand.brand}`,
-          url: brand.logoUrl,
-        },
-      });
-    }
 
     const existingBrand = await prisma.brand.findFirst({
       where: { name: brand.brand },
@@ -103,20 +110,63 @@ async function seedBrands() {
 }
 
 async function seedCategories() {
-  for (const [categoryName, subcategories] of Object.entries(categories)) {
+  for (const [categoryName, categoryData] of Object.entries(categories)) {
+    let categoryFile = await prisma.file.upsert({
+      where: { file_name: categoryName },
+      create: {
+        file_name: categoryName,
+        path: `/${categoryName}`,
+        url: categoryData.icon,
+      },
+      update: {
+        file_name: categoryName,
+        path: `/${categoryName}`,
+        url: categoryData.icon,
+      },
+    });
+
     let category = await prisma.category.findFirst({
       where: { name: categoryName.toLowerCase() },
     });
 
     if (!category) {
       category = await prisma.category.create({
-        data: { name: categoryName.toLowerCase() },
+        data: {
+          name: categoryName.toLowerCase(),
+          file_id: categoryFile.id,
+        },
+      });
+    } else {
+      await prisma.category.update({
+        where: { id: category.id },
+        data: {
+          name: categoryName.toLowerCase(),
+          file_id: categoryFile.id,
+        },
       });
     }
 
-    for (const [subcategoryName, subcategoryData] of Object.entries(subcategories)) {
+    for (const [subcategoryName, subcategoryData] of Object.entries(categoryData)) {
+      if (subcategoryName === 'icon') continue;
+
+      const subcategoryDataTyped = subcategoryData as SubcategoryData;
+
+      // let subcategoryFile = await prisma.file.upsert({
+      //   where: { file_name: subcategoryData.icon },
+      //   create: {
+      //     file_name: subcategoryName,
+      //     path: `/${subcategoryName}`,
+      //     url: subcategoryData.icon,
+      //   },
+      //   update: {
+      //     file_name: subcategoryName,
+      //     path: `/${subcategoryName}`,
+      //     url: subcategoryData.icon,
+      //   },
+      // });
+
       let subcategory = await prisma.subcategory.findFirst({
-        where: { name: subcategoryName.toLowerCase() },
+        where: { name: subcategoryName.toLowerCase(), category_id: category.id },
       });
 
       if (!subcategory) {
@@ -124,20 +174,77 @@ async function seedCategories() {
           data: {
             name: subcategoryName.toLowerCase(),
             category_id: category.id,
+            // file_id: subcategoryFile.id,
+          },
+        });
+      } else {
+        await prisma.subcategory.update({
+          where: { id: subcategory.id },
+          data: {
+            name: subcategoryName.toLowerCase(),
+            category_id: category.id,
+            // file_id: subcategoryFile.id,
           },
         });
       }
 
-      for (const instruction of subcategoryData.categoryInstructions) {
+      const instructions = subcategoryDataTyped.categoryInstructions || {};
+      let sortOrder = 1;
+
+      for (const [instructionName, instructionData] of Object.entries(instructions)) {
         const existingInstruction = await prisma.subcategoryInstruction.findFirst({
-          where: { name: instruction.toLowerCase(), subcategory_id: subcategory.id },
+          where: { name: instructionName.toLowerCase(), subcategory_id: subcategory.id },
+        });
+
+        let instructionIconFile = await prisma.file.upsert({
+          where: { file_name: `${subcategoryName.toLowerCase()}-${instructionName}-icon` },
+          create: {
+            file_name: `${subcategoryName.toLowerCase()}-${instructionName}-icon`,
+            path: `/${instructionName}-icon`,
+            url: instructionData?.icon || '',
+          },
+          update: {
+            file_name: `${subcategoryName.toLowerCase()}-${instructionName}-icon`,
+            path: `/${instructionName}-icon`,
+            url: instructionData?.icon || '',
+          },
+        });
+
+        let instructionExampleImageFile = await prisma.file.upsert({
+          where: {
+            file_name: `${subcategoryName.toLowerCase()}-${instructionName}-example`,
+          },
+          create: {
+            file_name: `${subcategoryName.toLowerCase()}-${instructionName}-example`,
+            path: `/${instructionName}-example`,
+            url: instructionData?.example || '',
+          },
+          update: {
+            file_name: `${subcategoryName.toLowerCase()}-${instructionName}-example`,
+            path: `/${instructionName}-example`,
+            url: instructionData?.example || '',
+          },
         });
 
         if (!existingInstruction) {
           await prisma.subcategoryInstruction.create({
             data: {
-              name: instruction.toLowerCase(),
+              name: instructionName.toLowerCase(),
               subcategory_id: subcategory.id,
+              sort_order: sortOrder++,
+              icon_id: instructionIconFile?.id,
+              example_image_id: instructionExampleImageFile?.id,
+            },
+          });
+        } else {
+          await prisma.subcategoryInstruction.update({
+            where: { id: existingInstruction.id },
+            data: {
+              name: instructionName.toLowerCase(),
+              subcategory_id: subcategory.id,
+              sort_order: sortOrder++,
+              icon_id: instructionIconFile?.id,
+              example_image_id: instructionExampleImageFile?.id,
             },
           });
         }
