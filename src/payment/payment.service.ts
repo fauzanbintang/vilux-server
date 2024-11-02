@@ -143,12 +143,12 @@ export class PaymentService {
       });
     }
 
-    await this.sendNotification(clientInfo.id);
+    await this.sendPendingPaymentNotif(clientInfo.id, order.code);
 
     return payment;
   }
 
-  async handleNotification(notificationJson: any) {
+  async handleNotification(notificationJson: any, clientInfo: UserDto) {
     this.logger.debug(
       `Notification received: ${JSON.stringify(notificationJson)}`,
     );
@@ -196,7 +196,7 @@ export class PaymentService {
 
       const currentStatusLog =
         typeof currentLegitCheck?.status_log === 'object' &&
-          currentLegitCheck?.status_log !== null
+        currentLegitCheck?.status_log !== null
           ? (currentLegitCheck.status_log as Record<string, string>)
           : {};
 
@@ -212,6 +212,7 @@ export class PaymentService {
             },
           },
         });
+
         await this.createLedger(
           BigInt(payment.client_amount),
           payment.order.id,
@@ -219,6 +220,13 @@ export class PaymentService {
           'payments',
           BigInt(payment.order?.voucher?.discount || 0),
           BigInt(payment.service_fee),
+        );
+
+        await this.sendSuccessPaymentNotif(
+          clientInfo.id,
+          clientInfo.role,
+          payment.order.code,
+          payment.order.legit_check_id,
         );
       } else if (
         transactionStatus === 'cancel' ||
@@ -256,10 +264,12 @@ export class PaymentService {
         paymentMethod['payment_type'] = 'bank_transfer';
         serviceFee = paymentGatewayFees.virtualAccount;
       } else if (statusResponse.payment_type === 'shopeepay') {
-        serviceFee = Number(payment.client_amount) * paymentGatewayFees['e-wallet'];
+        serviceFee =
+          Number(payment.client_amount) * paymentGatewayFees['e-wallet'];
         paymentMethod['payment_type'] = 'shopeepay';
       } else if (statusResponse.payment_type === 'gopay') {
-        serviceFee = Number(payment.client_amount) * paymentGatewayFees['e-wallet'];
+        serviceFee =
+          Number(payment.client_amount) * paymentGatewayFees['e-wallet'];
         paymentMethod['payment_type'] = 'gopay';
       } else if (statusResponse.payment_type === 'qris') {
         serviceFee = Number(payment.client_amount) * paymentGatewayFees.qris;
@@ -488,7 +498,34 @@ export class PaymentService {
     }
   }
 
-  async sendNotification(userId: string) {
+  async sendPendingPaymentNotif(userId: string, orderCode: string) {
+    const userTokens = await this.prismaService.fCMToken.findMany({
+      select: {
+        token: true,
+      },
+      where: {
+        user_id: userId,
+      },
+    });
+
+    const notifDataUser: MultipleNotificationDto = {
+      tokens: tokenToArrayString(userTokens),
+      title: NotificationConst.PendingPaymentUser.title.replace(
+        '[order_id]',
+        orderCode,
+      ),
+      body: NotificationConst.PendingPaymentUser.body,
+    };
+
+    await sendNotificationToMultipleTokens(notifDataUser);
+  }
+
+  async sendSuccessPaymentNotif(
+    userId: string,
+    userRole: string,
+    orderCode: string,
+    legitCheckId: string,
+  ) {
     const userTokens = await this.prismaService.fCMToken.findMany({
       select: {
         token: true,
@@ -510,14 +547,30 @@ export class PaymentService {
       tokens: tokenToArrayString(userTokens),
       title: NotificationConst.SuccessPaymentUser.title,
       body: NotificationConst.SuccessPaymentUser.body,
+      data: {
+        order_code: orderCode,
+        legit_check_id: legitCheckId,
+      },
     };
+    const userRoleFormat =
+      userRole == Role.vip_client ? 'VIP Client' : 'Normal Client';
     const notifDataAdmin: MultipleNotificationDto = {
       tokens: tokenToArrayString(adminTokens),
-      title: NotificationConst.SuccessPaymentAdmin.title,
-      body: NotificationConst.SuccessPaymentAdmin.body,
+      title: NotificationConst.SuccessPaymentAdmin.title.replace(
+        '[user_role]',
+        userRoleFormat,
+      ),
+      body: NotificationConst.SuccessPaymentAdmin.body.replace(
+        '[order_id]',
+        orderCode,
+      ),
+      data: {
+        order_code: orderCode,
+        legit_check_id: legitCheckId,
+      },
     };
 
-    sendNotificationToMultipleTokens(notifDataUser);
-    sendNotificationToMultipleTokens(notifDataAdmin);
+    await sendNotificationToMultipleTokens(notifDataUser);
+    await sendNotificationToMultipleTokens(notifDataAdmin);
   }
 }

@@ -9,5 +9,6 @@ export class MultipleNotificationDto {
   title: string;
   body: string;
   tokens: string[];
+  data?: { [key: string]: string };
   icon?: string;
 }
