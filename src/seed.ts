@@ -36,6 +36,7 @@ async function seedUsers() {
       full_name: 'Admin Vilux',
       date_of_birth: new Date(),
       gender: Gender.female,
+      verified_email: true
     },
   });
   await prisma.user.upsert({
@@ -49,6 +50,7 @@ async function seedUsers() {
       full_name: 'Client Vilux',
       date_of_birth: new Date(),
       gender: Gender.female,
+      verified_email: true
     },
   });
   await prisma.user.upsert({
@@ -62,6 +64,7 @@ async function seedUsers() {
       full_name: 'VIP Client Vilux',
       date_of_birth: new Date(),
       gender: Gender.male,
+      verified_email: true
     },
   });
 }

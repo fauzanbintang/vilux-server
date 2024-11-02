@@ -84,7 +84,7 @@ export class FileService {
             }
             .code { fill: white; font-size: 80px; font-family: 'GlacialIndifference'; font-weight: bold; }
           </style>
-          <text x="150" y="1410" class="code">${uniqueCode}</text>
+          <text x="150" y="1450" class="code">${uniqueCode}</text>
         </svg>
       `;
 
