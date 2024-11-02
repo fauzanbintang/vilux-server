@@ -2,6 +2,7 @@ import { HttpException, Inject, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Role } from '@prisma/client';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { NotificationConst } from 'src/assets/constants';
 import { PrismaService } from 'src/common/prisma.service';
 import {
   UpdateUserDto,
@@ -9,8 +10,10 @@ import {
   UpdateUserPasswordDto,
   UserQuery,
 } from 'src/dto/request/auth.dto';
+import { MultipleNotificationDto } from 'src/dto/request/notification.dto';
 import { UserDto } from 'src/dto/response/user.dto';
 import { comparePassword, hashPassword } from 'src/helpers/bcrypt';
+import { sendNotificationToMultipleTokens, tokenToArrayString } from 'src/helpers/firebase-messaging';
 import { verifyToken } from 'src/helpers/jwt';
 
 @Injectable()
@@ -280,6 +283,23 @@ export class UserService {
         verified_email: true,
       },
     });
+
+    const userTokens = await this.prismaService.fCMToken.findMany({
+      select: {
+        token: true,
+      },
+      where: {
+        user_id: user.id,
+      },
+    });
+
+    const notifDataUser: MultipleNotificationDto = {
+      tokens: tokenToArrayString(userTokens),
+      title: NotificationConst.SuccessVerifyEmail.title,
+      body: NotificationConst.SuccessVerifyEmail.body,
+    };
+
+    await sendNotificationToMultipleTokens(notifDataUser);
   }
 
   async removeOwnAccount(id: string) {
