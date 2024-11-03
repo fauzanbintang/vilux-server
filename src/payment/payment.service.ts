@@ -49,16 +49,6 @@ export class PaymentService {
         gross_amount: createPaymentDto.client_amount,
       },
       usage_limit: 1,
-      enabled_payments: [
-        'bca_va',
-        'bri_va',
-        'bni_va',
-        'permata_va',
-        'gopay',
-        'shopeepay',
-        'qris',
-        'echannel',
-      ],
       customer_details: {
         first_name: clientInfo.full_name,
         email: clientInfo.email,
@@ -263,14 +253,9 @@ export class PaymentService {
               : statusResponse.va_numbers[0].bank;
         paymentMethod['payment_type'] = 'bank_transfer';
         serviceFee = paymentGatewayFees.virtualAccount;
-      } else if (statusResponse.payment_type === 'shopeepay') {
-        serviceFee =
-          Number(payment.client_amount) * paymentGatewayFees['e-wallet'];
-        paymentMethod['payment_type'] = 'shopeepay';
-      } else if (statusResponse.payment_type === 'gopay') {
-        serviceFee =
-          Number(payment.client_amount) * paymentGatewayFees['e-wallet'];
-        paymentMethod['payment_type'] = 'gopay';
+      } else if (statusResponse.payment_type === 'shopeepay' || statusResponse.payment_type === 'gopay' || statusResponse.payment_type === 'dana') {
+        serviceFee = Number(payment.client_amount) * paymentGatewayFees['e-wallet'];
+        paymentMethod['payment_type'] = statusResponse.payment_type
       } else if (statusResponse.payment_type === 'qris') {
         serviceFee = Number(payment.client_amount) * paymentGatewayFees.qris;
         paymentMethod['payment_type'] = 'qris';
