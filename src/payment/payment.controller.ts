@@ -76,10 +76,9 @@ export class PaymentController {
     }
   })
   async handleNotification(
-    @Req() req: Request,
     @Body() notification: any,
   ): Promise<{ status: string }> {
-    return await this.paymentService.handleNotification(notification, req.user);
+    return await this.paymentService.handleNotification(notification);
   }
 
   @Post(':order_id')
