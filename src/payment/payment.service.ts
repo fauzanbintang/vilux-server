@@ -138,7 +138,7 @@ export class PaymentService {
     return payment;
   }
 
-  async handleNotification(notificationJson: any, clientInfo: UserDto) {
+  async handleNotification(notificationJson: any) {
     this.logger.debug(
       `Notification received: ${JSON.stringify(notificationJson)}`,
     );
@@ -162,9 +162,30 @@ export class PaymentService {
 
       const payment = await this.prismaService.payment.findUnique({
         where: { external_id: orderId },
-        include: {
+        select: {
+          id: true,
+          service_fee: true,
+          client_amount: true,
+          amount: true,
+          method: true,
+          status_log: true,
           order: {
-            include: { voucher: true },
+            select: {
+              id: true,
+              code: true,
+              legit_check_id: true,
+              voucher: true,
+              legit_check: {
+                select: {
+                  client: {
+                    select: {
+                      id: true,
+                      role: true,
+                    },
+                  },
+                },
+              },
+            },
           },
         },
       });
@@ -186,7 +207,7 @@ export class PaymentService {
 
       const currentStatusLog =
         typeof currentLegitCheck?.status_log === 'object' &&
-        currentLegitCheck?.status_log !== null
+          currentLegitCheck?.status_log !== null
           ? (currentLegitCheck.status_log as Record<string, string>)
           : {};
 
@@ -213,8 +234,8 @@ export class PaymentService {
         );
 
         await this.sendSuccessPaymentNotif(
-          clientInfo.id,
-          clientInfo.role,
+          payment.order.legit_check.client.id,
+          payment.order.legit_check.client.role,
           payment.order.code,
           payment.order.legit_check_id,
         );
