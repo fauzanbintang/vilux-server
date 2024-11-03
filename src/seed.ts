@@ -27,7 +27,16 @@ async function main() {
 async function seedUsers() {
   await prisma.user.upsert({
     where: { email: 'admin@vilux.id' },
-    update: {},
+    update: {
+      username: 'admin_vilux',
+      email: 'admin@vilux.id',
+      password: await hashPassword('Vilux!23'),
+      role: Role.admin,
+      full_name: 'Admin Vilux',
+      date_of_birth: new Date(),
+      gender: Gender.female,
+      verified_email: true
+    },
     create: {
       username: 'admin_vilux',
       email: 'admin@vilux.id',
@@ -41,7 +50,16 @@ async function seedUsers() {
   });
   await prisma.user.upsert({
     where: { email: 'client@vilux.id' },
-    update: {},
+    update: {
+      username: 'client_vilux',
+      email: 'client@vilux.id',
+      password: await hashPassword('Vilux!23'),
+      role: Role.client,
+      full_name: 'Client Vilux',
+      date_of_birth: new Date(),
+      gender: Gender.female,
+      verified_email: true
+    },
     create: {
       username: 'client_vilux',
       email: 'client@vilux.id',
@@ -55,7 +73,16 @@ async function seedUsers() {
   });
   await prisma.user.upsert({
     where: { email: 'vip_client@vilux.id' },
-    update: {},
+    update: {
+      username: 'vip_client_vilux',
+      email: 'vip_client@vilux.id',
+      password: await hashPassword('Vilux!23'),
+      role: Role.vip_client,
+      full_name: 'VIP Client Vilux',
+      date_of_birth: new Date(),
+      gender: Gender.male,
+      verified_email: true
+    },
     create: {
       username: 'vip_client_vilux',
       email: 'vip_client@vilux.id',
