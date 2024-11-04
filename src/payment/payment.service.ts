@@ -9,7 +9,11 @@ import {
   UpdatePaymentDto,
 } from 'src/dto/request/payment.dto';
 import { UserDto } from 'src/dto/response/user.dto';
-import { LedgerConst, NotificationConst } from 'src/assets/constants';
+import {
+  LedgerConst,
+  NotificationConst,
+  NotificationTypeConst,
+} from 'src/assets/constants';
 import {
   sendNotificationToMultipleTokens,
   tokenToArrayString,
@@ -138,7 +142,7 @@ export class PaymentService {
     return payment;
   }
 
-  async handleNotification(notificationJson: any, clientInfo: UserDto) {
+  async handleNotification(notificationJson: any) {
     this.logger.debug(
       `Notification received: ${JSON.stringify(notificationJson)}`,
     );
@@ -162,9 +166,30 @@ export class PaymentService {
 
       const payment = await this.prismaService.payment.findUnique({
         where: { external_id: orderId },
-        include: {
+        select: {
+          id: true,
+          service_fee: true,
+          client_amount: true,
+          amount: true,
+          method: true,
+          status_log: true,
           order: {
-            include: { voucher: true },
+            select: {
+              id: true,
+              code: true,
+              legit_check_id: true,
+              voucher: true,
+              legit_check: {
+                select: {
+                  client: {
+                    select: {
+                      id: true,
+                      role: true,
+                    },
+                  },
+                },
+              },
+            },
           },
         },
       });
@@ -213,8 +238,8 @@ export class PaymentService {
         );
 
         await this.sendSuccessPaymentNotif(
-          clientInfo.id,
-          clientInfo.role,
+          payment.order.legit_check.client.id,
+          payment.order.legit_check.client.role,
           payment.order.code,
           payment.order.legit_check_id,
         );
@@ -253,9 +278,14 @@ export class PaymentService {
               : statusResponse.va_numbers[0].bank;
         paymentMethod['payment_type'] = 'bank_transfer';
         serviceFee = paymentGatewayFees.virtualAccount;
-      } else if (statusResponse.payment_type === 'shopeepay' || statusResponse.payment_type === 'gopay' || statusResponse.payment_type === 'dana') {
-        serviceFee = Number(payment.client_amount) * paymentGatewayFees['e-wallet'];
-        paymentMethod['payment_type'] = statusResponse.payment_type
+      } else if (
+        statusResponse.payment_type === 'shopeepay' ||
+        statusResponse.payment_type === 'gopay' ||
+        statusResponse.payment_type === 'dana'
+      ) {
+        serviceFee =
+          Number(payment.client_amount) * paymentGatewayFees['e-wallet'];
+        paymentMethod['payment_type'] = statusResponse.payment_type;
       } else if (statusResponse.payment_type === 'qris') {
         serviceFee = Number(payment.client_amount) * paymentGatewayFees.qris;
         paymentMethod['payment_type'] = 'qris';
@@ -500,6 +530,9 @@ export class PaymentService {
         orderCode,
       ),
       body: NotificationConst.PendingPaymentUser.body,
+      data: {
+        type: NotificationTypeConst.WaitingPaymentPageUser,
+      },
     };
 
     await sendNotificationToMultipleTokens(notifDataUser);
@@ -533,6 +566,7 @@ export class PaymentService {
       title: NotificationConst.SuccessPaymentUser.title,
       body: NotificationConst.SuccessPaymentUser.body,
       data: {
+        type: NotificationTypeConst.DetailOrderUser,
         order_code: orderCode,
         legit_check_id: legitCheckId,
       },
@@ -550,6 +584,7 @@ export class PaymentService {
         orderCode,
       ),
       data: {
+        type: NotificationTypeConst.DetailOrderCMS,
         order_code: orderCode,
         legit_check_id: legitCheckId,
       },
