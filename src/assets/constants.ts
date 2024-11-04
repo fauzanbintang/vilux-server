@@ -45,3 +45,12 @@ export const NotificationConst = {
     body: "We couldn't complete your item check. Don't worry, we've sent you a refund voucher for your next check. Check your app for details!",
   },
 };
+
+export const NotificationTypeConst = {
+  HomepageUser: 'homepage_user',
+  WaitingPaymentPageUser: 'waiting_payment_page_user',
+  DetailOrderUser: 'detail_order_user',
+  DetailOrderCMS: 'detail_order_cms',
+  DetailRejectOrderUser: 'detail_reject_order_user',
+  DetailVoucherUser: 'detail_voucher_user',
+};

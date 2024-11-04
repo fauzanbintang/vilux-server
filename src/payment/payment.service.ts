@@ -9,7 +9,11 @@ import {
   UpdatePaymentDto,
 } from 'src/dto/request/payment.dto';
 import { UserDto } from 'src/dto/response/user.dto';
-import { LedgerConst, NotificationConst } from 'src/assets/constants';
+import {
+  LedgerConst,
+  NotificationConst,
+  NotificationTypeConst,
+} from 'src/assets/constants';
 import {
   sendNotificationToMultipleTokens,
   tokenToArrayString,
@@ -207,7 +211,7 @@ export class PaymentService {
 
       const currentStatusLog =
         typeof currentLegitCheck?.status_log === 'object' &&
-          currentLegitCheck?.status_log !== null
+        currentLegitCheck?.status_log !== null
           ? (currentLegitCheck.status_log as Record<string, string>)
           : {};
 
@@ -274,9 +278,14 @@ export class PaymentService {
               : statusResponse.va_numbers[0].bank;
         paymentMethod['payment_type'] = 'bank_transfer';
         serviceFee = paymentGatewayFees.virtualAccount;
-      } else if (statusResponse.payment_type === 'shopeepay' || statusResponse.payment_type === 'gopay' || statusResponse.payment_type === 'dana') {
-        serviceFee = Number(payment.client_amount) * paymentGatewayFees['e-wallet'];
-        paymentMethod['payment_type'] = statusResponse.payment_type
+      } else if (
+        statusResponse.payment_type === 'shopeepay' ||
+        statusResponse.payment_type === 'gopay' ||
+        statusResponse.payment_type === 'dana'
+      ) {
+        serviceFee =
+          Number(payment.client_amount) * paymentGatewayFees['e-wallet'];
+        paymentMethod['payment_type'] = statusResponse.payment_type;
       } else if (statusResponse.payment_type === 'qris') {
         serviceFee = Number(payment.client_amount) * paymentGatewayFees.qris;
         paymentMethod['payment_type'] = 'qris';
@@ -521,6 +530,9 @@ export class PaymentService {
         orderCode,
       ),
       body: NotificationConst.PendingPaymentUser.body,
+      data: {
+        type: NotificationTypeConst.WaitingPaymentPageUser,
+      },
     };
 
     await sendNotificationToMultipleTokens(notifDataUser);
@@ -554,6 +566,7 @@ export class PaymentService {
       title: NotificationConst.SuccessPaymentUser.title,
       body: NotificationConst.SuccessPaymentUser.body,
       data: {
+        type: NotificationTypeConst.DetailOrderUser,
         order_code: orderCode,
         legit_check_id: legitCheckId,
       },
@@ -571,6 +584,7 @@ export class PaymentService {
         orderCode,
       ),
       data: {
+        type: NotificationTypeConst.DetailOrderCMS,
         order_code: orderCode,
         legit_check_id: legitCheckId,
       },

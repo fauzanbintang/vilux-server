@@ -1,7 +1,7 @@
 import { HttpException, Inject, Injectable, Logger } from '@nestjs/common';
 import { LegitCheckStatus, Role } from '@prisma/client';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
-import { NotificationConst } from 'src/assets/constants';
+import { NotificationConst, NotificationTypeConst } from 'src/assets/constants';
 import { PrismaService } from 'src/common/prisma.service';
 import { CreateCertificateDto } from 'src/dto/request/file.dto';
 import {
@@ -681,6 +681,7 @@ export class LegitCheckService {
       title: NotificationConst.ApprovedDataValidation.title,
       body: NotificationConst.ApprovedDataValidation.body,
       data: {
+        type: NotificationTypeConst.DetailOrderUser,
         order_code: orderCode,
         legit_check_id: legitCheckId,
       },
@@ -708,6 +709,7 @@ export class LegitCheckService {
       title: NotificationConst.RejectedDataValidation.title,
       body: NotificationConst.RejectedDataValidation.body,
       data: {
+        type: NotificationTypeConst.DetailRejectOrderUser,
         order_code: orderCode,
         legit_check_id: legitCheckId,
       },
@@ -735,6 +737,7 @@ export class LegitCheckService {
       title: NotificationConst.DoneLegitCheck.title,
       body: NotificationConst.DoneLegitCheck.body,
       data: {
+        type: NotificationTypeConst.DetailOrderUser,
         order_code: orderCode,
         legit_check_id: legitCheckId,
       },
@@ -757,6 +760,9 @@ export class LegitCheckService {
       tokens: tokenToArrayString(userTokens),
       title: NotificationConst.UnidentifiedLegitCheck.title,
       body: NotificationConst.UnidentifiedLegitCheck.body,
+      data: {
+        type: NotificationTypeConst.DetailVoucherUser,
+      },
     };
 
     await sendNotificationToMultipleTokens(notifDataUser);
