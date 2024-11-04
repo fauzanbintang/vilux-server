@@ -352,6 +352,7 @@ export class LegitCheckService {
           select: {
             id: true,
             username: true,
+            full_name: true,
             role: true,
           },
         },
@@ -481,6 +482,14 @@ export class LegitCheckService {
         admin_note: true,
         watched: true,
         status_log: true,
+        client: {
+          select: {
+            id: true,
+            username: true,
+            full_name: true,
+            role: true,
+          },
+        },
         brand: {
           select: {
             id: true,
