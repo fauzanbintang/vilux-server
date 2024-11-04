@@ -2,7 +2,7 @@ import { HttpException, Inject, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Role } from '@prisma/client';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
-import { NotificationConst } from 'src/assets/constants';
+import { NotificationConst, NotificationTypeConst } from 'src/assets/constants';
 import { PrismaService } from 'src/common/prisma.service';
 import {
   UpdateUserDto,
@@ -13,7 +13,10 @@ import {
 import { MultipleNotificationDto } from 'src/dto/request/notification.dto';
 import { UserDto } from 'src/dto/response/user.dto';
 import { comparePassword, hashPassword } from 'src/helpers/bcrypt';
-import { sendNotificationToMultipleTokens, tokenToArrayString } from 'src/helpers/firebase-messaging';
+import {
+  sendNotificationToMultipleTokens,
+  tokenToArrayString,
+} from 'src/helpers/firebase-messaging';
 import { verifyToken } from 'src/helpers/jwt';
 
 @Injectable()
@@ -22,7 +25,7 @@ export class UserService {
     private prismaService: PrismaService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
     private configService: ConfigService,
-  ) { }
+  ) {}
 
   async getUsers(query: UserQuery): Promise<any> {
     this.logger.debug('Get all users');
@@ -297,6 +300,9 @@ export class UserService {
       tokens: tokenToArrayString(userTokens),
       title: NotificationConst.SuccessVerifyEmail.title,
       body: NotificationConst.SuccessVerifyEmail.body,
+      data: {
+        type: NotificationTypeConst.HomepageUser,
+      },
     };
 
     await sendNotificationToMultipleTokens(notifDataUser);
