@@ -352,6 +352,7 @@ export class LegitCheckService {
           select: {
             id: true,
             username: true,
+            full_name: true,
             role: true,
           },
         },
@@ -481,6 +482,14 @@ export class LegitCheckService {
         admin_note: true,
         watched: true,
         status_log: true,
+        client: {
+          select: {
+            id: true,
+            username: true,
+            full_name: true,
+            role: true,
+          },
+        },
         brand: {
           select: {
             id: true,
@@ -496,6 +505,12 @@ export class LegitCheckService {
           },
         },
         category: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        subcategory: {
           select: {
             id: true,
             name: true,
@@ -787,7 +802,10 @@ export class LegitCheckService {
     });
 
     if (legitCheck?.check_status != LegitCheckStatus.revise_data) {
-      throw new HttpException('Invalid check_status, should be from revise_data', 400);
+      throw new HttpException(
+        'Invalid check_status, should be from revise_data',
+        400,
+      );
     }
 
     legitCheckImagesDto.legit_check_images.forEach(async (v) => {
@@ -819,8 +837,8 @@ export class LegitCheckService {
       }
     });
 
-    let updatedLegitCheck: LegitCheckDto = await this.prismaService.legitChecks.update(
-      {
+    let updatedLegitCheck: LegitCheckDto =
+      await this.prismaService.legitChecks.update({
         where: { id },
         data: {
           check_status: LegitCheckStatus.data_validation,
@@ -838,8 +856,7 @@ export class LegitCheckService {
           product_name: true,
           client_note: true,
         },
-      },
-    );
+      });
 
     return updatedLegitCheck;
   }
