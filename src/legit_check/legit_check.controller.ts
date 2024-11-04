@@ -599,4 +599,54 @@ export class LegitCheckController {
       errors: null,
     };
   }
+
+  @Put(':id/revise')
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Revise legit check images' })
+  @ApiResponse({
+    status: 200,
+    description: 'Revise legit check images',
+    schema: {
+      example: {
+        message: 'Successfully revise legit check images',
+        data: {
+          id: '59e4c335-01bc-42db-a742-8b52b010d4f9',
+          updated_at: '2024-09-30T14:02:42.859Z',
+          created_at: '2024-09-30T13:01:33.011Z',
+          client_id: '2ddab221-d4a3-4297-a3d9-3e7ca8d9d2eb',
+          code: 'NL01J91GB5YH',
+          brand_id: 'f254dcee-11d6-41f8-8bc8-94c9107c0c44',
+          category_id: 'fe380803-ea33-4c75-8e04-dd0a3c14c4fa',
+          subcategory_id: '64491799-2d05-4212-9335-bc0eb801ad47',
+          check_status: 'data_validation',
+          product_name: 'Armani Clutch',
+          client_note: 'This is client note',
+        },
+        errors: null,
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad Request',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+  })
+  async reviseLegitCheckImages(
+    @Param('id') id: string,
+    @Body() legitCheckImagesDto: LegitCheckImagesDto,
+  ): Promise<ResponseDto<LegitCheckDto>> {
+    const legitCheck = await this.legitCheckService.reviseLegitCheckImages(
+      id,
+      legitCheckImagesDto,
+    );
+
+    return {
+      message: 'Successfully revise legit check images',
+      data: legitCheck,
+      errors: null,
+    };
+  }
 }

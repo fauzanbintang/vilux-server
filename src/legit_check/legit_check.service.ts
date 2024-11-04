@@ -767,4 +767,80 @@ export class LegitCheckService {
 
     await sendNotificationToMultipleTokens(notifDataUser);
   }
+
+  async reviseLegitCheckImages(
+    id: string,
+    legitCheckImagesDto: LegitCheckImagesDto,
+  ): Promise<LegitCheckDto> {
+    this.logger.debug(
+      `Revise legit check: images ${JSON.stringify(legitCheckImagesDto)}`,
+    );
+
+    let legitCheck = await this.prismaService.legitChecks.findUnique({
+      select: {
+        id: true,
+        check_status: true,
+      },
+      where: {
+        id: id,
+      },
+    });
+
+    if (legitCheck?.check_status != LegitCheckStatus.revise_data) {
+      throw new HttpException('Invalid check_status, should be from revise_data', 400);
+    }
+
+    legitCheckImagesDto.legit_check_images.forEach(async (v) => {
+      // for now, additional legitCheckImage will always create new
+      const legitCheckImage =
+        await this.prismaService.legitCheckImages.findFirst({
+          where: {
+            legit_check_id: id,
+            subcategory_instruction_id: v.subcategory_instruction_id,
+          },
+          select: { id: true },
+        });
+
+      if (legitCheckImage) {
+        await this.prismaService.legitCheckImages.update({
+          where: { id: legitCheckImage.id },
+          data: {
+            file_id: v.file_id,
+          },
+        });
+      } else {
+        await this.prismaService.legitCheckImages.create({
+          data: {
+            legit_check_id: id,
+            file_id: v.file_id,
+            subcategory_instruction_id: v.subcategory_instruction_id,
+          },
+        });
+      }
+    });
+
+    let updatedLegitCheck: LegitCheckDto = await this.prismaService.legitChecks.update(
+      {
+        where: { id },
+        data: {
+          check_status: LegitCheckStatus.data_validation,
+        },
+        select: {
+          id: true,
+          updated_at: true,
+          created_at: true,
+          client_id: true,
+          code: true,
+          brand_id: true,
+          category_id: true,
+          subcategory_id: true,
+          check_status: true,
+          product_name: true,
+          client_note: true,
+        },
+      },
+    );
+
+    return updatedLegitCheck;
+  }
 }
