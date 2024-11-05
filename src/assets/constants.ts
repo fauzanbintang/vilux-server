@@ -54,3 +54,6 @@ export const NotificationTypeConst = {
   DetailRejectOrderUser: 'detail_reject_order_user',
   DetailVoucherUser: 'detail_voucher_user',
 };
+
+export const ViluxIconURL =
+  'https://ik.imagekit.io/viluxmedia/logo_TPrAuUdXg.png';

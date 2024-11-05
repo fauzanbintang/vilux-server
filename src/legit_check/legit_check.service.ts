@@ -1,7 +1,10 @@
 import { HttpException, Inject, Injectable, Logger } from '@nestjs/common';
 import { LegitCheckStatus, Role } from '@prisma/client';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
-import { NotificationConst, NotificationTypeConst } from 'src/assets/constants';
+import {
+  NotificationConst,
+  NotificationTypeConst,
+} from 'src/assets/constants';
 import { PrismaService } from 'src/common/prisma.service';
 import { CreateCertificateDto } from 'src/dto/request/file.dto';
 import {
@@ -795,6 +798,12 @@ export class LegitCheckService {
       select: {
         id: true,
         check_status: true,
+        Order: {
+          select: {
+            id: true,
+            code: true,
+          },
+        },
       },
       where: {
         id: id,
@@ -858,6 +867,35 @@ export class LegitCheckService {
         },
       });
 
+    this.sendRevisedNotif(legitCheck.Order.code, id);
+
     return updatedLegitCheck;
+  }
+
+  async sendRevisedNotif(orderCode: string, legitCheckId: string) {
+    const adminTokens = await this.prismaService.fCMToken.findMany({
+      select: {
+        token: true,
+      },
+      where: {
+        role: Role.admin,
+      },
+    });
+
+    const notifDataAdmin: MultipleNotificationDto = {
+      tokens: tokenToArrayString(adminTokens),
+      title: NotificationConst.RevisedData.title.replace(
+        '[order_id]',
+        orderCode,
+      ),
+      body: NotificationConst.RevisedData.body,
+      data: {
+        type: NotificationTypeConst.DetailOrderCMS,
+        order_code: orderCode,
+        legit_check_id: legitCheckId,
+      },
+    };
+
+    await sendNotificationToMultipleTokens(notifDataAdmin);
   }
 }
