@@ -1,5 +1,5 @@
 import { HttpException, Inject, Injectable, Logger } from '@nestjs/common';
-import { LegitCheckStatus, Role } from '@prisma/client';
+import { LegitCheckStatus, Prisma, Role } from '@prisma/client';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { NotificationConst, NotificationTypeConst } from 'src/assets/constants';
 import { PrismaService } from 'src/common/prisma.service';
@@ -21,6 +21,7 @@ import {
   tokenToArrayString,
 } from 'src/helpers/firebase-messaging';
 import { generateCode } from 'src/helpers/order_code_generator';
+import { array } from 'zod';
 
 @Injectable()
 export class LegitCheckService {
@@ -302,41 +303,31 @@ export class LegitCheckService {
       `Get paginated legit check with query: ${JSON.stringify(query)}`,
     );
 
-    let whereClause: any = {
-      check_status: {
-        in: query.check_status,
-      },
-      client_id: query.user_id,
-      Order: {},
+    const { check_status, user_id, search, payment_status, page, limit } =
+      query;
+
+    const whereClause: any = {
+      check_status: { in: check_status },
+      client_id: user_id,
+      Order: payment_status?.length
+        ? { payment: { status: { in: payment_status } } }
+        : {},
     };
 
-    if (query.search) {
+    if (search) {
       whereClause.OR = [
-        { code: { contains: query.search, mode: 'insensitive' } },
-        { product_name: { contains: query.search, mode: 'insensitive' } },
+        { code: { contains: search, mode: 'insensitive' } },
+        { product_name: { contains: search, mode: 'insensitive' } },
       ];
-    }
-
-    if (query.payment_status && query.payment_status.length >= 1) {
-      whereClause = {
-        ...whereClause,
-        Order: {
-          payment: {
-            status: {
-              in: query.payment_status,
-            },
-          },
-        },
-      };
     }
 
     const count = await this.prismaService.legitChecks.count({
       where: whereClause,
     });
 
-    const legitChecks = await this.prismaService.legitChecks.findMany({
-      skip: (+query.page - 1) * +query.limit,
-      take: +query.limit,
+    let legitChecks = await this.prismaService.legitChecks.findMany({
+      skip: (+page - 1) * +limit,
+      take: +limit,
       where: whereClause,
       select: {
         id: true,
@@ -408,12 +399,37 @@ export class LegitCheckService {
           },
         },
       },
+      orderBy: { updated_at: 'desc' },
     });
 
-    return {
-      count,
-      legitChecks,
-    };
+    if (
+      [LegitCheckStatus.legit_checking, LegitCheckStatus.data_validation].some(
+        (status) => check_status.includes(status),
+      )
+    ) {
+      const [expired, valid] = legitChecks.reduce<[any[], any[]]>(
+        (acc, lc) => {
+          const { status_log, Order } = lc;
+          const dataValidationDate = status_log['data_validation'];
+          const workingHours = Order?.service?.working_hours;
+
+          if (dataValidationDate && workingHours != null) {
+            const expirationTime =
+              dataValidationDate + workingHours * 60 * 60 * 1000;
+            acc[expirationTime <= Date.now() ? 0 : 1].push(lc);
+          } else {
+            acc[1].push(lc);
+          }
+
+          return acc;
+        },
+        [[], []],
+      );
+
+      legitChecks = valid.concat(expired);
+    }
+
+    return { count, legitChecks };
   }
 
   async getTopBrands(limit: number): Promise<any[]> {
