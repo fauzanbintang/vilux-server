@@ -106,7 +106,7 @@ export class PaymentService {
       throw new HttpException('Invalid client_amount', 400);
     }
 
-    if (order.payment_id) {
+    if (order.payment_id && order.payment.status != PaymentStatus.failed) {
       throw new HttpException(
         {
           message: 'Payment already created',
@@ -116,8 +116,20 @@ export class PaymentService {
       );
     }
 
-    const payment = await this.prismaService.payment.create({
-      data: {
+    const payment = await this.prismaService.payment.upsert({
+      where: {
+        id: order.payment_id,
+      },
+      create: {
+        service_fee: '0',
+        method: response,
+        amount: createPaymentDto.amount,
+        status: PaymentStatus.pending,
+        status_log: { success: null, failed: null, pending: Date.now() },
+        external_id: response.order_id,
+        client_amount: createPaymentDto.client_amount,
+      },
+      update: {
         service_fee: '0',
         method: response,
         amount: createPaymentDto.amount,
@@ -211,7 +223,7 @@ export class PaymentService {
 
       const currentStatusLog =
         typeof currentLegitCheck?.status_log === 'object' &&
-        currentLegitCheck?.status_log !== null
+          currentLegitCheck?.status_log !== null
           ? (currentLegitCheck.status_log as Record<string, string>)
           : {};
 
@@ -592,5 +604,42 @@ export class PaymentService {
 
     await sendNotificationToMultipleTokens(notifDataUser);
     await sendNotificationToMultipleTokens(notifDataAdmin);
+  }
+
+  async checkPaymentStatusMidtrans(paymentId: string) {
+    let payment = await this.prismaService.payment.findUnique({
+      where: {
+        id: paymentId,
+      },
+    });
+
+    if (!payment) {
+      throw new HttpException('Payment not found', 404);
+    }
+
+    const midtransUrl = `${this.configService.get('MIDTRANS_SANDBOX')}/v2/${payment.method['order_id']}/status`;
+    const secret = this.configService.get('MIDTRANS_SERVER_KEY');
+    const encoded = Buffer.from(secret).toString('base64');
+
+    try {
+      const response = await fetch(midtransUrl, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Basic ${encoded}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch: ${response.status} ${response.statusText}`);
+      }
+
+      const responseData = await response.json();
+
+      return responseData;
+    } catch (error) {
+      this.logger.error(`Error checking payment status for ${paymentId}: ${error.message}`);
+      throw new HttpException('Failed to check payment status', 500);
+    }
   }
 }

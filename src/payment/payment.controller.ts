@@ -81,6 +81,42 @@ export class PaymentController {
     return await this.paymentService.handleNotification(notification);
   }
 
+  @Get('payment-status/:id')
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Check payment status' })
+  @ApiResponse({
+    status: 200,
+    description: 'Check payment status',
+    schema: {
+      example: {
+        message: "Successfully check payment status",
+        data: {
+          status_code: "407",
+          transaction_id: "c235b90f-be8b-45fd-a242-e01a0189b0a9",
+          gross_amount: "195000.00",
+          currency: "IDR",
+          order_id: "1841926c-f6a1-4335-bade-679263f6f4a6-1730900300861",
+          payment_type: "bank_transfer",
+          transaction_status: "expire",
+          fraud_status: "accept",
+          status_message: "Success, transaction is found",
+          transaction_time: "2024-11-06 20:38:22",
+          expiry_time: "2024-11-06 20:39:22"
+        },
+        errors: null
+      }
+    }
+  })
+  async checkPaymentStatus(@Param('id') id: string): Promise<ResponseDto<PaymentDto>> {
+    const payment = await this.paymentService.checkPaymentStatusMidtrans(id);
+
+    return {
+      message: 'Successfully check payment status',
+      data: payment,
+      errors: null
+    }
+  }
+
   @Post(':order_id')
   @HttpCode(201)
   @ApiOperation({ summary: 'Create payment' })
