@@ -2,6 +2,7 @@ import { HttpException, Inject, Injectable, Logger } from '@nestjs/common';
 import {
   LegitCheckStatus,
   LegitStatus,
+  PaymentStatus,
   Prisma,
   Role,
   VoucherType,
@@ -30,6 +31,7 @@ import {
   tokenToArrayString,
 } from 'src/helpers/firebase-messaging';
 import { generateCode } from 'src/helpers/order_code_generator';
+import { PaymentService } from 'src/payment/payment.service';
 import { array } from 'zod';
 
 @Injectable()
@@ -37,8 +39,9 @@ export class LegitCheckService {
   constructor(
     private prismaService: PrismaService,
     private readonly fileService: FileService,
+    private readonly paymentService: PaymentService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
-  ) {}
+  ) { }
 
   async upsertLegitCheckBrandCategory(
     clientInfo: UserDto,
@@ -516,14 +519,7 @@ export class LegitCheckService {
         admin_note: true,
         watched: true,
         status_log: true,
-        client: {
-          select: {
-            id: true,
-            username: true,
-            full_name: true,
-            role: true,
-          },
-        },
+        client: true,
         brand: {
           select: {
             id: true,
@@ -563,7 +559,9 @@ export class LegitCheckService {
             },
             payment: {
               select: {
+                id: true,
                 status: true,
+                amount: true,
                 client_amount: true,
                 method: true,
               },
@@ -600,6 +598,15 @@ export class LegitCheckService {
         },
       },
     });
+
+    const checkPaymentStatus = await this.paymentService.checkPaymentStatusMidtrans(legitCheck.Order.payment.id);
+
+    if (checkPaymentStatus.transaction_status !== 'settlement' || checkPaymentStatus.transaction_status !== 'pending') {
+      legitCheck.Order.payment = await this.paymentService.create({
+        amount: legitCheck.Order.payment.amount,
+        client_amount: legitCheck.Order.payment.client_amount,
+      }, legitCheck.client, legitCheck.Order.id);
+    }
 
     return legitCheck;
   }
