@@ -1,4 +1,5 @@
 import * as admin from 'firebase-admin';
+import { ViluxIconURL } from 'src/assets/constants';
 import { MultipleNotificationDto } from 'src/dto/request/notification.dto';
 
 export const sendNotificationToMultipleTokens = async ({
@@ -6,13 +7,12 @@ export const sendNotificationToMultipleTokens = async ({
   title,
   body,
   data,
-  icon,
 }: MultipleNotificationDto) => {
   const message = {
     notification: {
       title,
       body,
-      icon,
+      icon: ViluxIconURL,
     },
     data: data || {},
     tokens,
