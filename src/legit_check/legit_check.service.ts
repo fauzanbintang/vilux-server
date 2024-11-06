@@ -1,5 +1,11 @@
 import { HttpException, Inject, Injectable, Logger } from '@nestjs/common';
-import { LegitCheckStatus, Prisma, Role } from '@prisma/client';
+import {
+  LegitCheckStatus,
+  LegitStatus,
+  Prisma,
+  Role,
+  VoucherType,
+} from '@prisma/client';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { NotificationConst, NotificationTypeConst } from 'src/assets/constants';
 import { PrismaService } from 'src/common/prisma.service';
@@ -259,15 +265,15 @@ export class LegitCheckService {
       code: generateCode(clientInfo.certificate_prefix).slice(0, -5),
     };
     let certificate: FileDto;
-    if (legitCheckCompletedDto.legit_status == 'authentic') {
+    if (legitCheckCompletedDto.legit_status == LegitStatus.authentic) {
       const frame = await this.fileService.findByFileName('authentic-frame');
       dataCertificate.frameId = frame.id;
-    } else if (legitCheckCompletedDto.legit_status == 'fake') {
+    } else if (legitCheckCompletedDto.legit_status == LegitStatus.fake) {
       const frame = await this.fileService.findByFileName('fake-frame');
       dataCertificate.frameId = frame.id;
     }
 
-    if (legitCheck.legit_status !== 'unidentified') {
+    if (legitCheckCompletedDto.legit_status !== LegitStatus.unidentified) {
       certificate = await this.fileService.mergeImages(dataCertificate);
       await this.sendSuccessLegitCheckNotif(
         clientInfo.id,
@@ -276,8 +282,17 @@ export class LegitCheckService {
       );
     }
 
-    // create voucher referral if legit check is unidentified
-    if (legitCheck.legit_status == 'unidentified') {
+    if (legitCheckCompletedDto.legit_status == LegitStatus.unidentified) {
+      await this.prismaService.voucher.create({
+        data: {
+          name: 'Refund Voucher',
+          voucher_type: VoucherType.refund,
+          started_at: new Date(),
+          expired_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+          discount: 100,
+          user_id: clientInfo.id,
+        },
+      });
       this.sendUnidentifiedLegitCheckNotif(clientInfo.id);
     }
 
