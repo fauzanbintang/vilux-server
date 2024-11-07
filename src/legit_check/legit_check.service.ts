@@ -1,7 +1,17 @@
 import { HttpException, Inject, Injectable, Logger } from '@nestjs/common';
-import { LegitCheckStatus, Role } from '@prisma/client';
+import {
+  LegitCheckStatus,
+  LegitStatus,
+  PaymentStatus,
+  Prisma,
+  Role,
+  VoucherType,
+} from '@prisma/client';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
-import { NotificationConst, NotificationTypeConst } from 'src/assets/constants';
+import {
+  NotificationConst,
+  NotificationTypeConst,
+} from 'src/assets/constants';
 import { PrismaService } from 'src/common/prisma.service';
 import { CreateCertificateDto } from 'src/dto/request/file.dto';
 import {
@@ -21,14 +31,17 @@ import {
   tokenToArrayString,
 } from 'src/helpers/firebase-messaging';
 import { generateCode } from 'src/helpers/order_code_generator';
+import { PaymentService } from 'src/payment/payment.service';
+import { array } from 'zod';
 
 @Injectable()
 export class LegitCheckService {
   constructor(
     private prismaService: PrismaService,
     private readonly fileService: FileService,
+    private readonly paymentService: PaymentService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
-  ) {}
+  ) { }
 
   async upsertLegitCheckBrandCategory(
     clientInfo: UserDto,
@@ -258,15 +271,15 @@ export class LegitCheckService {
       code: generateCode(clientInfo.certificate_prefix).slice(0, -5),
     };
     let certificate: FileDto;
-    if (legitCheckCompletedDto.legit_status == 'authentic') {
+    if (legitCheckCompletedDto.legit_status == LegitStatus.authentic) {
       const frame = await this.fileService.findByFileName('authentic-frame');
       dataCertificate.frameId = frame.id;
-    } else if (legitCheckCompletedDto.legit_status == 'fake') {
+    } else if (legitCheckCompletedDto.legit_status == LegitStatus.fake) {
       const frame = await this.fileService.findByFileName('fake-frame');
       dataCertificate.frameId = frame.id;
     }
 
-    if (legitCheck.legit_status !== 'unidentified') {
+    if (legitCheckCompletedDto.legit_status !== LegitStatus.unidentified) {
       certificate = await this.fileService.mergeImages(dataCertificate);
       await this.sendSuccessLegitCheckNotif(
         clientInfo.id,
@@ -275,8 +288,17 @@ export class LegitCheckService {
       );
     }
 
-    // create voucher referral if legit check is unidentified
-    if (legitCheck.legit_status == 'unidentified') {
+    if (legitCheckCompletedDto.legit_status == LegitStatus.unidentified) {
+      await this.prismaService.voucher.create({
+        data: {
+          name: 'Refund Voucher',
+          voucher_type: VoucherType.refund,
+          started_at: new Date(),
+          expired_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+          discount: 100,
+          user_id: clientInfo.id,
+        },
+      });
       this.sendUnidentifiedLegitCheckNotif(clientInfo.id);
     }
 
@@ -302,41 +324,31 @@ export class LegitCheckService {
       `Get paginated legit check with query: ${JSON.stringify(query)}`,
     );
 
-    let whereClause: any = {
-      check_status: {
-        in: query.check_status,
-      },
-      client_id: query.user_id,
-      Order: {},
+    const { check_status, user_id, search, payment_status, page, limit } =
+      query;
+
+    const whereClause: any = {
+      check_status: { in: check_status },
+      client_id: user_id,
+      Order: payment_status?.length
+        ? { payment: { status: { in: payment_status } } }
+        : {},
     };
 
-    if (query.search) {
+    if (search) {
       whereClause.OR = [
-        { code: { contains: query.search, mode: 'insensitive' } },
-        { product_name: { contains: query.search, mode: 'insensitive' } },
+        { code: { contains: search, mode: 'insensitive' } },
+        { product_name: { contains: search, mode: 'insensitive' } },
       ];
-    }
-
-    if (query.payment_status && query.payment_status.length >= 1) {
-      whereClause = {
-        ...whereClause,
-        Order: {
-          payment: {
-            status: {
-              in: query.payment_status,
-            },
-          },
-        },
-      };
     }
 
     const count = await this.prismaService.legitChecks.count({
       where: whereClause,
     });
 
-    const legitChecks = await this.prismaService.legitChecks.findMany({
-      skip: (+query.page - 1) * +query.limit,
-      take: +query.limit,
+    let legitChecks = await this.prismaService.legitChecks.findMany({
+      skip: (+page - 1) * +limit,
+      take: +limit,
       where: whereClause,
       select: {
         id: true,
@@ -408,12 +420,37 @@ export class LegitCheckService {
           },
         },
       },
+      orderBy: { updated_at: 'desc' },
     });
 
-    return {
-      count,
-      legitChecks,
-    };
+    if (
+      [LegitCheckStatus.legit_checking, LegitCheckStatus.data_validation].some(
+        (status) => check_status.includes(status),
+      )
+    ) {
+      const [expired, valid] = legitChecks.reduce<[any[], any[]]>(
+        (acc, lc) => {
+          const { status_log, Order } = lc;
+          const dataValidationDate = status_log['data_validation'];
+          const workingHours = Order?.service?.working_hours;
+
+          if (dataValidationDate && workingHours != null) {
+            const expirationTime =
+              dataValidationDate + workingHours * 60 * 60 * 1000;
+            acc[expirationTime <= Date.now() ? 0 : 1].push(lc);
+          } else {
+            acc[1].push(lc);
+          }
+
+          return acc;
+        },
+        [[], []],
+      );
+
+      legitChecks = valid.concat(expired);
+    }
+
+    return { count, legitChecks };
   }
 
   async getTopBrands(limit: number): Promise<any[]> {
@@ -482,14 +519,7 @@ export class LegitCheckService {
         admin_note: true,
         watched: true,
         status_log: true,
-        client: {
-          select: {
-            id: true,
-            username: true,
-            full_name: true,
-            role: true,
-          },
-        },
+        client: true,
         brand: {
           select: {
             id: true,
@@ -529,7 +559,9 @@ export class LegitCheckService {
             },
             payment: {
               select: {
+                id: true,
                 status: true,
+                amount: true,
                 client_amount: true,
                 method: true,
               },
@@ -566,6 +598,15 @@ export class LegitCheckService {
         },
       },
     });
+
+    const checkPaymentStatus = await this.paymentService.checkPaymentStatusMidtrans(legitCheck.Order.payment.id);
+
+    if (checkPaymentStatus.transaction_status !== 'settlement' || checkPaymentStatus.transaction_status !== 'pending') {
+      legitCheck.Order.payment = await this.paymentService.create({
+        amount: legitCheck.Order.payment.amount,
+        client_amount: legitCheck.Order.payment.client_amount,
+      }, legitCheck.client, legitCheck.Order.id);
+    }
 
     return legitCheck;
   }
@@ -795,6 +836,12 @@ export class LegitCheckService {
       select: {
         id: true,
         check_status: true,
+        Order: {
+          select: {
+            id: true,
+            code: true,
+          },
+        },
       },
       where: {
         id: id,
@@ -858,6 +905,35 @@ export class LegitCheckService {
         },
       });
 
+    this.sendRevisedNotif(legitCheck.Order.code, id);
+
     return updatedLegitCheck;
+  }
+
+  async sendRevisedNotif(orderCode: string, legitCheckId: string) {
+    const adminTokens = await this.prismaService.fCMToken.findMany({
+      select: {
+        token: true,
+      },
+      where: {
+        role: Role.admin,
+      },
+    });
+
+    const notifDataAdmin: MultipleNotificationDto = {
+      tokens: tokenToArrayString(adminTokens),
+      title: NotificationConst.RevisedData.title.replace(
+        '[order_id]',
+        orderCode,
+      ),
+      body: NotificationConst.RevisedData.body,
+      data: {
+        type: NotificationTypeConst.DetailOrderCMS,
+        order_code: orderCode,
+        legit_check_id: legitCheckId,
+      },
+    };
+
+    await sendNotificationToMultipleTokens(notifDataAdmin);
   }
 }
