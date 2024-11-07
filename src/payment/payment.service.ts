@@ -116,29 +116,33 @@ export class PaymentService {
       );
     }
 
-    const payment = await this.prismaService.payment.upsert({
-      where: {
-        id: order.payment_id,
-      },
-      create: {
-        service_fee: '0',
-        method: response,
-        amount: createPaymentDto.amount,
-        status: PaymentStatus.pending,
-        status_log: { success: null, failed: null, pending: Date.now() },
-        external_id: response.order_id,
-        client_amount: createPaymentDto.client_amount,
-      },
-      update: {
-        service_fee: '0',
-        method: response,
-        amount: createPaymentDto.amount,
-        status: PaymentStatus.pending,
-        status_log: { success: null, failed: null, pending: Date.now() },
-        external_id: response.order_id,
-        client_amount: createPaymentDto.client_amount,
-      },
-    });
+    let payment;
+    if (order?.payment?.id) {
+      payment = await this.prismaService.payment.update({
+        where: { id: order.payment.id },
+        data: {
+          service_fee: '0',
+          method: response,
+          amount: createPaymentDto.amount,
+          status: PaymentStatus.pending,
+          status_log: { success: null, failed: null, pending: Date.now() },
+          external_id: response.order_id,
+          client_amount: createPaymentDto.client_amount,
+        },
+      });
+    } else {
+      payment = await this.prismaService.payment.create({
+        data: {
+          service_fee: '0',
+          method: response,
+          amount: createPaymentDto.amount,
+          status: PaymentStatus.pending,
+          status_log: { success: null, failed: null, pending: Date.now() },
+          external_id: response.order_id,
+          client_amount: createPaymentDto.client_amount,
+        },
+      });
+    }
 
     if (payment) {
       await this.prismaService.order.update({
@@ -223,7 +227,7 @@ export class PaymentService {
 
       const currentStatusLog =
         typeof currentLegitCheck?.status_log === 'object' &&
-          currentLegitCheck?.status_log !== null
+        currentLegitCheck?.status_log !== null
           ? (currentLegitCheck.status_log as Record<string, string>)
           : {};
 
@@ -625,20 +629,24 @@ export class PaymentService {
       const response = await fetch(midtransUrl, {
         method: 'GET',
         headers: {
-          'Authorization': `Basic ${encoded}`,
+          Authorization: `Basic ${encoded}`,
           'Content-Type': 'application/json',
         },
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to fetch: ${response.status} ${response.statusText}`);
+        throw new Error(
+          `Failed to fetch: ${response.status} ${response.statusText}`,
+        );
       }
 
       const responseData = await response.json();
 
       return responseData;
     } catch (error) {
-      this.logger.error(`Error checking payment status for ${paymentId}: ${error.message}`);
+      this.logger.error(
+        `Error checking payment status for ${paymentId}: ${error.message}`,
+      );
       throw new HttpException('Failed to check payment status', 500);
     }
   }
