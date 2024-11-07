@@ -599,13 +599,24 @@ export class LegitCheckService {
       },
     });
 
-    const checkPaymentStatus = await this.paymentService.checkPaymentStatusMidtrans(legitCheck.Order.payment.id);
-
-    if (checkPaymentStatus.transaction_status !== 'settlement' || checkPaymentStatus.transaction_status !== 'pending') {
-      legitCheck.Order.payment = await this.paymentService.create({
-        amount: legitCheck.Order.payment.amount,
-        client_amount: legitCheck.Order.payment.client_amount,
-      }, legitCheck.client, legitCheck.Order.id);
+    if (legitCheck?.Order?.payment?.id) {
+      const checkPaymentStatus = await this.paymentService.checkPaymentStatusMidtrans(legitCheck.Order.payment.id);
+  
+      if (checkPaymentStatus.transaction_status !== 'settlement' && checkPaymentStatus.transaction_status !== 'pending') {
+        await this.prismaService.payment.update({
+          where: {
+            id: legitCheck.Order.payment.id
+          },
+          data: {
+            status: PaymentStatus.failed
+          }
+        })
+  
+        legitCheck.Order.payment = await this.paymentService.create({
+          amount: legitCheck.Order.payment.amount,
+          client_amount: legitCheck.Order.payment.client_amount,
+        }, legitCheck.client, legitCheck.Order.id);
+      }
     }
 
     return legitCheck;
