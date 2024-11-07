@@ -431,7 +431,7 @@ export class LegitCheckService {
       const [expired, valid] = legitChecks.reduce<[any[], any[]]>(
         (acc, lc) => {
           const { status_log, Order } = lc;
-          const dataValidationDate = status_log['data_validation'];
+          const dataValidationDate = status_log?.['data_validation'];
           const workingHours = Order?.service?.working_hours;
 
           if (dataValidationDate && workingHours != null) {
