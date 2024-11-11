@@ -178,19 +178,19 @@ async function seedCategories() {
 
       const subcategoryDataTyped = subcategoryData as SubcategoryData;
 
-      // let subcategoryFile = await prisma.file.upsert({
-      //   where: { file_name: subcategoryData.icon },
-      //   create: {
-      //     file_name: subcategoryName,
-      //     path: `/${subcategoryName}`,
-      //     url: subcategoryData.icon,
-      //   },
-      //   update: {
-      //     file_name: subcategoryName,
-      //     path: `/${subcategoryName}`,
-      //     url: subcategoryData.icon,
-      //   },
-      // });
+      let subcategoryFile = await prisma.file.upsert({
+        where: { file_name: `${subcategoryName.toLowerCase()}-icon` },
+        create: {
+          file_name: subcategoryName,
+          path: `/${subcategoryName}`,
+          url: subcategoryDataTyped?.icon || "",
+        },
+        update: {
+          file_name: subcategoryName,
+          path: `/${subcategoryName}`,
+          url: subcategoryDataTyped?.icon || "",
+        },
+      });
 
       let subcategory = await prisma.subcategory.findFirst({
         where: { name: subcategoryName.toLowerCase(), category_id: category.id },
@@ -201,7 +201,7 @@ async function seedCategories() {
           data: {
             name: subcategoryName.toLowerCase(),
             category_id: category.id,
-            // file_id: subcategoryFile.id,
+            file_id: subcategoryFile.id,
           },
         });
       } else {
@@ -210,7 +210,7 @@ async function seedCategories() {
           data: {
             name: subcategoryName.toLowerCase(),
             category_id: category.id,
-            // file_id: subcategoryFile.id,
+            file_id: subcategoryFile.id,
           },
         });
       }
