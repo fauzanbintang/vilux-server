@@ -12,8 +12,8 @@ export const sendNotificationToMultipleTokens = async ({
     notification: {
       title,
       body,
-      icon: ViluxIconURL,
     },
+    icon: ViluxIconURL,
     data: data || {},
     tokens,
   };
