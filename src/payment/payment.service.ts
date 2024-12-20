@@ -61,7 +61,7 @@ export class PaymentService {
     };
 
     const midtrans = await fetch(
-      `${this.configService.get('MIDTRANS_SANDBOX')}/v1/payment-links`,
+      `${this.configService.get('MIDTRANS')}/v1/payment-links`,
       {
         method: 'POST',
         headers: {
@@ -621,7 +621,7 @@ export class PaymentService {
       throw new HttpException('Payment not found', 404);
     }
 
-    const midtransUrl = `${this.configService.get('MIDTRANS_SANDBOX')}/v2/${payment.method['order_id']}/status`;
+    const midtransUrl = `${this.configService.get('MIDTRANS')}/v2/${payment.method['order_id']}/status`;
     const secret = this.configService.get('MIDTRANS_SERVER_KEY');
     const encoded = Buffer.from(secret).toString('base64');
 
