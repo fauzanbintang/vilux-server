@@ -7,6 +7,12 @@ export class CreateBrandDto {
     default: 'Nike',
   })
   name: string;
+
+  @ApiProperty({
+    type: BigInt,
+    default: 0
+  })
+  additional_price: bigint
   
   @ApiProperty({
     type: String,

@@ -36,6 +36,7 @@ export class BrandController {
         data: {
           id: '1873a4df-41cd-4ab0-b49a-94dfaa7473dc',
           name: 'New Balance',
+          additional_price: 0,
           file_id: '643ec53d-2f63-4108-a9ac-e02aada7f5c0',
           updated_at: '2024-09-21T14:25:14.425Z',
           created_at: '2024-09-21T14:25:14.425Z',
@@ -80,6 +81,7 @@ export class BrandController {
             {
               id: '0593bca4-3c6e-4a73-bd52-78e9122fe72f',
               name: 'Adidas',
+              additional_price: 0,
               file_id: null,
               updated_at: '2024-09-18T15:29:40.911Z',
               created_at: '2024-09-18T15:29:40.911Z',
@@ -88,6 +90,7 @@ export class BrandController {
             {
               id: 'ba149365-12a5-4723-888b-5b406d31ca70',
               name: 'Gucci',
+              additional_price: 0,
               file_id: null,
               updated_at: '2024-09-18T15:29:40.911Z',
               created_at: '2024-09-18T15:29:40.911Z',
@@ -96,6 +99,7 @@ export class BrandController {
             {
               id: '92141809-446c-47ce-829f-bfa53489ace4',
               name: 'Nike',
+              additional_price: 0,
               file_id: 'f9682e0b-0d4e-4eae-9b50-2b77004dc9c7',
               updated_at: '2024-09-18T15:29:40.911Z',
               created_at: '2024-09-18T15:29:40.911Z',
@@ -148,6 +152,7 @@ export class BrandController {
         data: {
           id: '92141809-446c-47ce-829f-bfa53489ace4',
           name: 'Nike',
+          additional_price: 0,
           file_id: 'f9682e0b-0d4e-4eae-9b50-2b77004dc9c7',
           updated_at: '2024-09-18T15:29:40.911Z',
           created_at: '2024-09-18T15:29:40.911Z',
@@ -192,6 +197,7 @@ export class BrandController {
         data: {
           id: '1873a4df-41cd-4ab0-b49a-94dfaa7473dc',
           name: 'New Balance',
+          additional_price: 0,
           file_id: '643ec53d-2f63-4108-a9ac-e02aada7f5c0',
           updated_at: '2024-09-21T14:25:14.425Z',
           created_at: '2024-09-21T14:25:14.425Z',

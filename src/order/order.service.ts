@@ -59,9 +59,22 @@ export class OrderService {
         vip_price: service.vip_price.toString(),
       };
 
+      let legitCheck = await this.prismaService.legitChecks.findUnique({
+        select: {
+          brand: {
+            select: {
+              id: true,
+              additional_price: true,
+            }
+          }
+        },
+        where: { id: createOrderDto.legit_check_id }
+      })
+
       const original_amount = countTotalOriginalAmount(
         clientInfo.role,
         newService,
+        legitCheck.brand.additional_price
       );
 
       const order = await this.prismaService.order.create({
@@ -173,12 +186,14 @@ export class OrderService {
   }
 }
 
-function countTotalOriginalAmount(role: Role, service: ServiceDto): number {
+function countTotalOriginalAmount(role: Role, service: ServiceDto, additional_price: bigint): number {
   let result: number;
 
   role == Role.vip_client
     ? (result = +service.vip_price)
     : (result = +service.normal_price);
 
+  result += Number(additional_price)
+  
   return result;
 }
