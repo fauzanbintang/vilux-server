@@ -218,31 +218,105 @@
             }
         },
         "Tote bag": {
-            "categoryInstructions": {}
+            "icon": "https://ik.imagekit.io/viluxmedia/handbag-icon/1-10.png?updatedAt=1729740411058",
+            "categoryInstructions": {
+                "Totebag Look": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/handbag-icon/1-10.png?updatedAt=1729740411058",
+                    "example": "https://ik.imagekit.io/viluxmedia/handbag-icon/WhatsApp%20Image%202024-09-23%20at%2009.28.46.jpeg?updatedAt=1730367770386"
+                },
+                "Materials Look": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/handbag-icon/1-11.png?updatedAt=1729740411570",
+                    "example": "https://ik.imagekit.io/viluxmedia/handbag-icon/WhatsApp%20Image%202024-09-23%20at%2009.28.47%20(1).jpeg?updatedAt=1730367770059"
+                },
+                "Logo Emboss Outside": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/handbag-icon/1-13.png?updatedAt=1729740411386",
+                    "example": "https://ik.imagekit.io/viluxmedia/handbag-icon/WhatsApp%20Image%202024-09-23%20at%2009.28.47.jpeg?updatedAt=1730367770067"
+                },
+                "Logo Emboss Inside": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/handbag-icon/1-14.png?updatedAt=1729740411045",
+                    "example": "https://ik.imagekit.io/viluxmedia/handbag-icon/WhatsApp%20Image%202024-09-23%20at%2009.28.48%20(1).jpeg?updatedAt=1730367770368"
+                },
+                "Inside Bag": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/handbag-icon/1-15.png?updatedAt=1729740411065",
+                    "example": "https://ik.imagekit.io/viluxmedia/handbag-icon/IMG-20241026-WA0006.jpg?updatedAt=1730367849272"
+                },
+                "Inside Logo Tag": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/handbag-icon/1-18.png?updatedAt=1729740411249",
+                    "example": "https://ik.imagekit.io/viluxmedia/handbag-icon/WhatsApp%20Image%202024-09-23%20at%2009.28.49.jpeg?updatedAt=1730367770346"
+                },
+                "Serial Code Tag": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/handbag-icon/1-19.png?updatedAt=1729740411169",
+                    "example": "https://ik.imagekit.io/viluxmedia/handbag-icon/WhatsApp%20Image%202024-09-23%20at%2009.28.48%20(2).jpeg?updatedAt=1730367770388"
+                },
+                "Dust Bag": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/handbag-icon/1-20.png?updatedAt=1729740413958",
+                    "example": "https://ik.imagekit.io/viluxmedia/handbag-icon/IMG-20241026-WA0005.DB.jpg?updatedAt=1730367953223"
+                }
+            }
         },
         "Luggage": {
-            "categoryInstructions": {}
+            "icon": "https://ik.imagekit.io/viluxmedia/luggage/icon_2-138.png?updatedAt=1731843849739",
+            "categoryInstructions": {
+                "Luggage Look Front": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/luggage/icon_2-138.png?updatedAt=1731843849739",
+                    "example": "https://ik.imagekit.io/viluxmedia/luggage/WhatsApp%20Image%202024-11-07%20at%2015.59.26.jpeg?updatedAt=1731843990711"
+                },
+                "Luggage Look Back": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/luggage/icon_2-145.png?updatedAt=1731843849229",
+                    "example": "https://ik.imagekit.io/viluxmedia/luggage/WhatsApp%20Image%202024-11-07%20at%2015.59.28%20(1).jpeg?updatedAt=1731843990845"
+                },
+                "Logo Emboss Outside": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/luggage/icon_2-139.png?updatedAt=1731843849713",
+                    "example": "https://ik.imagekit.io/viluxmedia/luggage/WhatsApp%20Image%202024-11-07%20at%2015.59.26%20(1).jpeg?updatedAt=1731843990726"
+                },
+                "Logo Emboss Inside": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/luggage/icon_2-142.png?updatedAt=1731843849748",
+                    "example": "https://ik.imagekit.io/viluxmedia/luggage/WhatsApp%20Image%202024-11-07%20at%2015.59.27%20(1).jpeg?updatedAt=1731843990633"
+                },
+                "Zipper Pull Tab": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/luggage/icon_2-141.png?updatedAt=1731843849478",
+                    "example": "https://ik.imagekit.io/viluxmedia/luggage/WhatsApp%20Image%202024-11-07%20at%2015.59.26%20(2).jpeg?updatedAt=1731843990782"
+                },
+                "Zipper Back": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/luggage/icon_2-140.png?updatedAt=1731843849322",
+                    "example": "https://ik.imagekit.io/viluxmedia/luggage/WhatsApp%20Image%202024-11-07%20at%2015.59.27.jpeg?updatedAt=1731843990575"
+                },
+                "Size Tag": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/luggage/icon_2-143.png?updatedAt=1731843849256",
+                    "example": "https://ik.imagekit.io/viluxmedia/luggage/WhatsApp%20Image%202024-11-07%20at%2015.59.27%20(2).jpeg?updatedAt=1731843990378"
+                },
+                "Made in Tag": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/luggage/icon_2-144.png?updatedAt=1731843849766",
+                    "example": "https://ik.imagekit.io/viluxmedia/luggage/WhatsApp%20Image%202024-11-07%20at%2015.59.28.jpeg?updatedAt=1731843990360"
+                }
+            }
         },
         "Card holder": {
             "icon": "https://ik.imagekit.io/viluxmedia/cardholder-icon/1-50.png?updatedAt=1729741439839",
             "categoryInstructions": {
                 "Wallet Front Look": {
-                    "icon": "https://ik.imagekit.io/viluxmedia/cardholder-icon/1-50.png?updatedAt=1729741439839"
+                    "icon": "https://ik.imagekit.io/viluxmedia/cardholder-icon/1-50.png?updatedAt=1729741439839",
+                    "example": "https://ik.imagekit.io/viluxmedia/wallet-icon/WhatsApp%20Image%202024-09-20%20at%2011.41.28.jpeg?updatedAt=1730794353116"
                 },
                 "Wallet Back Look": {
-                    "icon": "https://ik.imagekit.io/viluxmedia/cardholder-icon/1-51.png?updatedAt=1729741439587"
+                    "icon": "https://ik.imagekit.io/viluxmedia/cardholder-icon/1-51.png?updatedAt=1729741439587",
+                    "example": "https://ik.imagekit.io/viluxmedia/wallet-icon/WhatsApp%20Image%202024-09-20%20at%2011.41.28%20(1).jpeg?updatedAt=1730794353159"
                 },
                 "Wallet Surface Look": {
-                    "icon": "https://ik.imagekit.io/viluxmedia/cardholder-icon/1-52.png?updatedAt=1729741439608"
+                    "icon": "https://ik.imagekit.io/viluxmedia/cardholder-icon/1-52.png?updatedAt=1729741439608",
+                    "example": "https://ik.imagekit.io/viluxmedia/wallet-icon/WhatsApp%20Image%202024-09-20%20at%2011.41.29%20(2).jpeg?updatedAt=1730794353182"
                 },
                 "Front Emboss": {
-                    "icon": "https://ik.imagekit.io/viluxmedia/cardholder-icon/1-53.png?updatedAt=1729741439683"
+                    "icon": "https://ik.imagekit.io/viluxmedia/cardholder-icon/1-53.png?updatedAt=1729741439683",
+                    "example": "https://ik.imagekit.io/viluxmedia/wallet-icon/WhatsApp%20Image%202024-09-20%20at%2011.41.29.jpeg?updatedAt=1730794353313"
                 },
                 "Inside Emboss": {
-                    "icon": "https://ik.imagekit.io/viluxmedia/cardholder-icon/1-54.png?updatedAt=1729741439837"
+                    "icon": "https://ik.imagekit.io/viluxmedia/cardholder-icon/1-54.png?updatedAt=1729741439837",
+                    "example": "https://ik.imagekit.io/viluxmedia/wallet-icon/WhatsApp%20Image%202024-09-20%20at%2011.41.29%20(3).jpeg?updatedAt=1730794353151"
                 },
                 "Materials Look": {
-                    "icon": "https://ik.imagekit.io/viluxmedia/cardholder-icon/1-55.png?updatedAt=1729741439785"
+                    "icon": "https://ik.imagekit.io/viluxmedia/cardholder-icon/1-55.png?updatedAt=1729741439785",
+                    "example": "https://ik.imagekit.io/viluxmedia/wallet-icon/IMG-20241030-WA0047.jpg?updatedAt=1730794353277"
                 }
             }
         }
@@ -288,34 +362,44 @@
             "icon": "https://ik.imagekit.io/viluxmedia/pe-hoodie/icon_2-01.png?updatedAt=1730280717003",
             "categoryInstructions": {
                 "Outer Look": {
-                    "icon": "https://ik.imagekit.io/viluxmedia/pe-hoodie/icon_2-01.png?updatedAt=1730280717003"
+                    "icon": "https://ik.imagekit.io/viluxmedia/pe-hoodie/icon_2-01.png?updatedAt=1730280717003",
+                    "example": "https://ik.imagekit.io/viluxmedia/pe-hoodie/WhatsApp%20Image%202024-11-07%20at%2015.42.34.jpeg?updatedAt=1731844948669"
                 },
                 "Hood": {
-                    "icon": "https://ik.imagekit.io/viluxmedia/pe-hoodie/icon_2-02.png?updatedAt=1730280716904"
+                    "icon": "https://ik.imagekit.io/viluxmedia/pe-hoodie/icon_2-02.png?updatedAt=1730280716904",
+                    "example": "https://ik.imagekit.io/viluxmedia/pe-hoodie/WhatsApp%20Image%202024-11-07%20at%2015.42.34%20(1).jpeg?updatedAt=1731844948393"
                 },
                 "Wash Tag": {
-                    "icon": "https://ik.imagekit.io/viluxmedia/pe-hoodie/icon_2-03.png?updatedAt=1730280716822"
+                    "icon": "https://ik.imagekit.io/viluxmedia/pe-hoodie/icon_2-03.png?updatedAt=1730280716822",
+                    "example": "https://ik.imagekit.io/viluxmedia/pe-hoodie/WhatsApp%20Image%202024-11-07%20at%2015.42.35.jpeg?updatedAt=1731844948546"
                 },
                 "Wash Tag Pages": {
-                    "icon": "https://ik.imagekit.io/viluxmedia/pe-hoodie/icon_2-04.png?updatedAt=1730280716697"
+                    "icon": "https://ik.imagekit.io/viluxmedia/pe-hoodie/icon_2-04.png?updatedAt=1730280716697",
+                    "example": "https://ik.imagekit.io/viluxmedia/pe-hoodie/WhatsApp%20Image%202024-11-07%20at%2015.42.43%20(1).jpeg?updatedAt=1731844996227"
                 },
                 "Neck and Size Tag Front": {
-                    "icon": "https://ik.imagekit.io/viluxmedia/pe-hoodie/icon_2-05.png?updatedAt=1730280716744"
+                    "icon": "https://ik.imagekit.io/viluxmedia/pe-hoodie/icon_2-05.png?updatedAt=1730280716744",
+                    "example": "https://ik.imagekit.io/viluxmedia/pe-hoodie/WhatsApp%20Image%202024-11-07%20at%2015.42.35%20(1).jpeg?updatedAt=1731844948599"
                 },
                 "Neck and Size Tag Back": {
-                    "icon": "https://ik.imagekit.io/viluxmedia/pe-hoodie/icon_2-06.png?updatedAt=1730280716865"
+                    "icon": "https://ik.imagekit.io/viluxmedia/pe-hoodie/icon_2-06.png?updatedAt=1730280716865",
+                    "example": "https://ik.imagekit.io/viluxmedia/pe-hoodie/WhatsApp%20Image%202024-11-07%20at%2015.42.35%20(2).jpeg?updatedAt=1731844948447"
                 },
                 "Hand Tag Front": {
-                    "icon": "https://ik.imagekit.io/viluxmedia/pe-hoodie/icon_2-07.png?updatedAt=1730280716804"
+                    "icon": "https://ik.imagekit.io/viluxmedia/pe-hoodie/icon_2-07.png?updatedAt=1730280716804",
+                    "example": "https://ik.imagekit.io/viluxmedia/pe-hoodie/WhatsApp%20Image%202024-11-07%20at%2015.42.36.jpeg?updatedAt=1731844948103"
                 },
                 "Hand Tag Back": {
-                    "icon": "https://ik.imagekit.io/viluxmedia/pe-hoodie/icon_2-08.png?updatedAt=1730280716848"
+                    "icon": "https://ik.imagekit.io/viluxmedia/pe-hoodie/icon_2-08.png?updatedAt=1730280716848",
+                    "example": "https://ik.imagekit.io/viluxmedia/pe-hoodie/WhatsApp%20Image%202024-11-07%20at%2015.42.40%20(2).jpeg?updatedAt=1731845069473"
                 },
                 "Price Tag": {
-                    "icon": "https://ik.imagekit.io/viluxmedia/pe-hoodie/icon_2-09.png?updatedAt=1730280716862"
+                    "icon": "https://ik.imagekit.io/viluxmedia/pe-hoodie/icon_2-09.png?updatedAt=1730280716862",
+                    "example": "https://ik.imagekit.io/viluxmedia/pe-hoodie/WhatsApp%20Image%202024-11-07%20at%2015.42.36.jpeg?updatedAt=1731844948103"
                 },
                 "Packaging": {
-                    "icon": "https://ik.imagekit.io/viluxmedia/pe-hoodie/icon_2-10.png?updatedAt=1730280716775"
+                    "icon": "https://ik.imagekit.io/viluxmedia/pe-hoodie/icon_2-10.png?updatedAt=1730280716775",
+                    "example": "https://ik.imagekit.io/viluxmedia/pe-hoodie/WhatsApp%20Image%202024-11-07%20at%2015.41.20.jpeg?updatedAt=1731845117607"
                 }
             }
         },
@@ -323,31 +407,40 @@
             "icon": "https://ik.imagekit.io/viluxmedia/icon-jacket/icon_2-11.png?updatedAt=1730280870638",
             "categoryInstructions": {
                 "Outer Look": {
-                    "icon": "https://ik.imagekit.io/viluxmedia/icon-jacket/icon_2-11.png?updatedAt=1730280870638"
+                    "icon": "https://ik.imagekit.io/viluxmedia/icon-jacket/icon_2-11.png?updatedAt=1730280870638",
+                    "example": "https://ik.imagekit.io/viluxmedia/icon-jacket/WhatsApp%20Image%202024-11-07%20at%2015.42.40.jpeg?updatedAt=1731845171902"
                 },
                 "Wash Tag": {
-                    "icon": "https://ik.imagekit.io/viluxmedia/icon-jacket/icon_2-12.png?updatedAt=1730280870661"
+                    "icon": "https://ik.imagekit.io/viluxmedia/icon-jacket/icon_2-12.png?updatedAt=1730280870661",
+                    "example": "https://ik.imagekit.io/viluxmedia/icon-jacket/WhatsApp%20Image%202024-11-07%20at%2015.42.43.jpeg?updatedAt=1731845164648"
                 },
                 "Wash Tag Pages": {
-                    "icon": "https://ik.imagekit.io/viluxmedia/icon-jacket/icon_2-13.png?updatedAt=1730280870594"
+                    "icon": "https://ik.imagekit.io/viluxmedia/icon-jacket/icon_2-13.png?updatedAt=1730280870594",
+                    "example": "https://ik.imagekit.io/viluxmedia/icon-jacket/WhatsApp%20Image%202024-11-07%20at%2015.42.43%20(1).jpeg?updatedAt=1731845164715"
                 },
                 "Neck and Size Tag Front": {
-                    "icon": "https://ik.imagekit.io/viluxmedia/icon-jacket/icon_2-14.png?updatedAt=1730280870641"
+                    "icon": "https://ik.imagekit.io/viluxmedia/icon-jacket/icon_2-14.png?updatedAt=1730280870641",
+                    "example": "https://ik.imagekit.io/viluxmedia/icon-jacket/WhatsApp%20Image%202024-11-07%20at%2015.42.41.jpeg?updatedAt=1731845171719"
                 },
                 "Neck and Size Tag Back": {
-                    "icon": "https://ik.imagekit.io/viluxmedia/icon-jacket/icon_2-15.png?updatedAt=1730280870873"
+                    "icon": "https://ik.imagekit.io/viluxmedia/icon-jacket/icon_2-15.png?updatedAt=1730280870873",
+                    "example": "https://ik.imagekit.io/viluxmedia/icon-jacket/WhatsApp%20Image%202024-11-07%20at%2015.42.41%20(1).jpeg?updatedAt=1731845171710"
                 },
                 "Hand Tag Front": {
-                    "icon": "https://ik.imagekit.io/viluxmedia/icon-jacket/icon_2-16.png?updatedAt=1730280870815"
+                    "icon": "https://ik.imagekit.io/viluxmedia/icon-jacket/icon_2-16.png?updatedAt=1730280870815",
+                    "example": "https://ik.imagekit.io/viluxmedia/pe-hoodie/WhatsApp%20Image%202024-11-07%20at%2015.42.36.jpeg?updatedAt=1731844948103"
                 },
                 "Hand Tag Back": {
-                    "icon": "https://ik.imagekit.io/viluxmedia/icon-jacket/icon_2-17.png?updatedAt=1730280870741"
+                    "icon": "https://ik.imagekit.io/viluxmedia/icon-jacket/icon_2-17.png?updatedAt=1730280870741",
+                    "example": "https://ik.imagekit.io/viluxmedia/pe-hoodie/WhatsApp%20Image%202024-11-07%20at%2015.42.40%20(2).jpeg?updatedAt=1731845069473"
                 },
                 "Price Tag": {
-                    "icon": "https://ik.imagekit.io/viluxmedia/icon-jacket/icon_2-18.png?updatedAt=1730280870639"
+                    "icon": "https://ik.imagekit.io/viluxmedia/icon-jacket/icon_2-18.png?updatedAt=1730280870639",
+                    "example": "https://ik.imagekit.io/viluxmedia/pe-hoodie/WhatsApp%20Image%202024-11-07%20at%2015.42.36.jpeg?updatedAt=1731844948103"
                 },
                 "Packaging": {
-                    "icon": "https://ik.imagekit.io/viluxmedia/icon-jacket/icon_2-19.png?updatedAt=1730280870987"
+                    "icon": "https://ik.imagekit.io/viluxmedia/icon-jacket/icon_2-19.png?updatedAt=1730280870987",
+                    "example": "https://ik.imagekit.io/viluxmedia/pe-hoodie/WhatsApp%20Image%202024-11-07%20at%2015.41.20.jpeg?updatedAt=1731845117607"
                 }
             }
         },
@@ -498,25 +591,32 @@
             "icon": "https://ik.imagekit.io/viluxmedia/loafers/icon_2-53.png?updatedAt=1730281277219",
             "categoryInstructions": {
                 "Outer Loafer": {
-                    "icon": "https://ik.imagekit.io/viluxmedia/loafers/icon_2-53.png?updatedAt=1730281277219"
+                    "icon": "https://ik.imagekit.io/viluxmedia/loafers/icon_2-53.png?updatedAt=1730281277219",
+                    "example": "https://ik.imagekit.io/viluxmedia/loafers/WhatsApp%20Image%202024-11-07%20at%2015.42.51%20(1).jpeg?updatedAt=1731845636536"
                 },
                 "Tongue Back Code": {
-                    "icon": "https://ik.imagekit.io/viluxmedia/loafers/icon_2-54.png?updatedAt=1730281277094"
+                    "icon": "https://ik.imagekit.io/viluxmedia/loafers/icon_2-54.png?updatedAt=1730281277094",
+                    "example": "https://ik.imagekit.io/viluxmedia/loafers/WhatsApp%20Image%202024-11-07%20at%2015.42.52.jpeg?updatedAt=1731845636387"
                 },
                 "Stitching Left": {
-                    "icon": "https://ik.imagekit.io/viluxmedia/loafers/icon_2-55.png?updatedAt=1730281277375"
+                    "icon": "https://ik.imagekit.io/viluxmedia/loafers/icon_2-55.png?updatedAt=1730281277375",
+                    "example": "https://ik.imagekit.io/viluxmedia/loafers/WhatsApp%20Image%202024-11-07%20at%2015.42.53%20(1).jpeg?updatedAt=1731845636496"
                 },
                 "Stitching Right": {
-                    "icon": "https://ik.imagekit.io/viluxmedia/loafers/icon_2-56.png?updatedAt=1730281277331"
+                    "icon": "https://ik.imagekit.io/viluxmedia/loafers/icon_2-56.png?updatedAt=1730281277331",
+                    "example": "https://ik.imagekit.io/viluxmedia/loafers/WhatsApp%20Image%202024-11-07%20at%2015.42.53%20(2).jpeg?updatedAt=1731845636483"
                 },
                 "Insoles Front": {
-                    "icon": "https://ik.imagekit.io/viluxmedia/loafers/icon_2-57.png?updatedAt=1730281277071"
+                    "icon": "https://ik.imagekit.io/viluxmedia/loafers/icon_2-57.png?updatedAt=1730281277071",
+                    "example": "https://ik.imagekit.io/viluxmedia/loafers/WhatsApp%20Image%202024-11-07%20at%2015.42.53.jpeg?updatedAt=1731845636298"
                 },
                 "Loafers Logo Detail": {
-                    "icon": "https://ik.imagekit.io/viluxmedia/loafers/icon_2-58.png?updatedAt=1730281277210"
+                    "icon": "https://ik.imagekit.io/viluxmedia/loafers/icon_2-58.png?updatedAt=1730281277210",
+                    "example": "https://ik.imagekit.io/viluxmedia/loafers/WhatsApp%20Image%202024-11-07%20at%2015.42.54%20(1).jpeg?updatedAt=1731845636479"
                 },
                 "Shoe Box Label": {
-                    "icon": "https://ik.imagekit.io/viluxmedia/loafers/icon_2-59.png?updatedAt=1730281277061"
+                    "icon": "https://ik.imagekit.io/viluxmedia/loafers/icon_2-59.png?updatedAt=1730281277061",
+                    "example": "https://ik.imagekit.io/viluxmedia/loafers/icon_2-59.png?updatedAt=1730281277061"
                 }
             }
         },
@@ -569,7 +669,7 @@
                 },
                 "Packaging": {
                     "icon": "https://ik.imagekit.io/viluxmedia/slide/icon_2-71.png?updatedAt=1730281416262",
-                    "example": ""
+                    "example": "https://ik.imagekit.io/viluxmedia/WhatsApp%20Image%202024-11-07%20at%2015.41.16.jpeg?updatedAt=1731845501560"
                 }
             }
         },
@@ -577,19 +677,24 @@
             "icon": "https://ik.imagekit.io/viluxmedia/heels/icon_2-72.png?updatedAt=1730281562739",
             "categoryInstructions": {
                 "Outer Heels": {
-                    "icon": "https://ik.imagekit.io/viluxmedia/heels/icon_2-72.png?updatedAt=1730281562739"
+                    "icon": "https://ik.imagekit.io/viluxmedia/heels/icon_2-72.png?updatedAt=1730281562739",
+                    "example": "https://ik.imagekit.io/viluxmedia/heels/WhatsApp%20Image%202024-11-07%20at%2015.42.54%20(2).jpeg?updatedAt=1731845361159"
                 },
                 "Size Tag": {
-                    "icon": "https://ik.imagekit.io/viluxmedia/heels/icon_2-73.png?updatedAt=1730281562395"
+                    "icon": "https://ik.imagekit.io/viluxmedia/heels/icon_2-73.png?updatedAt=1730281562395",
+                    "example": "https://ik.imagekit.io/viluxmedia/heels/WhatsApp%20Image%202024-11-07%20at%2015.42.56%20(1).jpeg?updatedAt=1731845361169"
                 },
                 "Insole Heels Front": {
-                    "icon": "https://ik.imagekit.io/viluxmedia/heels/icon_2-74.png?updatedAt=1730281563968"
+                    "icon": "https://ik.imagekit.io/viluxmedia/heels/icon_2-74.png?updatedAt=1730281563968",
+                    "example": "https://ik.imagekit.io/viluxmedia/heels/WhatsApp%20Image%202024-11-07%20at%2015.42.55.jpeg?updatedAt=1731845361356"
                 },
                 "Logo Heels": {
-                    "icon": "https://ik.imagekit.io/viluxmedia/heels/icon_2-75.png?updatedAt=1730281564164"
+                    "icon": "https://ik.imagekit.io/viluxmedia/heels/icon_2-75.png?updatedAt=1730281564164",
+                    "example": "https://ik.imagekit.io/viluxmedia/heels/WhatsApp%20Image%202024-11-07%20at%2015.42.56%20(2).jpeg?updatedAt=1731845360710"
                 },
-                "Bag Detail": {
-                    "icon": "https://ik.imagekit.io/viluxmedia/heels/icon_2-76.png?updatedAt=1730281564083"
+                "Heels Feet": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/heels/icon_2-72.png?updatedAt=1730281562739",
+                    "example": "https://ik.imagekit.io/viluxmedia/heels/WhatsApp%20Image%202024-11-07%20at%2015.42.55%20(2).jpeg?updatedAt=1731845361063"
                 }
             }
         },
@@ -628,17 +733,25 @@
         "Belt": {
             "icon": "https://ik.imagekit.io/viluxmedia/belt/icon_2-85.png?updatedAt=1730730446101",
             "categoryInstructions": {
-                "Belt Buckle Logo Front": {
-                    "icon": "https://ik.imagekit.io/viluxmedia/belt/icon_2-85.png?updatedAt=1730730446101"
+                "Belt Look": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/belt/icon_2-85.png?updatedAt=1730730446101",
+                    "example": "https://ik.imagekit.io/viluxmedia/belt/WhatsApp%20Image%202024-11-07%20at%2015.42.48.jpeg?updatedAt=1731844632838"
                 },
-                "Belt Buckle Logo Back": {
-                    "icon": "https://ik.imagekit.io/viluxmedia/belt/icon_2-86.png?updatedAt=1730730446076"
+                "Belt Buckle Back Look": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/belt/icon_2-86.png?updatedAt=1730730446076",
+                    "example": "https://ik.imagekit.io/viluxmedia/belt/WhatsApp%20Image%202024-11-07%20at%2015.42.50%20(1).jpeg?updatedAt=1731844632813"
+                },
+                "Belt Buckle Logo": {
+                    "icon": "https://ik.imagekit.io/viluxmedia/belt/icon_2-86.png?updatedAt=1730730446076",
+                    "example": "https://ik.imagekit.io/viluxmedia/belt/WhatsApp%20Image%202024-11-07%20at%2015.42.50.jpeg?updatedAt=1731844632761"
                 },
                 "Belt Loop Back": {
-                    "icon": "https://ik.imagekit.io/viluxmedia/belt/icon_2-88.png?updatedAt=1730730446323"
+                    "icon": "https://ik.imagekit.io/viluxmedia/belt/icon_2-88.png?updatedAt=1730730446323",
+                    "example": "https://ik.imagekit.io/viluxmedia/belt/WhatsApp%20Image%202024-11-07%20at%2015.42.50%20(2).jpeg?updatedAt=1731844632847"
                 },
                 "Belt Strap Emboss": {
-                    "icon": "https://ik.imagekit.io/viluxmedia/belt/icon_2-89.png?updatedAt=1730730446735"
+                    "icon": "https://ik.imagekit.io/viluxmedia/belt/icon_2-89.png?updatedAt=1730730446735",
+                    "example": "https://ik.imagekit.io/viluxmedia/belt/WhatsApp%20Image%202024-11-07%20at%2015.42.51.jpeg?updatedAt=1731844632868"
                 }
             }
         },
